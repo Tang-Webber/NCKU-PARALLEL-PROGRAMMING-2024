@@ -1,0 +1,1 @@
+./input/data/coordinate10000.txt
