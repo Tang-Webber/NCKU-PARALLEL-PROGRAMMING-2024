@@ -1,16 +1,15 @@
 #include "mpi.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdbool.h>
 
-bool f(unsigned int*, unsigned int*, int, int);
-bool f(unsigned int *tests, unsigned int* t, int n, int m){
+bool f(unsigned int*, unsigned int, unsigned int, int);
+bool f(unsigned int *tests, unsigned int t, unsigned int ltime, int m){
     unsigned int set = 0;
     for(int i = 0; i < m; i++){
         if ((t & (1u << i)) != 0) 
             set = set | tests[i];
     }
-    if(set == (unsigned int)pow(2,n))
+    if(set == ltime)
         return true;
     else
         return false;
@@ -22,7 +21,7 @@ int main( int argc, char *argv[])
     int i = 0;
     int count = 0;
     int sum;
-    unsigned int ltime;
+    unsigned int ltime = 1;
     unsigned int tests[32] = {0};
     double startwtime = 0.0, endwtime;
     int  namelen;
@@ -35,7 +34,10 @@ int main( int argc, char *argv[])
     if (myid == 0) {
         //startwtime = MPI_Wtime(); 
         scanf("%d %d", &n, &m);
-        ltime = (unsigned int)pow(2, n);
+        for (int j = 0; j < n; j++) {
+            ltime *= 2;
+        }
+        ltime--;
         for (int j = 0; j < m; j++) {
             int num;
             scanf("%d", &num);
@@ -48,11 +50,12 @@ int main( int argc, char *argv[])
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
     }
+    MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     for (i = myid + 1; i <= n; i += numprocs){
-        if(f(tests, i, n, m) == true) count++;
+        if(f(tests, i, ltime, m) == true) count++;
     }
     MPI_Barrier(MPI_COMM_WORLD);
     if (myid == 0){
