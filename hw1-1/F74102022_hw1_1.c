@@ -36,7 +36,7 @@ int main( int argc, char *argv[])
         //startwtime = MPI_Wtime(); 
         char input[50];
         scanf("%s", input);
-        File *input_file = fopen(input, "r");
+        FILE *input_file = fopen(input, "r");
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
