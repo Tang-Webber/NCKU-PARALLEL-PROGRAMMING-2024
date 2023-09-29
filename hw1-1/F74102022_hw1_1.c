@@ -21,6 +21,7 @@ int main( int argc, char *argv[])
     int n, m, myid, numprocs;
     int i = 0;
     int count = 0;
+    int cost;
     int sum;
     unsigned int ltime = 1;
     unsigned int tests[32] = {0};
@@ -45,14 +46,14 @@ printf("open%s!\n", input);
             return 1;
         }
         fscanf(input_file, "%d %d", &n, &m);
-printf("%d %d\n", n, m);
+printf("get n = %d, m = %d\n", n, m);
         for (int j = 0; j < n; j++) {
             ltime *= 2;
         }
         ltime--;
         for (int j = 0; j < m; j++) {
             int num;
-            fscanf(input_file, "%d", &num);
+            fscanf(input_file, "%d %d", &num, &cost);
             tests[j] = 0;
             for (int k = 0; k < num; k++) {
                 int part;
@@ -61,6 +62,9 @@ printf("%d %d\n", n, m);
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
+for(int j=0;j<32;j++){
+    printf("%u", test[j]);
+}
         fclose(input_file);
     }
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
