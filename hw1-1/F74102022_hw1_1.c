@@ -55,10 +55,6 @@ printf("open%s!\n", input);
         for (int j = 0; j < m; j++) {
             pow2m *= 2;
         }
-        MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
-        MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-        MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         for (int j = 0; j < m; j++) {
 printf("input: %d\n", j);
             fscanf(input_file, "%d %d", &num, &cost);
@@ -68,11 +64,19 @@ printf("input: %d\n", j);
                 tests[j] |= (1 << (part - 1));
             }
 printf("test[%d] = %u\n", j, tests[j]);
-            MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+            //MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
 printf("complete %d\n", j);
         }
     }
 printf("id:%d", myid);
+    MPI_Datatype testarr;
+    MPI_Type_contiguous(32, MPI_UNSIGNED, &testarr);
+    MPI_Type_commit(&testarr);
+    MPI_Bcast(tests, 1, testarr, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
+    MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD); 
 printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,pow2n,pow2m);   
     
