@@ -27,6 +27,8 @@ int main( int argc, char *argv[])
     double startwtime = 0.0, endwtime;
     int  namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
+    char input[50];
+    char output[50];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -34,7 +36,6 @@ int main( int argc, char *argv[])
     //MPI_Get_processor_name(processor_name,&namelen);
     if (myid == 0) {
         //startwtime = MPI_Wtime(); 
-        char input[50];
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
         if(input_file == NULL){
@@ -70,7 +71,6 @@ int main( int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     if (myid == 0){
         MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-        char output[50];
         strcpy(output, input);
         char *dot = strrchr(output, '.');
         if (dot != NULL) {
