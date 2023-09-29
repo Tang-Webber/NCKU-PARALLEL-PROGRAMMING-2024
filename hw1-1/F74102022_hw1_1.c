@@ -3,11 +3,15 @@
 #include <stdbool.h>
 #include <string.h>
 
-bool f(unsigned int,unsigned int);
-bool f(unsigned int tests, unsigned int ltime){
+bool f(unsigned int*, unsigned int, unsigned int, int);
+bool f(unsigned int* tests, unsigned int t, unsigned int pow2n, int m){
     unsigned int set = 0;
-    set = set | tests;
-    if(set == ltime)
+    for(int i = 0; i < m; i++){
+        if ((t & (1u << i)) != 0) 
+            set = set | tests[i];
+    }
+printf("set = %u, %u, %u\n", set, pow2n, t);
+    if(set == pow2n)
         return true;
     else
         return false;
@@ -16,11 +20,12 @@ bool f(unsigned int tests, unsigned int ltime){
 int main( int argc, char *argv[])
 {
     int n, m, myid, numprocs;
-    int i = 0;
+    unsigned int i = 0;
     int count = 0;
     int cost;
     int sum;
-    unsigned int ltime = 1;
+    unsigned int pow2n = 1;             //pow2n : process represent in binary
+    unsigned int pow2m = 1;             //pow2m : num of premutations
     unsigned int tests[32] = {0};
     double startwtime = 0.0, endwtime;
     int  namelen;
@@ -43,11 +48,13 @@ printf("open%s!\n", input);
             return 1;
         }
         fscanf(input_file, "%d %d", &n, &m);
-//correct printf("get n = %d, m = %d\n", n, m);
         for (int j = 0; j < n; j++) {
-            ltime *= 2;
+            pow2n *= 2;
         }
-        ltime--;
+        pow2n--;
+        for (int j = 0; j < m; j++) {
+            pow2m *= 2;
+        }
         for (int j = 0; j < m; j++) {
             int num;
             fscanf(input_file, "%d %d", &num, &cost);
@@ -61,19 +68,20 @@ printf("open%s!\n", input);
         }
         fclose(input_file);
     }
-    MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+printf("test1, id : %d\n", myid);   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-printf("test1\n");   
-    for (i = myid + 1; i <= n; i += numprocs){
-        if((tests[i] != 0) && (f(tests[i], ltime))) count++;
-printf("%d %d", myid, count);
+    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
+    MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+    for (i = myid + 1; i < pow2m; i += numprocs){
+        if(i <= pow2m && f(tests, i, pow2n, m)) count++;
+printf("%d %d %d\n", myid, i, count);
     }
-printf("test2\n");   
+printf("test2 , id : %d\n", myid);   
     MPI_Barrier(MPI_COMM_WORLD);  
-printf("test3\n");   
+printf("test3\n, sum:%d", sum);   
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);   
-printf("test4\n");    
+printf("test4\n, sum:%d", sum);    
     if (myid == 0){
         strcpy(output, input);
         char *dot = strrchr(output, '.');
