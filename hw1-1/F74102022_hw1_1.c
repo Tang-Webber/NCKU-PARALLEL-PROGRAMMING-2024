@@ -26,6 +26,7 @@ int main( int argc, char *argv[])
     unsigned int pow2n = 1;             //pow2n : process represent in binary
     unsigned int pow2m = 1;             //pow2m : num of premutations
     unsigned int set = 0;
+    unsigned int t;
     unsigned int tests[32] = {0};
     double startwtime = 0.0, endwtime;
     int  namelen;
@@ -75,15 +76,16 @@ int main( int argc, char *argv[])
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
 printf("test1, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m,pow2n,pow2m);   
     for (unsigned int i = myid; i < pow2m; i += numprocs){
+        t = i;
         set = 0;
         for(int k = 0; k < m; k++){
             if ((t & (1u << k)) != 0) 
                 set = set | tests[k];
         }
         if(set == pow2n)
-            count++
+            count++;
 printf("id:%d i=%d c=%d\n", myid, i, count);
-printf("set=%u, ans=%u, %u\n", set, pow2n, t);              
+printf("set=%u, ans=%u \n", set, pow2n);              
         //if(i <= pow2m && f(tests, i, pow2n, m)){count++};
     }
 printf("test2 , id : %d\n", myid);   
