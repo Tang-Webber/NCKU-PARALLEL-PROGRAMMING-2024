@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-
+/*
 bool f(unsigned int*, unsigned int, unsigned int, int);
 bool f(unsigned int* tests, unsigned int t, unsigned int pow2n, int m){
     unsigned int set = 0;
@@ -16,16 +16,16 @@ printf("set = %u, %u, %u\n", set, pow2n, t);
     else
         return false;
 }
-
+*/
 int main( int argc, char *argv[])
 {
     int n, m, myid, numprocs;
-    unsigned int i = 0;
     int count = 0;
     int cost;
     int sum;
     unsigned int pow2n = 1;             //pow2n : process represent in binary
     unsigned int pow2m = 1;             //pow2m : num of premutations
+    unsigned int set = 0;
     unsigned int tests[32] = {0};
     double startwtime = 0.0, endwtime;
     int  namelen;
@@ -41,7 +41,7 @@ int main( int argc, char *argv[])
         //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
-printf("open%s!\n", input);
+//printf("open%s!\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
@@ -68,14 +68,23 @@ printf("open%s!\n", input);
         }
         fclose(input_file);
     }
-printf("test1, id : %d\n", myid);   
+    MPI_Barrier(MPI_COMM_WORLD); 
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-    for (i = myid + 1; i < pow2m; i += numprocs){
-        if(i <= pow2m && f(tests, i, pow2n, m)) count++;
-printf("%d %d %d\n", myid, i, count);
+printf("test1, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m,pow2n,pow2m);   
+    for (unsigned int i = myid; i < pow2m; i += numprocs){
+        set = 0;
+        for(int k = 0; k < m; k++){
+            if ((t & (1u << k)) != 0) 
+                set = set | tests[k];
+        }
+        if(set == pow2n)
+            count++
+printf("id:%d i=%d c=%d\n", myid, i, count);
+printf("set=%u, ans=%u, %u\n", set, pow2n, t);              
+        //if(i <= pow2m && f(tests, i, pow2n, m)){count++};
     }
 printf("test2 , id : %d\n", myid);   
     MPI_Barrier(MPI_COMM_WORLD);  
