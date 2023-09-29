@@ -38,7 +38,7 @@ int main( int argc, char *argv[])
         //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
-printf("open%s!\n", input);
+printf("open %s !\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
@@ -66,12 +66,13 @@ printf("%d %d\n", n, m);
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
+printf("test1\n");
     for (i = myid + 1; i <= n; i += numprocs){
         if(f(tests, i, ltime, m) == true) count++;
     }
     MPI_Barrier(MPI_COMM_WORLD);  
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);     
+printf("test2\n");
     if (myid == 0){
         strcpy(output, input);
         char *dot = strrchr(output, '.');
@@ -79,8 +80,9 @@ printf("%d %d\n", n, m);
             *dot = '\0';
         }
         strcat(output, ".out");
-        FILE *output_file = fopen(output, "w");
 printf("test3\n");
+        FILE *output_file = fopen(output, "w");
+printf("test4\n");
         fprintf(output_file, "%d\n", sum); 
 printf("%d", sum);
         fclose(output_file);
