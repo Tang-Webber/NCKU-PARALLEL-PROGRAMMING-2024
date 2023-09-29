@@ -63,7 +63,7 @@ printf("get n = %d, m = %d\n", n, m);
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
 for(int j=0;j<32;j++){
-    printf("%u", test[j]);
+    printf("%u", tests[j]);
 }
         fclose(input_file);
     }
