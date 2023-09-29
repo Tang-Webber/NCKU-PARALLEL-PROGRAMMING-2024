@@ -69,12 +69,14 @@ printf("open%s!\n", input);
         }
         fclose(input_file);
     }
-printf("test0, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m,pow2n,pow2m);   
+
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-printf("test1, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m,pow2n,pow2m);   
+    MPI_Barrier(MPI_COMM_WORLD); 
+printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,pow2n,pow2m);   
+    
     for (unsigned int i = myid; i < pow2m; i += numprocs){
         t = i;
         set = 0;
@@ -84,7 +86,7 @@ printf("test1, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m
         }
         if(set == pow2n)
             count++;
-printf("id:%d i=%d c=%d\n", myid, i, count);
+printf("TEST : id:%d i=%d c=%d   ", myid, i, count);
 printf("set=%u, ans=%u \n", set, pow2n);              
         //if(i <= pow2m && f(tests, i, pow2n, m)){count++};
     }
