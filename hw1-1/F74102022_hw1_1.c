@@ -19,9 +19,8 @@ printf("set = %u, %u, %u\n", set, pow2n, t);
 */
 int main( int argc, char *argv[])
 {
-    int n, m, myid, numprocs;
+    int n, m, myid, numprocs, num, part, cost;
     int count = 0;
-    int cost;
     int sum;
     unsigned int pow2n = 1;             //pow2n : process represent in binary
     unsigned int pow2m = 1;             //pow2m : num of premutations
@@ -56,24 +55,24 @@ printf("open%s!\n", input);
         for (int j = 0; j < m; j++) {
             pow2m *= 2;
         }
+        MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
+        MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         for (int j = 0; j < m; j++) {
-            int num;
+printf("input: %d\n", j);
             fscanf(input_file, "%d %d", &num, &cost);
             tests[j] = 0;
             for (int k = 0; k < num; k++) {
-                int part;
                 fscanf(input_file, "%d", &part);
                 tests[j] |= (1 << (part - 1));
             }
+printf("test[%d] = %u\n", j, tests[j]);
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+printf("complete %d\n", i);
         }
-        fclose(input_file);
     }
-
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
-    MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+printf("id:%d", myid);
     MPI_Barrier(MPI_COMM_WORLD); 
 printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,pow2n,pow2m);   
     
