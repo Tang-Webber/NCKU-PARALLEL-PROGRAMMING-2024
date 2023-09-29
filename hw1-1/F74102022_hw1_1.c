@@ -91,7 +91,8 @@ printf("---------B---------\n");
         }
         strcat(output, ".out");
         */
-        output = "/home/F74102022/hw1-1/output/data/out.txt";
+        char *string = "/home/F74102022/hw1-1/output/data/out.txt";
+        strcpy(out, string);
         FILE *output_file = fopen(output, "w");
 printf("%d\n", sum);
         fprintf(output_file, "%d\n", sum); 
