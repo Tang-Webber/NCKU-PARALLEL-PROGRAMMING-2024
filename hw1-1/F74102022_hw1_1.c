@@ -38,12 +38,14 @@ int main( int argc, char *argv[])
         //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
+printf("open%s!\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
             return 1;
         }
         fscanf(input_file, "%d %d", &n, &m);
+printf("%d %d\n", n, m);
         for (int j = 0; j < n; j++) {
             ltime *= 2;
         }
@@ -59,6 +61,7 @@ int main( int argc, char *argv[])
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
+printf("input get!\n");
         fclose(input_file);
     }
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
@@ -68,16 +71,21 @@ int main( int argc, char *argv[])
     for (i = myid + 1; i <= n; i += numprocs){
         if(f(tests, i, ltime, m) == true) count++;
     }
+printf("test1\n");
     MPI_Barrier(MPI_COMM_WORLD);
+printf("done!\n");
     if (myid == 0){
+printf("test2\n");
         MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
         strcpy(output, input);
         char *dot = strrchr(output, '.');
         if (dot != NULL) {
             *dot = '\0';
         }
+printf("out:%s\n", out);
         strcat(output, ".out");
         FILE *output_file = fopen(output, "w");
+printf("test3\n");
         fprintf(output_file, "%d\n", sum); 
         fclose(output_file);
     } 
