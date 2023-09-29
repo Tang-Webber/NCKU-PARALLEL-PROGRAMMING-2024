@@ -43,7 +43,6 @@ int main( int argc, char *argv[])
             fclose(input_file);
             return 1;
         }
-
         fscanf(input_file, "%d %d", &n, &m);
         for (int j = 0; j < n; j++) {
             ltime *= 2;
@@ -60,6 +59,7 @@ int main( int argc, char *argv[])
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
+        fclose(input_file);
     }
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -79,7 +79,6 @@ int main( int argc, char *argv[])
         strcat(output, ".out");
         FILE *output_file = fopen(output, "w");
         fprintf(output_file, "%d\n", sum); 
-        fclose(input_file);
         fclose(output_file);
     } 
     MPI_Finalize();
