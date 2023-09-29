@@ -61,7 +61,6 @@ printf("%d %d\n", n, m);
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
-printf("input get!\n");
         fclose(input_file);
     }
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
@@ -71,12 +70,11 @@ printf("input get!\n");
     for (i = myid + 1; i <= n; i += numprocs){
         if(f(tests, i, ltime, m) == true) count++;
     }
-printf("test1\n");
     MPI_Barrier(MPI_COMM_WORLD);
-printf("done!\n");
+printf("test1\n");    
+    MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);   
+printf("test2\n");    
     if (myid == 0){
-printf("test2\n");
-        MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
         strcpy(output, input);
         char *dot = strrchr(output, '.');
         if (dot != NULL) {
