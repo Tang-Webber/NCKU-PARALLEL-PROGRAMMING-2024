@@ -69,7 +69,7 @@ printf("input: %d\n", j);
             }
 printf("test[%d] = %u\n", j, tests[j]);
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
-printf("complete %d\n", i);
+printf("complete %d\n", j);
         }
     }
 printf("id:%d", myid);
