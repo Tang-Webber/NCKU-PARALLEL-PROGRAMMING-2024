@@ -46,7 +46,7 @@ printf("open%s!\n", input);
             return 1;
         }
         fscanf(input_file, "%d %d", &n, &m);
-printf("get n = %d, m = %d\n", n, m);
+//correct printf("get n = %d, m = %d\n", n, m);
         for (int j = 0; j < n; j++) {
             ltime *= 2;
         }
@@ -62,21 +62,20 @@ printf("get n = %d, m = %d\n", n, m);
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
         }
-for(int j=0;j<32;j++){
-    printf("%u", tests[j]);
-}
         fclose(input_file);
     }
     MPI_Bcast(&ltime, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
+printf("test1\n");   
     for (i = myid + 1; i <= n; i += numprocs){
         if(f(tests, i, ltime, m) == true) count++;
     }
+printf("test2\n");   
     MPI_Barrier(MPI_COMM_WORLD);  
+printf("test3\n");   
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);   
-printf("test2\n");    
+printf("test4\n");    
     if (myid == 0){
         strcpy(output, input);
         char *dot = strrchr(output, '.');
