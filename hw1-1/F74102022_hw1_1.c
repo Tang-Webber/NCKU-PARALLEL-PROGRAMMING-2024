@@ -70,21 +70,19 @@ printf("%d %d\n", n, m);
     for (i = myid + 1; i <= n; i += numprocs){
         if(f(tests, i, ltime, m) == true) count++;
     }
-    MPI_Barrier(MPI_COMM_WORLD);
-printf("test1\n");    
-    MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);   
-printf("test2\n");    
+    MPI_Barrier(MPI_COMM_WORLD);  
+    MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);     
     if (myid == 0){
         strcpy(output, input);
         char *dot = strrchr(output, '.');
         if (dot != NULL) {
             *dot = '\0';
         }
-printf("out:%s\n", output);
         strcat(output, ".out");
         FILE *output_file = fopen(output, "w");
 printf("test3\n");
         fprintf(output_file, "%d\n", sum); 
+printf("%d", sum);
         fclose(output_file);
     } 
     MPI_Finalize();
