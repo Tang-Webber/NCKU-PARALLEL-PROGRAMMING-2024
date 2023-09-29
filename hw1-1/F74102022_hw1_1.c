@@ -3,13 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 
-bool f(unsigned int*, unsigned int, unsigned int, int);
-bool f(unsigned int *tests, unsigned int t, unsigned int ltime, int m){
+bool f(unsigned int,unsigned int);
+bool f(unsigned int tests, unsigned int ltime){
     unsigned int set = 0;
-    for(int i = 0; i < m; i++){
-        if ((t & (1u << i)) != 0) 
-            set = set | tests[i];
-    }
+    set = set | tests;
     if(set == ltime)
         return true;
     else
@@ -69,7 +66,8 @@ printf("open%s!\n", input);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
 printf("test1\n");   
     for (i = myid + 1; i <= n; i += numprocs){
-        if(f(tests, i, ltime, m) == true) count++;
+        if((test[i] != 0) && (f(tests[i], ltime))) count++;
+printf("%d %d", myid, count);
     }
 printf("test2\n");   
     MPI_Barrier(MPI_COMM_WORLD);  
