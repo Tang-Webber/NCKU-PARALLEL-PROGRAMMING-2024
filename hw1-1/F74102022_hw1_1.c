@@ -1,6 +1,7 @@
 #include "mpi.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 bool f(unsigned int*, unsigned int, unsigned int, int);
 bool f(unsigned int *tests, unsigned int t, unsigned int ltime, int m){
@@ -33,18 +34,27 @@ int main( int argc, char *argv[])
     //MPI_Get_processor_name(processor_name,&namelen);
     if (myid == 0) {
         //startwtime = MPI_Wtime(); 
-        scanf("%d %d", &n, &m);
+        char input[50];
+        scanf("%s", input);
+        File &input_file = fopen(input, "r");
+        if(input_file == NULL){
+            printf("could not open file %s\n", input);
+            fclose(input_file);
+            return 1;
+        }
+
+        fscanf(input_file, "%d %d", &n, &m);
         for (int j = 0; j < n; j++) {
             ltime *= 2;
         }
         ltime--;
         for (int j = 0; j < m; j++) {
             int num;
-            scanf("%d", &num);
+            fscanf(input_file, "%d", &num);
             tests[j] = 0;
             for (int k = 0; k < num; k++) {
                 int part;
-                scanf("%d", &part);
+                fscanf(input_file, "%d", &part);
                 tests[j] |= (1 << (part - 1));
             }
             MPI_Bcast(&tests[j], 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
@@ -60,9 +70,18 @@ int main( int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     if (myid == 0){
         MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-        printf("%d", sum);  
+        char output[50];
+        strcpy(output, filename);
+        char *dot = strrchr(output, '.');
+        if (dot != NULL) {
+            *dot = '\0';
+        }
+        strcat(output, ".out");
+        FILE *output_file = fopen(output, "w");
+        fprintf(output_file, "%d\n", sum); 
+        fclose(input_file);
+        fclose(output_file);
     } 
     MPI_Finalize();
-
     return 0;
 }
