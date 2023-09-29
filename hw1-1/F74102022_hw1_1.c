@@ -82,7 +82,7 @@ printf("test2\n");
         if (dot != NULL) {
             *dot = '\0';
         }
-printf("out:%s\n", out);
+printf("out:%s\n", output);
         strcat(output, ".out");
         FILE *output_file = fopen(output, "w");
 printf("test3\n");
