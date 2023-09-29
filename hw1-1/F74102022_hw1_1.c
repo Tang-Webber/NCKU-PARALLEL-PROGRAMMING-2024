@@ -66,7 +66,7 @@ printf("open%s!\n", input);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
 printf("test1\n");   
     for (i = myid + 1; i <= n; i += numprocs){
-        if((test[i] != 0) && (f(tests[i], ltime))) count++;
+        if((tests[i] != 0) && (f(tests[i], ltime))) count++;
 printf("%d %d", myid, count);
     }
 printf("test2\n");   
