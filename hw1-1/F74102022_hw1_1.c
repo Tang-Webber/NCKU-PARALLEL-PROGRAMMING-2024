@@ -42,7 +42,7 @@ int main( int argc, char *argv[])
         //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
-//printf("open%s!\n", input);
+printf("open%s!\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
@@ -69,7 +69,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
     }
-    MPI_Barrier(MPI_COMM_WORLD); 
+printf("test0, id : %d ,total:%d\n, paremeter: %d %d %u %u", myid, numprocs, n,m,pow2n,pow2m);   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
