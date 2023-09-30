@@ -75,8 +75,7 @@ printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,
 printf("TEST : id:%d i=%d c=%d   ", myid, i, count);
 printf("set=%u, ans=%u \n", set, pow2n);              
         //if(i <= pow2m && f(tests, i, pow2n, m)){count++};
-    }
-printf("test2 , id : %d\n", myid);   
+    } 
     MPI_Barrier(MPI_COMM_WORLD); 
     MPI_Barrier(MPI_COMM_WORLD);  
 printf("---------B---------\n");   
@@ -91,12 +90,12 @@ printf("---------B---------\n");
         }
         strcat(output, ".out");
         */
-        char *string = "/home/F74102022/hw1-1/output/data/out.txt";
-        strcpy(output, string);
-        FILE *output_file = fopen(output, "w");
+        //char *string = "/home/F74102022/hw1-1/output/out.txt";
+        //strcpy(output, string);
+        //FILE *output_file = fopen(output, "w");
 printf("%d\n", sum);
-        fprintf(output_file, "%d\n", sum); 
-        fclose(output_file);
+        //fprintf(output_file, "%d\n", sum); 
+        //fclose(output_file);
     } 
     MPI_Finalize();
     return 0;
