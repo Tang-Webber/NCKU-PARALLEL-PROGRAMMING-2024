@@ -7,7 +7,6 @@ int main( int argc, char *argv[])
 {
     int n, m, myid, numprocs, num, part, cost;
     int count = 0;
-    //int* counts = NULL;
     int sum;
     unsigned int pow2n = 1;             //pow2n : process represent in binary
     unsigned int pow2m = 1;             //pow2m : num of premutations
@@ -25,11 +24,10 @@ int main( int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
     //MPI_Get_processor_name(processor_name,&namelen);
     if (myid == 0) {
-        //counts = (int*)malloc(numprocs * sizeof(int));
         //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
-printf("open%s!\n", input);
+//printf("open%s!\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
@@ -62,7 +60,7 @@ printf("open%s!\n", input);
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD); 
-printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,pow2n,pow2m);   
+//printf("_________ID : %d\n__________", myid, numprocs, n,m,pow2n,pow2m);   
     for (unsigned int i = myid; i < pow2m; i += numprocs){
         t = i;
         set = 0;
@@ -72,28 +70,13 @@ printf("ID : ---%d--- ,total:%d, Paremeter: %d %d %u %u\n", myid, numprocs, n,m,
         }
         if(set == pow2n)
             count++;
-printf("TEST : id:%d i=%d c=%d   ", myid, i, count);
-printf("set=%u, ans=%u \n", set, pow2n);              
-        //if(i <= pow2m && f(tests, i, pow2n, m)){count++};
+//printf("TEST : id:%d i=%d c=%d   ", myid, i, count);
+//printf("set=%u, ans=%u \n", set, pow2n);              
     } 
     MPI_Barrier(MPI_COMM_WORLD); 
-    MPI_Barrier(MPI_COMM_WORLD);  
-printf("---------B---------\n");   
-    //MPI_Gather(&count, 1, MPI_INT, counts, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);      
     if (myid == 0){
-        /*
-        strcpy(output, input);
-        char *dot = strrchr(output, '.');
-        if (dot != NULL) {
-            *dot = '\0';
-        }
-        strcat(output, ".out");
-        */
-        //char *string = "/home/F74102022/hw1-1/output/out.txt";
-        //strcpy(output, string);
-        //FILE *output_file = fopen(output, "w");
-printf("%d\n", sum);
+        printf("%d\n", sum);
         //fprintf(output_file, "%d\n", sum); 
         //fclose(output_file);
     } 
