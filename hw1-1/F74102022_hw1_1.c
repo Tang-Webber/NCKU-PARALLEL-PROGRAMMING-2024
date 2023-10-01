@@ -51,7 +51,7 @@ int main( int argc, char *argv[])
     MPI_Type_contiguous(32, MPI_UNSIGNED, &testarr);
     MPI_Type_commit(&testarr);
     MPI_Bcast(tests, 1, testarr, 0, MPI_COMM_WORLD);
-    
+
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
@@ -77,6 +77,7 @@ int main( int argc, char *argv[])
         //fprintf(output_file, "%d\n", sum); 
         //fclose(output_file);
     } 
+    MPI_TYPE_FREE(&testarr);
     MPI_Finalize();
     return 0;
 }
