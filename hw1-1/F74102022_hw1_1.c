@@ -5,9 +5,9 @@
 
 int main( int argc, char *argv[])
 {
-    int n, m, myid, numprocs, num, part, cost;
+    int n, m, myid, numprocs;
     int count = 0;
-    int sum;
+    int sum, num, part, cost;
     unsigned int pow2n = 1;             //pow2n : process represent in binary
     unsigned int pow2m = 1;             //pow2m : num of premutations
     unsigned int set = 0;
@@ -22,7 +22,6 @@ int main( int argc, char *argv[])
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
-//printf("open%s!\n", input);
         if(input_file == NULL){
             printf("could not open file %s\n", input);
             fclose(input_file);
@@ -46,7 +45,6 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
     }
-
     MPI_Datatype testarr;
     MPI_Type_contiguous(32, MPI_UNSIGNED, &testarr);
     MPI_Type_commit(&testarr);
@@ -57,7 +55,6 @@ int main( int argc, char *argv[])
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD); 
-
     for (unsigned int i = myid; i < pow2m; i += numprocs){
         t = i;
         set = 0;
@@ -67,15 +64,12 @@ int main( int argc, char *argv[])
         }
         if(set == pow2n)
             count++;
-//printf("TEST : id:%d i=%d c=%d   ", myid, i, count);
-//printf("set=%u, ans=%u \n", set, pow2n);              
+        //printf("TEST : id:%d i=%d c=%d   set=%u, ans=%u \n", myid, i, count, set, pow2n);          
     } 
     MPI_Barrier(MPI_COMM_WORLD); 
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);      
     if (myid == 0){
         printf("%d", sum);
-        //fprintf(output_file, "%d\n", sum); 
-        //fclose(output_file);
     } 
     MPI_Type_free(&testarr);
     MPI_Finalize();
