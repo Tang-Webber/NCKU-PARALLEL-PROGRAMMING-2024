@@ -13,18 +13,13 @@ int main( int argc, char *argv[])
     unsigned int set = 0;
     unsigned int t;
     unsigned int tests[32] = {0};
-    double startwtime = 0.0, endwtime;
-    int  namelen;
-    char processor_name[MPI_MAX_PROCESSOR_NAME];
     char input[50];
-    char output[50];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-    //MPI_Get_processor_name(processor_name,&namelen);
+
     if (myid == 0) {
-        //startwtime = MPI_Wtime(); 
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
 //printf("open%s!\n", input);
@@ -51,16 +46,18 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
     }
+
     MPI_Datatype testarr;
     MPI_Type_contiguous(32, MPI_UNSIGNED, &testarr);
     MPI_Type_commit(&testarr);
     MPI_Bcast(tests, 1, testarr, 0, MPI_COMM_WORLD);
+    
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);   
     MPI_Bcast(&pow2n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Bcast(&pow2m, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD); 
-//printf("_________ID : %d\n__________", myid, numprocs, n,m,pow2n,pow2m);   
+
     for (unsigned int i = myid; i < pow2m; i += numprocs){
         t = i;
         set = 0;
