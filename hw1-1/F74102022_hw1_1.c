@@ -73,7 +73,7 @@ int main( int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD); 
     MPI_Reduce(&count, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);      
     if (myid == 0){
-        printf("%d\n", sum);
+        printf("%d", sum);
         //fprintf(output_file, "%d\n", sum); 
         //fclose(output_file);
     } 
