@@ -77,7 +77,7 @@ int main( int argc, char *argv[])
         //fprintf(output_file, "%d\n", sum); 
         //fclose(output_file);
     } 
-    MPI_TYPE_FREE(&testarr);
+    MPI_Type_free(&testarr);
     MPI_Finalize();
     return 0;
 }
