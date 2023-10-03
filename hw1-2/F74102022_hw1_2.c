@@ -123,8 +123,17 @@ printf("__________________________________________________________________\n");
         }
     }   
 printf("id = %d tests1\n", myid);
-    MPI_Gather(local_upper_ch, up, PointType, gathered_up, up, PointType, 0, MPI_COMM_WORLD);
-    MPI_Gather(local_lower_ch, down, PointType, gathered_down, down, PointType, 0, MPI_COMM_WORLD);
+    MPI_Gather(local_upper_ch, up, PointType, gathered_up[myid], up, PointType, 0, MPI_COMM_WORLD);
+    MPI_Gather(local_lower_ch, down, PointType, gathered_down[myid], down, PointType, 0, MPI_COMM_WORLD);
+    /*MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE,
+               gathered_up[myid], local_n * sizeof(struct Point), MPI_BYTE,
+               0, MPI_COMM_WORLD);
+
+    MPI_Gather(local_lower_ch, down * sizeof(struct Point), MPI_BYTE,
+               gathered_down[myid], local_n * sizeof(struct Point), MPI_BYTE,
+               0, MPI_COMM_WORLD);
+    */
+
 printf("id = %d tests2\n", myid);
     //Combine small convex hulls  
     if (myid == 0){
