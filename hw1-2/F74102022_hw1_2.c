@@ -68,11 +68,11 @@ int main( int argc, char *argv[])
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
    
 printf("id = %d, get n = %d ; get scatter data x: %d to %d\nCheck", myid, n, local_P[0].x, local_P[local_count - 1].x);
-printf("__________________________________________________________________\n")
+printf("__________________________________________________________________\n");
 for(int i=0; i< local_count;i++){
     printf("id = %d, (%d, %d)\n", local_P[i].id, local_P[i].x, local_P[i].y);
 }
-printf("__________________________________________________________________\n")
+printf("__________________________________________________________________\n");
 
     //Local Calculation
     //Andrew's Monotone Chain
