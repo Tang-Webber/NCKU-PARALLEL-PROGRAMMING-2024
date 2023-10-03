@@ -3,8 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-
-struct Point {int id, x, y;} P[12000];
+#include <stddef.h>
 
 int cross(Point o, Point a, Point b)
 {
@@ -25,6 +24,9 @@ int main( int argc, char *argv[])
     int left, right;
     int u, d;
     char input[50];
+    struct Point {
+        int id, x, y;
+    } P[12000];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
