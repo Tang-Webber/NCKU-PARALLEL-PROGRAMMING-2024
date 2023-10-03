@@ -156,7 +156,11 @@ int main( int argc, char *argv[])
                 }
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0){
                     right++;  
-if (i == 8) printf("\n%d %d %d \n", final_down[left], gathered_down[i][right + 1], gathered_down[i][right]);                
+if (i == 8) {
+printf("\n%d %d %d \n", final_down[left].id, gathered_down[i][right + 1].id, gathered_down[i][right].id);
+printf("%d %d %d \n", final_down[left].x, gathered_down[i][right + 1].x, gathered_down[i][right].x);
+printf("%d %d %d \n", final_down[left].y, gathered_down[i][right + 1].y, gathered_down[i][right].y);
+}
                 }
                 if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
                     break;
