@@ -115,17 +115,27 @@ printf("MYID = %d, up = %d, down = %d\n", myid, up, down);
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
+printf("potential point : ");
         for(int i = 0; i < downs[0]; i++){
             final_down[i].id = local_lower_ch[i].id;
             final_down[i].x = local_lower_ch[i].x;
             final_down[i].y = local_lower_ch[i].y;
+printf("%d ", final_down[i].id);
         }
         for(int i = 0; i < ups[0]; i++){
             final_up[i].id = local_upper_ch[i].id;
             final_up[i].x = local_upper_ch[i].x;
             final_up[i].y = local_upper_ch[i].y;
+printf("%d ", final_down[i].id);
         }
-printf("tests start\n");
+for(int i = 1; i<numprocs;i++ ){
+for(int j = 0; j < ups[i];j++){
+printf("%d ", gathered_up[i][j].id);   
+}
+for(int j = 0; j < downs[i];j++){
+printf("%d ", gathered_down[i][j].id);  
+}}
+printf("\n\n\n\ntests start\n");
         //Step 2: iteratvely add id = i to final
         //Lower
         left = downs[0] - 1;
@@ -134,11 +144,11 @@ printf("Lower: Part 0 L:%d R:%d\n", left, right);
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-printf("1. (%d, %d) ", final_down[left - 1].x, final_down[left - 1].y);
+/*printf("1. (%d, %d) ", final_down[left - 1].x, final_down[left - 1].y);
 printf("2. (%d, %d) ", gathered_down[i][right].x, gathered_down[i][right].y);
 printf("3. (%d, %d) \n", final_down[left].x, final_down[left].y);
 printf("cross = %lld\n", cross(final_down[left - 1], gathered_down[i][right], final_down[left]));
-printf("cross = %lld\n", cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]));
+printf("cross = %lld\n", cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]));*/
                 if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0)
                     left--;
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
@@ -147,7 +157,6 @@ printf("cross = %lld\n", cross(final_down[left], gathered_down[i][right + 1], ga
                     break;
                 }
             }
-printf("Find L:%d R:%d\n", left, right);
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
                 final_down[left + j + 1].id = gathered_down[i][j + right].id;
