@@ -139,6 +139,7 @@ printf("Part 0 L:%d R:%d\n", left, right);
                     break;
                 }
                 else{
+printf("infinite loop?\n");
                     if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0 )
                         left--;
                     if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
