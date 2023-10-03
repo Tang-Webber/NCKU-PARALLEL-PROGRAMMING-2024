@@ -245,7 +245,7 @@ printf("tests5\n");
         free(ups);
         free(downs);        
     }
-    print("too fast, STOP!!!!!");
+    printf("too fast, STOP!!!!!");
     MPI_Barrier(MPI_COMM_WORLD); 
     free(local_P);
     free(local_upper_ch);
