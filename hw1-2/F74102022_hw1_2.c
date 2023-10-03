@@ -27,6 +27,7 @@ int main( int argc, char *argv[])
     int left, right;
     int u, d;
     char input[50];
+    int rest = 0;
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -69,6 +70,7 @@ int main( int argc, char *argv[])
     //Andrew's Monotone Chain
     int up = 0;
     int down = 0;
+
 	for (int i = 0; i < local_count; i++){
 		while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
 		local_lower_ch[down++] = local_P[i];
@@ -77,7 +79,9 @@ int main( int argc, char *argv[])
 		while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
 		local_upper_ch[up++] = local_P[i];
 	}
-
+    if(myid == 0 && local_count * numprocs != n){
+        rest = 1;       
+    }
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up= NULL;
@@ -85,14 +89,14 @@ int main( int argc, char *argv[])
     struct Point **gathered_up = NULL;
     struct Point **gathered_down = NULL;
     if (myid == 0){
-        ups = (int*)malloc(numprocs * sizeof(int));
-        downs = (int*)malloc(numprocs * sizeof(int));
+        ups = (int*)malloc((numprocs + rest) * sizeof(int));
+        downs = (int*)malloc((numprocs + resr) * sizeof(int));
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if (myid == 0){
-        gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-        gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
+        gathered_up = (struct Point**)malloc((numprocs + rest) * sizeof(struct Point*));
+        gathered_down = (struct Point**)malloc((numprocs + rest) * sizeof(struct Point*));  
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
         for(int i = 0; i < numprocs;i++){
@@ -109,6 +113,24 @@ int main( int argc, char *argv[])
             MPI_Recv(gathered_up[i], ups[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
+    }
+
+    if(myid == 0 && rest != 0){
+        int left_up = 0;
+        int left_down = 0;
+        int left_count = n - local_count * numprocs;
+        gathered_up[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
+        gathered_down[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
+        for (int i = local_count * numprocs; i < n; i++){
+		    while (left_down >= 2 && cross(gathered_down[numprocs][left_down-2], gathered_down[numprocs][left_down-1], P[i]) <= 0) left_down--;
+		    gathered_down[numprocs][left_down++] = P[i];
+	    }
+	    for (int i = local_count * numprocs; i < n; i++){
+		    while (left_up >= 2 && cross(gathered_up[numprocs][left_up-2], gathered_up[numprocs][left_up-1], P[i]) >= 0) left_up--;
+		    gathered_up[numprocs][left_up++] = P[i];
+	    }       
+        ups[numprocs] = left_up;
+        downs[numprocs] = left_down;   
     }
 
     //Combine small convex hulls  
@@ -128,7 +150,7 @@ int main( int argc, char *argv[])
         //Lower
         left = downs[0] - 1;
         right = 0;
-        for(int i = 1; i < numprocs; i++){
+        for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
                 if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) < 0)
@@ -152,7 +174,7 @@ int main( int argc, char *argv[])
         //Upper
         left = ups[0] - 1;
         right = 0;
-        for(int i = 1; i < numprocs; i++){
+        for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
                 if(cross(gathered_up[i][right], final_up[left - 1], final_up[left]) > 0)
@@ -173,40 +195,7 @@ int main( int argc, char *argv[])
             right = 0;
         }
         u = left; 
-        //left points  
-printf("%d vs. %d\n", local_count * numprocs, n);
-        if (local_count * numprocs != n){
-            for(int i = local_count * numprocs; i < n; i++){
-                //upper
-                while(1){
-                    if(cross(P[i], final_up[u-1], final_up[u]) >= 0){
-                        u--;
-                    } 
-                    else{
-                        u++;
-                        final_up[u].id = P[i].id;
-                        final_up[u].x = P[i].x;
-                        final_up[u].y = P[i].y;
-                        break;
-                    }                
-                }                
-                //lower
-                while(1){
-                    if(cross(P[i], final_up[d-1], final_up[d]) <= 0){
-                        d--;
-                    } 
-                    else{
-                        d++;
-                        final_up[d].id = P[i].id;
-                        final_up[d].x = P[i].x;
-                        final_up[d].y = P[i].y;
-                        break;
-                    }                
-                }
 
-
-            }
-        }
 printf("tests4\n");
         //output
         for(int i = 0;i < u; i++){
