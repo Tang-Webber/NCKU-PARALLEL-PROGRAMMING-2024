@@ -143,8 +143,8 @@ printf("id = %d tests1\n", myid);
         MPI_Send(gathered_down[myid], down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     } else {
         for (int i = 1; i < numprocs; i++) {
-            MPI_Recv(gathered_up[i], up * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(gathered_down[i], down * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(gathered_up[i], ups[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
 
