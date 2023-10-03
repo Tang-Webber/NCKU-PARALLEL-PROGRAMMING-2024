@@ -134,7 +134,11 @@ int main( int argc, char *argv[])
         ups[numprocs] = left_up;
         downs[numprocs] = left_down;   
     }
-
+printf("%d\n", numprocs);
+for(int i=0; i < local_count ; i++){
+    printf("%d %d %d \n", gathered_up[numprocs][i].id, gathered_up[numprocs][i].x, gathered_up[numprocs][i].y);
+    printf("%d %d %d \n", gathered_down[numprocs][i].id, gathered_down[numprocs][i].x, gathered_down[numprocs][i].y);
+}
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
@@ -157,9 +161,9 @@ int main( int argc, char *argv[])
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0){
                     right++;  
 if (i == 8) {
-printf("\n%d %d %d \n", final_down[left].id, gathered_down[i][right + 1].id, gathered_down[i][right].id);
-printf("%d %d %d \n", final_down[left].x, gathered_down[i][right + 1].x, gathered_down[i][right].x);
-printf("%d %d %d \n", final_down[left].y, gathered_down[i][right + 1].y, gathered_down[i][right].y);
+printf("\n%d %d \n",gathered_down[i][right + 1].id, gathered_down[i][right].id);
+printf("%d %d \n",gathered_down[i][right + 1].x, gathered_down[i][right].x);
+printf("%d %d \n",gathered_down[i][right + 1].y, gathered_down[i][right].y);
 }
                 }
                 if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
@@ -207,8 +211,6 @@ if(i==8) printf("%d %d\n",downs[8], right);
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }   
-printf("\n%d %d %d\n", left_up, left_down, d);
-
         //Free memory
         for (int i = 0; i < numprocs + rest; i++) {
             free(gathered_up[i]);
