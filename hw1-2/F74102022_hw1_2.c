@@ -200,7 +200,10 @@ printf("%d %d %d\n",i , left, right);
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }   
-printf("\n%d\n", d);
+printf("\n%d %d %d\n", P[96].id, P[96].x, P[96].y);
+printf("%d %d %d\n", P[97].id, P[97].x, P[97].y);
+printf("%d %d %d\n", P[98].id, P[98].x, P[98].y);
+printf("%d %d %d\n", P[99].id, P[99].x, P[99].y);
         //Free memory
         for (int i = 0; i < numprocs + rest; i++) {
             free(gathered_up[i]);
