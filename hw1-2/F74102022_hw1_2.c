@@ -199,8 +199,6 @@ int main( int argc, char *argv[])
             right = 0;
         }
         u = left; 
-
-printf("tests4\n");
         //output
         for(int i = 0;i < u; i++){
             printf("%d ", final_up[i].id);
