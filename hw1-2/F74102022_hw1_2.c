@@ -26,6 +26,10 @@ int main( int argc, char *argv[])
     int n, myid, numprocs;
     int left, right;
     int u, d;
+    int left_up = 0;
+    int left_down = 0;
+    int left_count;
+
     char input[50];
     int rest = 0;
 
@@ -80,7 +84,8 @@ int main( int argc, char *argv[])
 		local_upper_ch[up++] = local_P[i];
 	}
     if(myid == 0 && local_count * numprocs != n){
-        rest = 1;       
+        rest = 1; 
+        left_count = n - local_count * numprocs;     
     }
     int* ups = NULL;       
     int* downs = NULL;
@@ -116,9 +121,6 @@ int main( int argc, char *argv[])
     }
 
     if(myid == 0 && rest != 0){
-        int left_up = 0;
-        int left_down = 0;
-        int left_count = n - local_count * numprocs;
         gathered_up[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
         gathered_down[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
         for (int i = local_count * numprocs; i < n; i++){
