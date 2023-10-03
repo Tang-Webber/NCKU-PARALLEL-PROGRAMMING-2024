@@ -109,6 +109,9 @@ printf("__________________________________________________________________\n");
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
+for(int i = 0;i < numprocs;i++){
+    printf("id = %d, up=%d down=%d\n", i, ups[i], downs);
+}
     if (myid == 0){
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
