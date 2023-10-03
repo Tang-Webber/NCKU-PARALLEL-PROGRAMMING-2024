@@ -149,7 +149,7 @@ int main( int argc, char *argv[])
         for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if((left == 0 || right == downs[i] - 1){
+                if(left == 0 || right == downs[i] - 1){
                     break;
                 }                
                 if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
