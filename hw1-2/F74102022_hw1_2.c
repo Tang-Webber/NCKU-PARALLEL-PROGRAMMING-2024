@@ -112,11 +112,15 @@ printf("__________________________________________________________________\n");
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+    gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));    
+    if(myid != 0){
+        gathered_up[myid] = (struct Point*)malloc(up * sizeof(struct Point));
+        gathered_down[myid] = (struct Point*)malloc(down * sizeof(struct Point));     
+    }
     if (myid == 0){
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
-        gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-        gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));
         for(int i = 0; i < numprocs;i++){
             gathered_up[i] = (struct Point*)malloc(ups[i] * sizeof(struct Point));
             gathered_down[i] = (struct Point*)malloc(downs[i] * sizeof(struct Point));
@@ -125,12 +129,13 @@ printf("__________________________________________________________________\n");
 printf("id = %d tests1\n", myid);
     MPI_Gather(local_upper_ch, up, PointType, gathered_up[myid], up, PointType, 0, MPI_COMM_WORLD);
     MPI_Gather(local_lower_ch, down, PointType, gathered_down[myid], down, PointType, 0, MPI_COMM_WORLD);
-    /*MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE,
-               gathered_up[myid], local_n * sizeof(struct Point), MPI_BYTE,
+    /*
+    MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE,
+               gathered_up[myid], up * sizeof(struct Point), MPI_BYTE,
                0, MPI_COMM_WORLD);
 
     MPI_Gather(local_lower_ch, down * sizeof(struct Point), MPI_BYTE,
-               gathered_down[myid], local_n * sizeof(struct Point), MPI_BYTE,
+               gathered_down[myid], down * sizeof(struct Point), MPI_BYTE,
                0, MPI_COMM_WORLD);
     */
 
@@ -247,12 +252,17 @@ printf("tests5\n");
         }
         free(final_up);
         free(final_down);
-        free(gathered_up);
-        free(gathered_down);
+
         free(ups);
         free(downs);        
     }
-    MPI_Barrier(MPI_COMM_WORLD); 
+    MPI_Barrier(MPI_COMM_WORLD);  
+    if(myid != 0){
+        free(gathered_up[myid]);
+        free(gathered_down[myid]);      
+    }
+    free(gathered_up);
+    free(gathered_down);
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
