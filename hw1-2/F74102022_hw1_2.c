@@ -217,7 +217,7 @@ printf("tests4\n");
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
         }
-        for(int i = d;i >= 0; i--){
+        for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }        
         //Free memory
