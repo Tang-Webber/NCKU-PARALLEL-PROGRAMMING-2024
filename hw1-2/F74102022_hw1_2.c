@@ -217,6 +217,7 @@ printf("tests4\n");
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
         }
+        printf(" : up | down : ");
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }        
