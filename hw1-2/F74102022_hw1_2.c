@@ -85,8 +85,7 @@ int main( int argc, char *argv[])
 	}
     if(myid == 0 && local_count * numprocs != n){
         rest = 1; 
-        left_count = n - local_count * numprocs; 
-printf("left:%d\n", left_count);    
+        left_count = n - local_count * numprocs;     
     }
     int* ups = NULL;       
     int* downs = NULL;
@@ -122,8 +121,8 @@ printf("left:%d\n", left_count);
     }
 
     if(myid == 0 && rest != 0){
-        gathered_up[numprocs] = (struct Point*)malloc(left_count * sizeof(struct Point));
-        gathered_down[numprocs] = (struct Point*)malloc(left_count * sizeof(struct Point));
+        gathered_up[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
+        gathered_down[numprocs] = (struct Point*)malloc(local_count * sizeof(struct Point));
         for (int i = local_count * numprocs; i < n; i++){
 		    while (left_down >= 2 && cross(gathered_down[numprocs][left_down-2], gathered_down[numprocs][left_down-1], P[i]) <= 0) left_down--;
 		    gathered_down[numprocs][left_down++] = P[i];
@@ -136,7 +135,6 @@ printf("left:%d\n", left_count);
         downs[numprocs] = left_down;   
     }
 
-printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
@@ -158,10 +156,11 @@ printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
                 }
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0){
                     right++;  
+if (i == 8) printf("\n%d %d %d \n", final_down[left], gathered_down[i][right + 1], gathered_down[i][right]);                
                 }
-                if(left == 0 || right + 1 == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
+                if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
                     break;
-                }                
+                }
             }
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
@@ -204,6 +203,8 @@ if(i==8) printf("%d %d\n",downs[8], right);
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }   
+printf("\n%d %d %d\n", left_up, left_down, d);
+
         //Free memory
         for (int i = 0; i < numprocs + rest; i++) {
             free(gathered_up[i]);
