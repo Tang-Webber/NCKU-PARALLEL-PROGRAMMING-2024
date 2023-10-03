@@ -128,15 +128,30 @@ printf("__________________________________________________________________\n");
     }   
 printf("id = %d tests1\n", myid);
 
+    if (myid != 0) {
+        for(int i = 0;i < up; i++){
+            gathered_up[myid][i].id = local_upper_ch[i].id;
+            gathered_up[myid][i].x = local_upper_ch[i].x;
+            gathered_up[myid][i].y = local_upper_ch[i].y;
+        }
+        for(int i = 0;i < down; i++){
+            gathered_down[myid][i].id = local_lower_ch[i].id;
+            gathered_down[myid][i].x = local_lower_ch[i].x;
+            gathered_down[myid][i].y = local_lower_ch[i].y;
+        }
+        MPI_Send(gathered_up[myid], up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(gathered_down[myid], down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    } else {
+        for (int i = 1; i < numprocs; i++) {
+            MPI_Recv(gathered_up[i], up * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(gathered_down[i], down * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+    }
+
     //MPI_Gather(local_upper_ch, up, PointType, gathered_up[myid], up, PointType, 0, MPI_COMM_WORLD);
     //MPI_Gather(local_lower_ch, down, PointType, gathered_down[myid], down, PointType, 0, MPI_COMM_WORLD);
-    MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE,
-               gathered_up[myid], up * sizeof(struct Point), MPI_BYTE,
-               0, MPI_COMM_WORLD);
-
-    MPI_Gather(local_lower_ch, down * sizeof(struct Point), MPI_BYTE,
-               gathered_down[myid], down * sizeof(struct Point), MPI_BYTE,
-               0, MPI_COMM_WORLD);
+    //MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, gathered_up[myid], up * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    //MPI_Gather(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, gathered_down[myid], down * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 
 printf("id = %d tests2\n", myid);
     //Combine small convex hulls  
