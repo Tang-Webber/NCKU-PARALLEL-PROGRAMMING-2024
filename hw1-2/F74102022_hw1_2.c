@@ -9,9 +9,8 @@ struct Point {
     int id, x, y;
 } P[12000];
 
-int cross(struct Point o, struct Point a, struct Point b)
-{
-	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+long long int cross(struct Point o, struct Point a, struct Point b) {
+    return (long long int)(a.x - o.x) * (b.y - o.y) - (long long int)(a.y - o.y) * (b.x - o.x);
 }
 
 int compare(const void* a, const void* b)
@@ -187,6 +186,7 @@ printf("tests2\n");
         d = left; 
         //left points  
 printf("tests3\n"); 
+        /*
         if (local_count * numprocs != n){
             for(int i = local_count * numprocs; i < n; i++){
                 //upper
@@ -217,6 +217,7 @@ printf("tests3\n");
 
             }
         }
+        */
 printf("tests4\n");
         //output
         for(int i = 0;i <= u; i++){
