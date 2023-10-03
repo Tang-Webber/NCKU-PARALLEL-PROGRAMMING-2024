@@ -10,7 +10,8 @@ struct Point {
 } P[12000];
 
 int cross(struct Point o, struct Point a, struct Point b) {
-    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    int i = (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    return i;
 }
 
 int compare(const void* a, const void* b)
