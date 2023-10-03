@@ -201,7 +201,6 @@ printf("tests2\n");
         d = left;
         //left points  
 printf("tests3\n"); 
-/*
         if (local_count * numprocs != n){
             for(int i = local_count * numprocs; i < n; i++){
                 //upper
@@ -232,8 +231,7 @@ printf("tests3\n");
 
             }
         }
-*/
-printf("tests5\n");
+printf("tests4\n");
         //output
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
