@@ -90,7 +90,7 @@ int main( int argc, char *argv[])
     struct Point **gathered_down = NULL;
     if (myid == 0){
         ups = (int*)malloc((numprocs + rest) * sizeof(int));
-        downs = (int*)malloc((numprocs + resr) * sizeof(int));
+        downs = (int*)malloc((numprocs + rest) * sizeof(int));
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
