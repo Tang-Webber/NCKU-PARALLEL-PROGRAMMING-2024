@@ -195,7 +195,7 @@ int main( int argc, char *argv[])
             printf("%d ", final_down[i].id);
         }        
         //Free memory
-        for (int i = 0; i < numprocs; i++) {
+        for (int i = 0; i < numprocs + rest; i++) {
             free(gathered_up[i]);
             free(gathered_down[i]);
         }
