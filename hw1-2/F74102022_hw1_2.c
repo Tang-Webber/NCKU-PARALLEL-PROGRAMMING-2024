@@ -157,15 +157,15 @@ for(int i=0; i < left_count ; i++){
         for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(left == 0 || right + 1 == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
-                    break;
-                }
                 if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) <= 0){
                     left--;
                 }
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0){
                     right++;  
                 }
+                if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
+                    break;
+                }                
             }
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
