@@ -10,7 +10,7 @@ struct Point {
 } P[12000];
 
 long long int cross(struct Point o, struct Point a, struct Point b) {
-    return (long long int)(a.x - o.x) * (b.y - o.y) - (long long int)(a.y - o.y) * (b.x - o.x);
+    return (long long int)(a.x - o.x) * (long long int)(b.y - o.y) - (long long int)(a.y - o.y) * (long long int)(b.x - o.x);
 }
 
 int compare(const void* a, const void* b)
@@ -167,7 +167,7 @@ if (i == 8) printf("\n%lld %d\n", cross(final_down[left], gathered_down[i][right
                 final_down[left + j + 1] = gathered_down[i][j + right];
             }         
             left += downs[i] - right; 
-printf("I = %d, %d %d\n",i , downs[i], right);
+if(i==8) printf("%d %d\n",downs[8], right);
             right = 0;
         }
         d = left;
