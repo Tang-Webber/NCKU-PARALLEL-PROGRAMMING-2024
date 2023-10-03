@@ -41,13 +41,19 @@ int main( int argc, char *argv[])
             fclose(input_file);
             return 1;
         }
+printf("open file success!\n");
         fscanf(input_file, "%d", &n);
         for (int i = 0; i < n; i++) {
             fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
             P[i].id = i + 1;
         }
         fclose(input_file);
+printf("get points\n");
         qsort(P, n, sizeof(struct Point), compare);
+printf("sort success!\n");
+for(int i=0;i<100;i++){
+    printf("id = %d, (%d, %d) \n", P[i].id, P[i].x, P[i].y);
+}
     }
     //Data Boardcast
     int block_lengths[3] = {1, 1, 1};
@@ -66,6 +72,7 @@ int main( int argc, char *argv[])
     MPI_Type_commit(&PointType);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].);
     //Local Calculation
     //Andrew's Monotone Chain
     int up = 0;
@@ -78,7 +85,7 @@ int main( int argc, char *argv[])
 		while (down >= 2 && cross(local_upper_ch[down-2], local_upper_ch[down-1], local_P[i]) >= 0) down--;
 		local_upper_ch[down++] = local_P[i];
 	}
-
+printf("id = %d complete cauculation", myid);
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up;
@@ -91,6 +98,7 @@ int main( int argc, char *argv[])
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
+printf("tests1\n");
     if (myid == 0){
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
@@ -103,6 +111,7 @@ int main( int argc, char *argv[])
     }   
     MPI_Gather(local_upper_ch, up, PointType, gathered_up, up, PointType, 0, MPI_COMM_WORLD);
     MPI_Gather(local_lower_ch, down, PointType, gathered_down, down, PointType, 0, MPI_COMM_WORLD);
+printf("tests2\n");
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
@@ -116,6 +125,7 @@ int main( int argc, char *argv[])
             final_up[i].x = gathered_up[0][i].x;
             final_up[i].y = gathered_up[0][i].y;
         }
+printf("tests3\n");
         //Step 2: iteratvely add id = i to final
         //Lower
         left = downs[0] - 1;
@@ -167,7 +177,8 @@ int main( int argc, char *argv[])
             left += ups[i] - right; 
         }
         d = left;
-        //left points   
+        //left points  
+printf("tests4\n"); 
         if (local_count * numprocs != n){
             for(int i = local_count * numprocs; i < n; i++){
                 //upper
@@ -198,7 +209,7 @@ int main( int argc, char *argv[])
 
             }
         }
-
+printf("tests5\n");
         //output
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
