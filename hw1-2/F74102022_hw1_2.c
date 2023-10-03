@@ -192,9 +192,9 @@ int main( int argc, char *argv[])
             printf("%d ", final_up[i].id);
         }
         //if(final_up[u].id == final_down[d].id){
-            printf("%d ", final_up[u].id);
+            printf("%d ", final_down[d--].id);
         //}          
-        for(int i = d - 1;i > 0; i--){
+        for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }        
         //Free memory
