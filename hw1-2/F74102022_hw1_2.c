@@ -159,7 +159,7 @@ printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0){
                     right++;  
                 }
-                if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
+                if(left == 0 || right + 1 == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
                     break;
                 }                
             }
