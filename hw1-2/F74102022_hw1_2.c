@@ -41,27 +41,21 @@ int main( int argc, char *argv[])
             fclose(input_file);
             return 1;
         }
-printf("open file success!\n");
         fscanf(input_file, "%d", &n);
         for (int i = 0; i < n; i++) {
             fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
             P[i].id = i + 1;
         }
         fclose(input_file);
-printf("get points\n");
         qsort(P, n, sizeof(struct Point), compare);
-printf("sort success!\n");
-for(int i=0;i<100;i++){
-    printf("id = %d, (%d, %d) \n", P[i].id, P[i].x, P[i].y);
-}
     }
     //Data Boardcast
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     int block_lengths[3] = {1, 1, 1};
     int local_count = n / numprocs; 
     struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));  
     struct Point* local_upper_ch = (struct Point*)malloc(local_count * sizeof(struct Point));  
     struct Point* local_lower_ch = (struct Point*)malloc(local_count * sizeof(struct Point));   
-
     MPI_Datatype PointType;
     MPI_Aint offsets[3];
     MPI_Datatype types[3] = {MPI_INT, MPI_INT, MPI_INT};
@@ -70,8 +64,9 @@ for(int i=0;i<100;i++){
     offsets[2] = offsetof(struct Point, y);
     MPI_Type_create_struct(3, block_lengths, offsets, types, &PointType);
     MPI_Type_commit(&PointType);
+    MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+   
 printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].x);
     //Local Calculation
     //Andrew's Monotone Chain
@@ -85,7 +80,7 @@ printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[
 		while (down >= 2 && cross(local_upper_ch[down-2], local_upper_ch[down-1], local_P[i]) >= 0) down--;
 		local_upper_ch[down++] = local_P[i];
 	}
-printf("id = %d complete cauculation", myid);
+printf("id = %d complete cauculation\n", myid);
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up;
