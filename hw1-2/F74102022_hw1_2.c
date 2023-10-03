@@ -67,13 +67,14 @@ int main( int argc, char *argv[])
     MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
    
-printf("id = %d, get n = %d ; get scatter data x: %d to %d\nCheck", myid, n, local_P[0].x, local_P[local_count - 1].x);
+//printf("id = %d, get n = %d ; get scatter data x: %d to %d\nCheck", myid, n, local_P[0].x, local_P[local_count - 1].x);
+/*
 printf("__________________________________________________________________\n");
 for(int i=0; i< local_count;i++){
     printf("id = %d, (%d, %d)\n", local_P[i].id, local_P[i].x, local_P[i].y);
 }
 printf("__________________________________________________________________\n");
-
+*/
     //Local Calculation
     //Andrew's Monotone Chain
     int up = 0;
@@ -86,7 +87,16 @@ printf("__________________________________________________________________\n");
 		while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
 		local_upper_ch[up++] = local_P[i];
 	}
-
+printf("id = %d, up = %d, down = %d", myid, up, down);
+printf("__________________________________________________________________\n");
+for(int i=0; i < up;i++){
+    printf("id = %d, (%d, %d)\n", local_upper_ch[i].id, local_upper_ch[i].x, local_upper_ch[i].y);
+}
+printf("__________________________________________________________________\n");
+for(int i=0; i < down;i++){
+    printf("id = %d, (%d, %d)\n", local_lower_ch[i].id, local_lower_ch[i].x, local_lower_ch[i].y);
+}
+printf("__________________________________________________________________\n");
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up;
@@ -109,9 +119,10 @@ printf("__________________________________________________________________\n");
             gathered_down[i] = (struct Point*)malloc(downs[i] * sizeof(struct Point));
         }
     }   
+printf("id = %d tests1\n", myid);
     MPI_Gather(local_upper_ch, up, PointType, gathered_up, up, PointType, 0, MPI_COMM_WORLD);
     MPI_Gather(local_lower_ch, down, PointType, gathered_down, down, PointType, 0, MPI_COMM_WORLD);
-printf("tests2\n");
+printf("id = %d tests2\n", myid);
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
