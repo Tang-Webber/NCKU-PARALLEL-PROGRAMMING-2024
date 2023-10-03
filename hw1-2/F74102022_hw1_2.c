@@ -121,7 +121,7 @@ printf("MYID = %d, up = %d, down = %d\n", myid, up, down);
             final_down[i].x = gathered_down[0][i].x;
             final_down[i].y = gathered_down[0][i].y;
         }
-        for(int i = 0; i < downs[0]; i++){
+        for(int i = 0; i < ups[0]; i++){
             final_up[i].id = gathered_up[0][i].id;
             final_up[i].x = gathered_up[0][i].x;
             final_up[i].y = gathered_up[0][i].y;
@@ -135,6 +135,9 @@ printf("Lower: Part 0 L:%d R:%d\n", left, right);
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
+//printf("1. (%d, %d) ", final_down[left - 1].x, final_down[left - 1].y);
+//printf("2. (%d, %d) ", gathered_down[i][right].x, gathered_down[i][right].y);
+//printf("3. (%d, %d) \n", final_down[left].x, final_down[left].y);
                 if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0)
                     left--;
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
