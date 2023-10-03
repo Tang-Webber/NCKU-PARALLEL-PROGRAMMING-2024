@@ -137,10 +137,6 @@ printf("left:%d\n", left_count);
     }
 
 printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
-for(int i=0; i < left_count ; i++){
-    printf("%d %d %d \n", gathered_up[numprocs][i].id, gathered_up[numprocs][i].x, gathered_up[numprocs][i].y);
-    printf("%d %d %d \n", gathered_down[numprocs][i].id, gathered_down[numprocs][i].x, gathered_down[numprocs][i].y);
-}
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
