@@ -120,21 +120,14 @@ printf("potential point : ");
             final_down[i].id = local_lower_ch[i].id;
             final_down[i].x = local_lower_ch[i].x;
             final_down[i].y = local_lower_ch[i].y;
-printf("%d ", final_down[i].id);
         }
         for(int i = 0; i < ups[0]; i++){
             final_up[i].id = local_upper_ch[i].id;
             final_up[i].x = local_upper_ch[i].x;
             final_up[i].y = local_upper_ch[i].y;
-printf("%d ", final_down[i].id);
+printf("%d ", final_up[i].id);
         }
-for(int i = 1; i<numprocs;i++ ){
-for(int j = 0; j < ups[i];j++){
-printf("%d ", gathered_up[i][j].id);   
-}
-for(int j = 0; j < downs[i];j++){
-printf("%d ", gathered_down[i][j].id);  
-}}
+for(int i = 1; i<numprocs;i++ ){for(int j = 0; j < ups[i];j++){printf("%d ", gathered_up[i][j].id);   }}
 printf("\n\n\n\ntests start\n");
         //Step 2: iteratvely add id = i to final
         //Lower
