@@ -5,7 +5,11 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-int cross(Point o, Point a, Point b)
+struct Point {
+    int id, x, y;
+} P[12000];
+
+int cross(struct Point o, struct Point a, struct Point b)
 {
 	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
@@ -24,9 +28,6 @@ int main( int argc, char *argv[])
     int left, right;
     int u, d;
     char input[50];
-    struct Point {
-        int id, x, y;
-    } P[12000];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
