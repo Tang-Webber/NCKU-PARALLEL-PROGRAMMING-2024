@@ -117,14 +117,14 @@ printf("MYID = %d, up = %d, down = %d\n", myid, up, down);
     if (myid == 0){
         //Step 1: copy id = 0 to final
         for(int i = 0; i < downs[0]; i++){
-            final_down[i].id = gathered_down[0][i].id;
-            final_down[i].x = gathered_down[0][i].x;
-            final_down[i].y = gathered_down[0][i].y;
+            final_down[i].id = local_lower_ch[i].id;
+            final_down[i].x = local_lower_ch[i].x;
+            final_down[i].y = local_lower_ch[i].y;
         }
         for(int i = 0; i < ups[0]; i++){
-            final_up[i].id = gathered_up[0][i].id;
-            final_up[i].x = gathered_up[0][i].x;
-            final_up[i].y = gathered_up[0][i].y;
+            final_up[i].id = local_upper_ch[i].id;
+            final_up[i].x = local_upper_ch[i].x;
+            final_up[i].y = local_upper_ch[i].y;
         }
 printf("tests start\n");
         //Step 2: iteratvely add id = i to final
