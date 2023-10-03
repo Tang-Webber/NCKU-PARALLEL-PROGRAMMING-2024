@@ -137,14 +137,16 @@ int main( int argc, char *argv[])
     if (myid == 0){
         //Step 1: copy id = 0 to final
         for(int i = 0; i < downs[0]; i++){
-            final_down[i].id = local_lower_ch[i].id;
-            final_down[i].x = local_lower_ch[i].x;
-            final_down[i].y = local_lower_ch[i].y;
+            final_down[i] = local_lower_ch[i];
+            //final_down[i].id = local_lower_ch[i].id;
+            //final_down[i].x = local_lower_ch[i].x;
+            //final_down[i].y = local_lower_ch[i].y;
         }
         for(int i = 0; i < ups[0]; i++){
-            final_up[i].id = local_upper_ch[i].id;
-            final_up[i].x = local_upper_ch[i].x;
-            final_up[i].y = local_upper_ch[i].y;
+            final_up[i] = local_upper_ch[i];
+            //final_up[i].id = local_upper_ch[i].id;
+            //final_up[i].x = local_upper_ch[i].x;
+            //final_up[i].y = local_upper_ch[i].y;
         }
         //Step 2: iteratvely add id = i to final
         //Lower
@@ -163,9 +165,10 @@ int main( int argc, char *argv[])
             }
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
-                final_down[left + j + 1].id = gathered_down[i][j + right].id;
-                final_down[left + j + 1].x = gathered_down[i][j + right].x;
-                final_down[left + j + 1].y = gathered_down[i][j + right].y;
+                final_down[left + j + 1] = gathered_down[i][j + right];
+                //final_down[left + j + 1].id = gathered_down[i][j + right].id;
+                //final_down[left + j + 1].x = gathered_down[i][j + right].x;
+                //final_down[left + j + 1].y = gathered_down[i][j + right].y;
             }
             left += downs[i] - right; 
             right = 0;
@@ -187,9 +190,10 @@ int main( int argc, char *argv[])
             }
             //Combine the results to final_ch
             for(int j = 0; j < ups[i] - right; j++){
-                final_up[left + j + 1].id = gathered_up[i][j + right].id;
-                final_up[left + j + 1].x = gathered_up[i][j + right].x;
-                final_up[left + j + 1].y = gathered_up[i][j + right].y;
+                final_up[left + j + 1] = gathered_up[i][j + right];
+                //final_up[left + j + 1].id = gathered_up[i][j + right].id;
+                //final_up[left + j + 1].x = gathered_up[i][j + right].x;
+                //final_up[left + j + 1].y = gathered_up[i][j + right].y;
             }
             left += ups[i] - right; 
             right = 0;
