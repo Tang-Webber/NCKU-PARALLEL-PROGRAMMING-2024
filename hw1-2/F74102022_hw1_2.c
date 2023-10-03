@@ -188,10 +188,13 @@ int main( int argc, char *argv[])
         }
         u = left; 
         //output
-        for(int i = 0;i <= u; i++){
+        for(int i = 0;i < u; i++){
             printf("%d ", final_up[i].id);
         }
-        for(int i = d - 1 ;i > 0; i--){
+        //if(final_up[u].id == final_down[d].id){
+            printf("%d ", final_up[u].id);
+        //}          
+        for(int i = d - 1;i > 0; i--){
             printf("%d ", final_down[i].id);
         }        
         //Free memory
