@@ -131,18 +131,16 @@ printf("tests start\n");
         //Lower
         left = downs[0] - 1;
         right = 0;
-printf("Part 0 L:%d R:%d\n", left, right);
+printf("Lower: Part 0 L:%d R:%d\n", left, right);
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
+                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0)
+                    left--;
+                if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
+                    right++;                  
+                if((cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0) || left == 0 || right == downs[i]){
                     break;
-                }
-                else{
-                    if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0 )
-                        left--;
-                    if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
-                        right++;                   
                 }
             }
 printf("Find L:%d R:%d\n", left, right);
@@ -164,14 +162,12 @@ printf("tests2\n");
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(cross(final_up[left - 1], gathered_up[i][right], final_up[left]) > 0 && cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) > 0){
+                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0)
+                    left--;
+                if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)
+                    right++;                  
+                if((cross(final_down[left - 1], gathered_down[i][right], final_down[left]) >= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0) || left == 0 || right == ups[i]){
                     break;
-                }
-                else{
-                    if(cross(final_up[left - 1], gathered_up[i][right], final_up[left]) < 0 )
-                        left--;
-                    if(cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) < 0)
-                        right++;                   
                 }
             }
             //Combine the results to final_ch
