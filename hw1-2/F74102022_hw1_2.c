@@ -135,11 +135,10 @@ printf("Part 0 L:%d R:%d\n", left, right);
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0){
+                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
                     break;
                 }
                 else{
-printf("infinite loop?\n");
                     if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0 )
                         left--;
                     if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
