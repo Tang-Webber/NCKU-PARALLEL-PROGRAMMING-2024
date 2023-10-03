@@ -136,11 +136,11 @@ printf("left:%d\n", left_count);
         downs[numprocs] = left_down;   
     }
 
-//printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
-//for(int i=0; i < left_count ; i++){
-//    printf("%d %d %d \n", gathered_up[numprocs][i].id, gathered_up[numprocs][i].x, gathered_up[numprocs][i].y);
-//    printf("%d %d %d \n", gathered_down[numprocs][i].id, gathered_down[numprocs][i].x, gathered_down[numprocs][i].y);
-//}
+printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
+for(int i=0; i < left_count ; i++){
+    printf("%d %d %d \n", gathered_up[numprocs][i].id, gathered_up[numprocs][i].x, gathered_up[numprocs][i].y);
+    printf("%d %d %d \n", gathered_down[numprocs][i].id, gathered_down[numprocs][i].x, gathered_down[numprocs][i].y);
+}
     //Combine small convex hulls  
     if (myid == 0){
         //Step 1: copy id = 0 to final
@@ -157,7 +157,7 @@ printf("left:%d\n", left_count);
         for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(left == 0 || right == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
+                if(left == 0 || right + 1 == downs[i] || (cross(final_down[left - 1], gathered_down[i][right], final_down[left]) < 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)){
                     break;
                 }
                 if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) <= 0){
