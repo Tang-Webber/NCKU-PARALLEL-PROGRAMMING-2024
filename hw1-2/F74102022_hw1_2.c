@@ -72,7 +72,7 @@ for(int i=0;i<100;i++){
     MPI_Type_commit(&PointType);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].);
+printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].x);
     //Local Calculation
     //Andrew's Monotone Chain
     int up = 0;
