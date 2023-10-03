@@ -59,7 +59,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         if(n <= 10000){
-            //qsort(P, n, sizeof(struct Point), compare);  
+            qsort(P, n, sizeof(struct Point), compare);  
         }
         
     }
