@@ -134,7 +134,7 @@ int main( int argc, char *argv[])
         ups[numprocs] = left_up;
         downs[numprocs] = left_down;   
     }
-printf("%d\n", numprocs);
+printf("%d %d %d\n", numprocs, ups[numprocs], downs[numprocs]);
 for(int i=0; i < local_count ; i++){
     printf("%d %d %d \n", gathered_up[numprocs][i].id, gathered_up[numprocs][i].x, gathered_up[numprocs][i].y);
     printf("%d %d %d \n", gathered_down[numprocs][i].id, gathered_down[numprocs][i].x, gathered_down[numprocs][i].y);
