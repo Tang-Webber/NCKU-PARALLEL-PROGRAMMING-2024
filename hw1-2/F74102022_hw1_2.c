@@ -138,8 +138,8 @@ printf("Lower: Part 0 L:%d R:%d\n", left, right);
 printf("1. (%d, %d) ", final_down[left - 1].x, final_down[left - 1].y);
 printf("2. (%d, %d) ", gathered_down[i][right].x, gathered_down[i][right].y);
 printf("3. (%d, %d) \n", final_down[left].x, final_down[left].y);
-printf("cross = %d", cross(final_down[left - 1], gathered_down[i][right], final_down[left]));
-printf("cross = %d", cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]));
+printf("cross = %d\n", cross(final_down[left - 1], gathered_down[i][right], final_down[left]));
+printf("cross = %d\n", cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]));
                 if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) > 0)
                     left--;
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
