@@ -87,8 +87,9 @@ printf("__________________________________________________________________\n");
 		while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
 		local_upper_ch[up++] = local_P[i];
 	}
-/*
+
 printf("MYID = %d, up = %d, down = %d\n", myid, up, down);
+/*
 printf("__________________________________________________________________\n");
 for(int i=0; i < up;i++){
     printf("id = %d, (%d, %d)\n", local_upper_ch[i].id, local_upper_ch[i].x, local_upper_ch[i].y);
@@ -101,8 +102,8 @@ printf("__________________________________________________________________\n");
 */
     int* ups = NULL;       
     int* downs = NULL;
-    struct Point *final_up;
-    struct Point *final_down; 
+    struct Point *final_up= NULL;
+    struct Point *final_down= NULL; 
     struct Point **gathered_up = NULL;
     struct Point **gathered_down = NULL;
     if (myid == 0){
@@ -111,9 +112,6 @@ printf("__________________________________________________________________\n");
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
-for(int i = 0;i < numprocs;i++){
-    printf("id = %d, up=%d down=%d\n", i, ups[i], downs[i]);
-}
     if (myid == 0){
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
@@ -245,7 +243,6 @@ printf("tests5\n");
         free(ups);
         free(downs);        
     }
-    printf("too fast, STOP!!!!!");
     MPI_Barrier(MPI_COMM_WORLD); 
     free(local_P);
     free(local_upper_ch);
