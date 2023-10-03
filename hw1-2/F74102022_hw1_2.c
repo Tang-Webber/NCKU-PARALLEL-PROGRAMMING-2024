@@ -191,9 +191,10 @@ int main( int argc, char *argv[])
         for(int i = 0;i < u; i++){
             printf("%d ", final_up[i].id);
         }
-        //if(final_up[u].id == final_down[d].id){
+        printf("\nup ||||||| down\n");
+        if(final_up[u].id == final_down[d].id){
             printf("%d ", final_down[d--].id);
-        //}          
+        }          
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
         }        
