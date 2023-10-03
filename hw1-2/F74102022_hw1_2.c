@@ -147,6 +147,9 @@ printf("__________________________________________________________________\n");
             final_up[i].y = gathered_up[0][i].y;
         }
 printf("tests1\n");
+for(int i =0; i<numprocs; i++){
+    printf("%d : %d, %d\n", i, ups[i], downs[i]);
+}
         //Step 2: iteratvely add id = i to final
         //Lower
         left = downs[0] - 1;
@@ -231,7 +234,7 @@ printf("tests3\n");
 
             }
         }
-printf("tests4\n");
+printf("tests5\n");
         //output
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
