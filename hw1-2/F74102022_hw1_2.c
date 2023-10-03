@@ -112,13 +112,9 @@ printf("__________________________________________________________________\n");
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-    gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));    
-    if(myid != 0){
-        gathered_up[myid] = (struct Point*)malloc(up * sizeof(struct Point));
-        gathered_down[myid] = (struct Point*)malloc(down * sizeof(struct Point));     
-    }
     if (myid == 0){
+        gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+        gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
         for(int i = 0; i < numprocs;i++){
@@ -128,18 +124,6 @@ printf("__________________________________________________________________\n");
     }   
 
     if (myid != 0) {
-        for(int i = 0;i < up; i++){
-            gathered_up[myid][i].id = local_upper_ch[i].id;
-            gathered_up[myid][i].x = local_upper_ch[i].x;
-            gathered_up[myid][i].y = local_upper_ch[i].y;
-        }
-        for(int i = 0;i < down; i++){
-            gathered_down[myid][i].id = local_lower_ch[i].id;
-            gathered_down[myid][i].x = local_lower_ch[i].x;
-            gathered_down[myid][i].y = local_lower_ch[i].y;
-        }
-        //MPI_Send(gathered_up[myid], up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-        //MPI_Send(gathered_down[myid], down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     } else {
@@ -148,10 +132,6 @@ printf("__________________________________________________________________\n");
             MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
-    //MPI_Gather(local_upper_ch, up, PointType, gathered_up[myid], up, PointType, 0, MPI_COMM_WORLD);
-    //MPI_Gather(local_lower_ch, down, PointType, gathered_down[myid], down, PointType, 0, MPI_COMM_WORLD);
-    //MPI_Gather(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, gathered_up[myid], up * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    //MPI_Gather(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, gathered_down[myid], down * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 
     //Combine small convex hulls  
     if (myid == 0){
@@ -266,18 +246,14 @@ printf("tests5\n");
         }
         free(final_up);
         free(final_down);
-
+        free(gathered_up);
+        free(gathered_down);
         free(ups);
         free(downs);        
     }
 printf("ID:%d STOP!!!!!!!!\n ", myid);
     MPI_Barrier(MPI_COMM_WORLD);  
-    if(myid != 0){
-        free(gathered_up[myid]);
-        free(gathered_down[myid]);      
-    }
-    free(gathered_up);
-    free(gathered_down);
+
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
