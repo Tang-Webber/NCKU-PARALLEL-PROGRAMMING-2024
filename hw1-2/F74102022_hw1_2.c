@@ -164,6 +164,7 @@ int main( int argc, char *argv[])
                 final_down[left + j + 1] = gathered_down[i][j + right];
             }
             left += downs[i] - right; 
+printf("%d %d %d\n",i , left, right);
             right = 0;
         }
         d = left;
@@ -198,10 +199,8 @@ int main( int argc, char *argv[])
         //}          
         for(int i = d;i > 0; i--){
             printf("%d ", final_down[i].id);
-        } 
-
-printf("up:%d, down: %d\n %d %d %d %d %d ", u, d, n, numprocs, left_count, left_up, left_down );     
-
+        }   
+printf("\n%d\n", d);
         //Free memory
         for (int i = 0; i < numprocs + rest; i++) {
             free(gathered_up[i]);
