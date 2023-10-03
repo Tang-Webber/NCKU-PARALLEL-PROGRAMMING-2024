@@ -152,7 +152,7 @@ printf("Lower: Part 0 L:%d R:%d\n", left, right);
             right = 0;
 printf("Part %d L:%d R:%d\n", i, left, right);
         }
-        u = left;
+        d = left;
 printf("tests2\n");
         //Upper
         left = ups[0] - 1;
@@ -160,11 +160,11 @@ printf("tests2\n");
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) > 0)
+                if(cross(gathered_up[i][right], final_up[left - 1], final_up[left]) > 0)
                     left--;
-                if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) < 0)
+                if(cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) < 0)
                     right++;                  
-                if((cross(final_down[left - 1], gathered_down[i][right], final_down[left]) >= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) >= 0) || left == 0 || right == ups[i]){
+                if((cross(final_up[left - 1], gathered_up[i][right], final_up[left]) >= 0 && cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) >= 0) || left == 0 || right == ups[i]){
                     break;
                 }
             }
@@ -177,7 +177,7 @@ printf("tests2\n");
             left += ups[i] - right; 
             right = 0;
         }
-        d = left; 
+        u = left; 
         //left points  
 printf("tests3\n"); 
         /*
