@@ -9,8 +9,8 @@ struct Point {
     int id, x, y;
 } P[12000];
 
-long long int cross(struct Point o, struct Point a, struct Point b) {
-    return (long long int)(a.x - o.x) * (b.y - o.y) - (long long int)(a.y - o.y) * (b.x - o.x);
+int cross(struct Point o, struct Point a, struct Point b) {
+    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
 
 int compare(const void* a, const void* b)
@@ -71,14 +71,14 @@ int main( int argc, char *argv[])
     int up = 0;
     int down = 0;
 
-        for (int i = 0; i < local_count; i++){
-                while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
-                local_lower_ch[down++] = local_P[i];
-        }
-        for (int i = 0; i < local_count; i++){
-                while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
-                local_upper_ch[up++] = local_P[i];
-        }
+    for (int i = 0; i < local_count; i++){
+            while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
+            local_lower_ch[down++] = local_P[i];
+    }
+    for (int i = 0; i < local_count; i++){
+            while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
+            local_upper_ch[up++] = local_P[i];
+    }
     if(myid == 0 && local_count * numprocs != n){
         rest = 1;
     }
@@ -149,13 +149,17 @@ int main( int argc, char *argv[])
         for(int i = 1; i < numprocs + rest; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
+                if((left == 0 || right == downs[i] - 1){
+                    break;
+                }                
+                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
+                    break;
+                }                
                 if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) < 0)
                     left--;
                 if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
                     right++;
-                if((cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0) || left == 0 || right == downs[i]){
-                    break;
-                }
+
             }
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
