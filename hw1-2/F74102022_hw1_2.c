@@ -183,7 +183,7 @@ printf("tests2\n");
             left += ups[i] - right; 
             right = 0;
         }
-        d = left;
+        d = left; 
         //left points  
 printf("tests3\n"); 
         if (local_count * numprocs != n){
