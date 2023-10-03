@@ -67,20 +67,29 @@ int main( int argc, char *argv[])
     MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
    
-printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].x);
+//printf("id = %d, get n = %d ; get scatter data x: %d to %d\n", myid, n, local_P[0].x, local_P[local_count - 1].x);
     //Local Calculation
     //Andrew's Monotone Chain
     int up = 0;
     int down = 0;
 	for (int i = 0; i < local_count; i++){
-		while (up >= 2 && cross(local_lower_ch[up-2], local_lower_ch[up-1], local_P[i]) <= 0) up--;
-		local_lower_ch[up++] = local_P[i];
+		while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
+		local_lower_ch[down++] = local_P[i];
 	}
 	for (int i = 0; i < local_count; i++){
-		while (down >= 2 && cross(local_upper_ch[down-2], local_upper_ch[down-1], local_P[i]) >= 0) down--;
-		local_upper_ch[down++] = local_P[i];
+		while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
+		local_upper_ch[up++] = local_P[i];
 	}
-printf("id = %d complete cauculation\n", myid);
+printf("id = %d _________________________\nUp_CH: ", myid);
+for(int i=0;i<=up;i++){
+    printf("%d ", local_upper_ch[up++].id);
+}
+printf("\n up = %d\n", up);
+printf("id = %d _________________________\nDown_CH: ", myid);
+for(int i=0;i<=down;i++){
+    printf("%d ", local_lower_ch[up++].id);
+}
+printf("\n down = %d\n", down);
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up;
@@ -93,7 +102,6 @@ printf("id = %d complete cauculation\n", myid);
     }  
     MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
-printf("tests1\n");
     if (myid == 0){
         final_up = (struct Point*)malloc(n * sizeof(struct Point));
         final_down = (struct Point*)malloc(n * sizeof(struct Point));        
