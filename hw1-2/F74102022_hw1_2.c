@@ -66,15 +66,6 @@ int main( int argc, char *argv[])
     MPI_Type_commit(&PointType);
     MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
-   
-//printf("id = %d, get n = %d ; get scatter data x: %d to %d\nCheck", myid, n, local_P[0].x, local_P[local_count - 1].x);
-/*
-printf("__________________________________________________________________\n");
-for(int i=0; i< local_count;i++){
-    printf("id = %d, (%d, %d)\n", local_P[i].id, local_P[i].x, local_P[i].y);
-}
-printf("__________________________________________________________________\n");
-*/
     //Local Calculation
     //Andrew's Monotone Chain
     int up = 0;
@@ -89,17 +80,6 @@ printf("__________________________________________________________________\n");
 	}
 
 printf("MYID = %d, up = %d, down = %d\n", myid, up, down);
-/*
-printf("__________________________________________________________________\n");
-for(int i=0; i < up;i++){
-    printf("id = %d, (%d, %d)\n", local_upper_ch[i].id, local_upper_ch[i].x, local_upper_ch[i].y);
-}
-printf("__________________________________________________________________\n");
-for(int i=0; i < down;i++){
-    printf("id = %d, (%d, %d)\n", local_lower_ch[i].id, local_lower_ch[i].x, local_lower_ch[i].y);
-}
-printf("__________________________________________________________________\n");
-*/
     int* ups = NULL;       
     int* downs = NULL;
     struct Point *final_up= NULL;
@@ -146,14 +126,12 @@ printf("__________________________________________________________________\n");
             final_up[i].x = gathered_up[0][i].x;
             final_up[i].y = gathered_up[0][i].y;
         }
-printf("tests1\n");
-for(int i =0; i<numprocs; i++){
-    printf("%d : %d, %d\n", i, ups[i], downs[i]);
-}
+printf("tests start\n");
         //Step 2: iteratvely add id = i to final
         //Lower
         left = downs[0] - 1;
         right = 0;
+printf("Part 0 L:%d R:%d\n", left, right);
         for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
@@ -167,6 +145,7 @@ for(int i =0; i<numprocs; i++){
                         right++;                   
                 }
             }
+printf("Find L:%d R:%d\n", left, right);
             //Combine the results to final_ch
             for(int j = 0; j < downs[i] - right; j++){
                 final_down[left + j + 1].id = gathered_down[i][j + right].id;
@@ -174,6 +153,8 @@ for(int i =0; i<numprocs; i++){
                 final_down[left + j + 1].y = gathered_down[i][j + right].y;
             }
             left += downs[i] - right; 
+            right = 0;
+printf("Part %d L:%d R:%d\n", i, left, right);
         }
         u = left;
 printf("tests2\n");
@@ -200,6 +181,7 @@ printf("tests2\n");
                 final_up[left + j + 1].y = gathered_up[i][j + right].y;
             }
             left += ups[i] - right; 
+            right = 0;
         }
         d = left;
         //left points  
@@ -234,7 +216,7 @@ printf("tests3\n");
 
             }
         }
-printf("tests5\n");
+printf("tests4\n");
         //output
         for(int i = 0;i <= u; i++){
             printf("%d ", final_up[i].id);
@@ -254,9 +236,7 @@ printf("tests5\n");
         free(ups);
         free(downs);        
     }
-printf("ID:%d STOP!!!!!!!!\n ", myid);
     MPI_Barrier(MPI_COMM_WORLD);  
-
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
