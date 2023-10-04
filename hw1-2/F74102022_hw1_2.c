@@ -150,7 +150,6 @@ printf("ID:%d final_up get!\n", myid);
 printf("ID:%d gathered_up get !\n", myid);    
     //MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
 
-
     //Combine small convex hulls
     if (myid == 0){
         //Iteratvely add id = i to final
@@ -217,6 +216,7 @@ printf("ID:%d gathered_up get !\n", myid);
             printf("%d ", final_down[i].id);
         }
     }
+    MPI_Barrier(MPI_COMM_WORLD);
     //Free memory
     for (int i = 0; i < numprocs; i++) {
         free(gathered_up[i]);
