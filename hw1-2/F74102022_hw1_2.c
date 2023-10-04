@@ -146,7 +146,6 @@ int main( int argc, char *argv[])
             left += next_down - right;
             right = 0;
             down = left + 1;
-
             //Upper
             left = up - 1;
             right = 0;
@@ -173,7 +172,6 @@ int main( int argc, char *argv[])
         MPI_Barrier(MPI_COMM_WORLD);
         //local , up, down to next loop
     }
-
     //output
     if(myid == 0){
         //output
