@@ -95,15 +95,15 @@ int main( int argc, char *argv[])
     struct Point **gathered_down = NULL;
     //if(local_count * numprocs != n) 
     //    rest = 1;   
-    ups = (int*)malloc((numprocs + rest) * sizeof(int));
-    downs = (int*)malloc((numprocs + rest) * sizeof(int));
+    ups = (int*)malloc(numprocs * sizeof(int));
+    downs = (int*)malloc(numprocs * sizeof(int));
     final_up = (struct Point*)malloc(n * sizeof(struct Point));
     final_down = (struct Point*)malloc(n * sizeof(struct Point));    
-    gathered_up = (struct Point**)malloc((numprocs + rest) * sizeof(struct Point*));
-    gathered_down = (struct Point**)malloc((numprocs + rest) * sizeof(struct Point*));  
-    for(int i = 0; i < numprocs + rest;i++){
-        gathered_up[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
-        gathered_down[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
+    gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+    gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
+    for(int i = 0; i < numprocs ;i++){
+        gathered_up[i] = (struct Point*)malloc(base_count * sizeof(struct Point));
+        gathered_down[i] = (struct Point*)malloc(base_count * sizeof(struct Point));
     }
     if(myid == 0){       
         for (int i = 0; i < local_count; i++){
@@ -180,7 +180,7 @@ int main( int argc, char *argv[])
         //Lower
         left = downs[0] - 1;
         right = 0;
-        for(int i = 1; i < numprocs + rest; i++){
+        for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
                 if(left == 0 || right == downs[i] - 1){
@@ -207,7 +207,7 @@ int main( int argc, char *argv[])
         //Upper
         left = ups[0] - 1;
         right = 0;
-        for(int i = 1; i < numprocs + rest; i++){
+        for(int i = 1; i < numprocs; i++){
             //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
                 if(cross(gathered_up[i][right], final_up[left - 1], final_up[left]) > 0)
@@ -242,7 +242,7 @@ int main( int argc, char *argv[])
     }
     //if(myid <= 1){
         //Free memory
-        for (int i = 0; i < numprocs + rest; i++) {
+        for (int i = 0; i < numprocs; i++) {
             free(gathered_up[i]);
             free(gathered_down[i]);
         }       
