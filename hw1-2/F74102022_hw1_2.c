@@ -101,8 +101,8 @@ int main( int argc, char *argv[])
     gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
     gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
     for(int i = 0; i < numprocs ;i++){
-        gathered_up[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
-        gathered_down[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
+        gathered_up[i] = (struct Point*)malloc(n * sizeof(struct Point));
+        gathered_down[i] = (struct Point*)malloc(n * sizeof(struct Point));
     }
     //Andrew's Monotone Chain
     if(myid == 0){       
@@ -139,16 +139,7 @@ int main( int argc, char *argv[])
             MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
-
-    MPI_Bcast(ups, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(downs, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
-printf("ID: %d Dead test 1\n", myid);
-    MPI_Bcast(final_up, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(final_down, n, PointType, 0, MPI_COMM_WORLD);    
-printf("ID: %d Dead test 2\n", myid);
-    MPI_Bcast(gathered_up, numprocs * (base_count + rest) * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-printf("ID: %d Dead test 3\n", myid);
+    
     //Combine small convex hulls
     if (myid == 0){
         //Iteratvely add id = i to final
@@ -204,6 +195,8 @@ printf("ID: %d Dead test 3\n", myid);
         //MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
         //MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
+
+    //output
     if(myid == 0){
         //MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         //MPI_Recv(&u, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -215,25 +208,21 @@ printf("ID: %d Dead test 3\n", myid);
             printf("%d ", final_down[i].id);
         }
     }
-printf("ID: %d Dead test 4\n", myid);
     //Free memory
-    if(myid == 0){
-        for (int i = 0; i < numprocs; i++) {
-            free(gathered_up[i]);
-            free(gathered_down[i]);
-        }       
-        free(final_up);
-        free(final_down);
-        free(gathered_up);
-        free(gathered_down);
-        free(ups);
-        free(downs);        
-        free(local_P);
-        free(local_upper_ch);
-        free(local_lower_ch);
-    }
+    for (int i = 0; i < numprocs; i++) {
+        free(gathered_up[i]);
+        free(gathered_down[i]);
+    }       
+    free(final_up);
+    free(final_down);
+    free(gathered_up);
+    free(gathered_down);
+    free(ups);
+    free(downs);        
+    free(local_P);
+    free(local_upper_ch);
+    free(local_lower_ch);
     MPI_Type_free(&PointType);
-printf("ID: %d Dead test 5\n", myid);
     MPI_Finalize();
     return 0;
 }
