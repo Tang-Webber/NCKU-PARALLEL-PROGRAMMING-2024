@@ -216,21 +216,22 @@ printf("ID: %d Dead test 3\n", myid);
         }
     }
 printf("ID: %d Dead test 4\n", myid);
-    MPI_Barrier(MPI_COMM_WORLD);
     //Free memory
-    for (int i = 0; i < numprocs; i++) {
-        free(gathered_up[i]);
-        free(gathered_down[i]);
-    }       
-    free(final_up);
-    free(final_down);
-    free(gathered_up);
-    free(gathered_down);
-    free(ups);
-    free(downs);        
-    free(local_P);
-    free(local_upper_ch);
-    free(local_lower_ch);
+    if(myid == 0){
+        for (int i = 0; i < numprocs; i++) {
+            free(gathered_up[i]);
+            free(gathered_down[i]);
+        }       
+        free(final_up);
+        free(final_down);
+        free(gathered_up);
+        free(gathered_down);
+        free(ups);
+        free(downs);        
+        free(local_P);
+        free(local_upper_ch);
+        free(local_lower_ch);
+    }
     MPI_Type_free(&PointType);
 printf("ID: %d Dead test 5\n", myid);
     MPI_Finalize();
