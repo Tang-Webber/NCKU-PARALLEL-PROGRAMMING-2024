@@ -158,7 +158,7 @@ int main( int argc, char *argv[])
     }
     MPI_Bcast(ups, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
     //MPI_Bcast(downs, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(gathered_up, (numprocs + rest) * local_count , PointType, 0, MPI_COMM_WORLD);
+    MPI_Bcast(gathered_up, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
     //MPI_Bcast(gathered_down, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, n, PointType, 0, MPI_COMM_WORLD);
     //MPI_Bcast(final_down, down * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
