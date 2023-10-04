@@ -139,17 +139,17 @@ int main( int argc, char *argv[])
             MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
-/*
+
     MPI_Bcast(ups, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
 printf("ID:%d ups get !\n", myid);
     //MPI_Bcast(downs, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, n, PointType, 0, MPI_COMM_WORLD);
 printf("ID:%d final_up get!\n", myid);
     //MPI_Bcast(final_down, n, PointType, 0, MPI_COMM_WORLD);    
-    MPI_Bcast(gathered_up, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-printf("ID:%d gathered_up get !\n", myid);    
+    //MPI_Bcast(gathered_up, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
+printf("ID:%d gathered_up not get !\n", myid);    
     //MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-*/
+
     //Combine small convex hulls
     if (myid == 0){
         //Iteratvely add id = i to final
