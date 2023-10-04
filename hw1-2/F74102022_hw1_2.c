@@ -101,8 +101,8 @@ int main( int argc, char *argv[])
     gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
     gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
     for(int i = 0; i < numprocs ;i++){
-        gathered_up[i] = (struct Point*)malloc(base_count * sizeof(struct Point));
-        gathered_down[i] = (struct Point*)malloc(base_count * sizeof(struct Point));
+        gathered_up[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
+        gathered_down[i] = (struct Point*)malloc((base_count + rest) * sizeof(struct Point));
     }
     //Andrew's Monotone Chain
     if(myid == 0){       
@@ -162,6 +162,7 @@ int main( int argc, char *argv[])
     //MPI_Bcast(gathered_down, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, up, PointType, 0, MPI_COMM_WORLD);
     //MPI_Bcast(final_down, down * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
 
     //Combine small convex hulls
     if (myid == 0){
