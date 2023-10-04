@@ -139,30 +139,13 @@ int main( int argc, char *argv[])
             MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
     }
-
-    if(myid == 0){
-        //MPI_Send(ups, numprocs + rest, MPI_INT, 1, 0, MPI_COMM_WORLD);  
-        //MPI_Send(downs, numprocs + rest, MPI_INT, 1, 0, MPI_COMM_WORLD); 
-        //MPI_Send(gathered_up, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD); 
-        //MPI_Send(gathered_down, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD); 
-        //MPI_Send(final_up, up * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD); 
-        //MPI_Send(final_down, down * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD); 
-    }
-    if(myid == 1){
-        //MPI_Recv(ups, numprocs + rest, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(downs, numprocs + rest, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(gathered_up, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(gathered_down, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(final_up, up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(final_down, down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);        
-    }
+    
     MPI_Bcast(ups, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(downs, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(downs, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(gathered_up, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(gathered_down, (numprocs + rest) * local_count * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, n, PointType, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(final_down, down * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
+    MPI_Bcast(final_down, n, PointType, 0, MPI_COMM_WORLD);
 
     //Combine small convex hulls
     if (myid == 0){
@@ -193,7 +176,7 @@ int main( int argc, char *argv[])
         }
         d = left;
     }
-    if(myid == 1){
+    if(myid == 0){
         //Upper
         left = ups[0] - 1;
         right = 0;
@@ -216,12 +199,12 @@ int main( int argc, char *argv[])
             right = 0;
         }
         u = left;
-        MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
-        MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        //MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
+        //MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
     if(myid == 0){
-        MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Recv(&u, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //MPI_Recv(&u, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         //output
         for(int i = 0;i < u; i++){
             printf("%d ", final_up[i].id);
