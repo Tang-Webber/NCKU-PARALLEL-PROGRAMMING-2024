@@ -140,7 +140,6 @@ int main( int argc, char *argv[])
         }
     }
 
-    
     MPI_Bcast(ups, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(downs, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
@@ -216,18 +215,16 @@ int main( int argc, char *argv[])
     }
     MPI_Barrier(MPI_COMM_WORLD);
     //Free memory
-    if(myid == 0){
-        for (int i = 0; i < numprocs; i++) {
-            free(gathered_up[i]);
-            free(gathered_down[i]);
-        }       
-        free(final_up);
-        free(final_down);
-        free(gathered_up);
-        free(gathered_down);
-        free(ups);
-        free(downs);        
-    }
+    for (int i = 0; i < numprocs; i++) {
+        free(gathered_up[i]);
+        free(gathered_down[i]);
+    }       
+    free(final_up);
+    free(final_down);
+    free(gathered_up);
+    free(gathered_down);
+    free(ups);
+    free(downs);        
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
