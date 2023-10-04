@@ -82,11 +82,13 @@ int main( int argc, char *argv[])
         local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));         
         MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
     }
-    local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
-    local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-    local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-    if(rest == 0)
+    else{
+        local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
+        local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
+        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
         MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);    
+    }
+        
     //Local Calculation
     //Set Variable
     int up = 0;
