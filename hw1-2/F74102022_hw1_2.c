@@ -75,13 +75,12 @@ int main( int argc, char *argv[])
             displacements[i] = i * base_count;
         }  
         local_count = recv_counts[myid]; 
+        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
     }
     struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
     struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
     struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-    if(rest != 0)
-        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
-    else
+    if(rest == 0)
         MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);    
     //Local Calculation
     //Set Variable
