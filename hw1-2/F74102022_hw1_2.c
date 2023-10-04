@@ -31,16 +31,6 @@ int main( int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
 
-    MPI_Datatype PointType;
-    MPI_Aint offsets[3];
-    MPI_Datatype types[3] = {MPI_INT, MPI_INT, MPI_INT};
-    offsets[0] = offsetof(struct Point, id);
-    offsets[1] = offsetof(struct Point, x);
-    offsets[2] = offsetof(struct Point, y);
-    int block_lengths[3] = {1, 1, 1};    
-    MPI_Type_create_struct(3, block_lengths, offsets, types, &PointType);
-    MPI_Type_commit(&PointType);
-
     //scan the input
     if (myid == 0) {
         scanf("%s", input);
@@ -76,19 +66,28 @@ int main( int argc, char *argv[])
         int *displacements = (int*)malloc(numprocs * sizeof(int));
         int base_count = n / numprocs;        
         for (int i = 0; i < numprocs; i++) {
-            recv_counts[i] = base_count * sizeof(struct Point);
+            recv_counts[i] = base_count;
             if (i == numprocs - 1) {
-                recv_counts[i] += rest * sizeof(struct Point);
+                recv_counts[i] += rest;
             }
-            displacements[i] = i * base_count * sizeof(struct Point);
+            displacements[i] = i * base_count;
         }  
         local_count = recv_counts[myid]; 
         local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
         local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));         
-        //MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
-        MPI_Scatterv(P, recv_counts, displacements, MPI_BYTE, local_P, local_count, MPI_BYTE, 0, MPI_COMM_WORLD);
+        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
 
+        MPI_Datatype PointType;
+        MPI_Aint offsets[3];
+        MPI_Datatype types[3] = {MPI_INT, MPI_INT, MPI_INT};
+        offsets[0] = offsetof(struct Point, id);
+        offsets[1] = offsetof(struct Point, x);
+        offsets[2] = offsetof(struct Point, y);
+        int block_lengths[3] = {1, 1, 1};    
+        MPI_Type_create_struct(3, block_lengths, offsets, types, &PointType);
+        MPI_Type_commit(&PointType);        
+        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
+        MPI_Type_free(&PointType);
     }
     //Local Calculation
     //Set Variable
@@ -198,7 +197,6 @@ int main( int argc, char *argv[])
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
-    MPI_Type_free(&PointType);
     MPI_Finalize();
     return 0;
 }
