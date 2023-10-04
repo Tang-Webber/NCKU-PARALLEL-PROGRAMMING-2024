@@ -72,7 +72,7 @@ int main( int argc, char *argv[])
         }
         displacements[i] = i * base_count;
     }
-    
+
     int local_count = recv_counts[myid];
     struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
     //Data Boardcast
@@ -114,14 +114,14 @@ int main( int argc, char *argv[])
     while(x != numprocs){
         //get data
         if(myid % y == x){
-            MPI_Send(up, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);
-            MPI_Send(down, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);            
+            MPI_Send(&up, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);
+            MPI_Send(&down, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);            
             MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
             MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
         }
         if(myid % y == 0){
-            MPI_Recv(next_up, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(next_down, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&next_up, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&next_down, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(next_upper_ch, next_up * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(next_lower_ch, next_down * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
@@ -132,7 +132,7 @@ int main( int argc, char *argv[])
             while(1){
                 if(left == 0 || right == next_down - 1)
                     break;           
-                if(cross(local_lower_ch[left - 1], next_lower_ch[right], local_lower_ch[left]) <= 0 && cross(local_lower_ch[left], next_lower_ch[i][right + 1], next_lower_ch[i][right]) <= 0)
+                if(cross(local_lower_ch[left - 1], next_lower_ch[right], local_lower_ch[left]) <= 0 && cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) <= 0)
                     break;         
                 if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) < 0)
                     left--;
@@ -140,7 +140,7 @@ int main( int argc, char *argv[])
                     right++;
             }
             //Combine the result
-            for(int j = 0; j < downs[i] - right; j++){
+            for(int j = 0; j < next_down - right; j++){
                 local_lower_ch[left + j + 1] = next_lower_ch[j + right];
             }
             left += next_down - right;
@@ -161,7 +161,7 @@ int main( int argc, char *argv[])
                     right++;
             }
             //Combine the results to final_ch
-            for(int j = 0; j < ups[i] - right; j++){
+            for(int j = 0; j < next_up - right; j++){
                 local_upper_ch[left + j + 1] = next_upper_ch[j + right];
             }
             left += next_up - right;
