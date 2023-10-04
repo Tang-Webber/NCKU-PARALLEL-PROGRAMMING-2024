@@ -221,11 +221,11 @@ int main( int argc, char *argv[])
         }
         u = left;
         MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
-        MPI_Send(u, 1, MPI_int, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
     if(myid == 0){
         MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Recv(u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         //output
         for(int i = 0;i < u; i++){
             printf("%d ", final_up[i].id);
