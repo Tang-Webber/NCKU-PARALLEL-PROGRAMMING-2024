@@ -26,7 +26,6 @@ int main( int argc, char *argv[])
     int n, myid, numprocs;
     int left, right;
     char input[50];
-    int rest = 0;
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -60,28 +59,30 @@ int main( int argc, char *argv[])
         qsort(P, n, sizeof(struct Point), compare);  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-    int *recv_counts = (int*)malloc(numprocs * sizeof(int));
-    int *displacements = (int*)malloc(numprocs * sizeof(int));
-    int base_count = n / numprocs;
-    rest = n % numprocs;
-    for (int i = 0; i < numprocs; i++) {
-        recv_counts[i] = base_count;
-        if (i == numprocs - 1) {
-            recv_counts[i] += rest;
-        }
-        displacements[i] = i * base_count;
-    }
-
-    int local_count = recv_counts[myid];
+    MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
+    
     struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
-    //Data Boardcast
     struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
     struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-    MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
-    //MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
-    MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
-
+    int local_count = n / numprocs;
+    int rest = n % numprocs;
+    if(rest != 0){
+        int *recv_counts = (int*)malloc(numprocs * sizeof(int));
+        int *displacements = (int*)malloc(numprocs * sizeof(int));
+        int base_count = n / numprocs;        
+        for (int i = 0; i < numprocs; i++) {
+            recv_counts[i] = base_count;
+            if (i == numprocs - 1) {
+                recv_counts[i] += rest;
+            }
+            displacements[i] = i * base_count;
+        }  
+        local_count = recv_counts[myid]; 
+        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
+    }
+    else{
+        MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);    
+    }
     //Local Calculation
     //Set Variable
     int up = 0;
