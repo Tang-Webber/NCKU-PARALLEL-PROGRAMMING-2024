@@ -68,24 +68,27 @@ int main( int argc, char *argv[])
         local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
         local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
         local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-        MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);           
+        //MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD); 
+        MPI_Scatter(P, local_count * sizeof(struct Point), MPI_BYTE, local_P, local_count, PointType, 0, MPI_COMM_WORLD);              
     }
     else{
         int *recv_counts = (int*)malloc(numprocs * sizeof(int));
         int *displacements = (int*)malloc(numprocs * sizeof(int));
         int base_count = n / numprocs;        
         for (int i = 0; i < numprocs; i++) {
-            recv_counts[i] = base_count;
+            recv_counts[i] = base_count * sizeof(struct Point);
             if (i == numprocs - 1) {
-                recv_counts[i] += rest;
+                recv_counts[i] += rest * sizeof(struct Point);
             }
-            displacements[i] = i * base_count;
+            displacements[i] = i * base_count * sizeof(struct Point);
         }  
         local_count = recv_counts[myid]; 
         local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
         local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
         local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));         
-        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
+        //MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
+        MPI_Scatterv(P, recv_counts , displacements, MPI_BYTE, local_P, recv_counts[myid], MPI_BYTE, 0, MPI_COMM_WORLD);
+
     }
     //Local Calculation
     //Set Variable
