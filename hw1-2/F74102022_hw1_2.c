@@ -8,11 +8,9 @@
 struct Point {
     int id, x, y;
 } P[12000];
-
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
-
 int compare(const void* a, const void* b)
 {
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
@@ -22,11 +20,9 @@ int main( int argc, char *argv[])
 {
     int n, myid, numprocs;
     char input[50];
-
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-
     //scan the input
     if (myid == 0) {
         scanf("%s", input);
@@ -42,7 +38,7 @@ int main( int argc, char *argv[])
             P[i].id = i + 1;
         }
         fclose(input_file);
-        qsort(P, n, sizeof(struct Point), compare);  
+        qsort(P, n, sizeof(struct Point), compare);         //sort
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     int local_count = n / numprocs;
@@ -103,26 +99,22 @@ int main( int argc, char *argv[])
     struct Point* next_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
     struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
     int left, right;     
-    int next_up = 0;
-    int next_down = 0;
-    int x = 1;
-    int y = 2;
+    int next_up = 0, next_down = 0;
+    int x = 1, y = 2;
     while(x != numprocs){
-        //get data
-        if(myid % y == x){
+        if(myid % y == x){          //get data
             MPI_Send(&up, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);
             MPI_Send(&down, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);            
             MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
             MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
         }
-        if(myid % y == 0){
+        if(myid % y == 0){          //recieve data
             MPI_Recv(&next_up, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(&next_down, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(next_upper_ch, next_up * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(next_lower_ch, next_down * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            
-            //Lower
             //cauculate outer common tangent
+            //Lower
             left = down - 1;
             right = 0;
             while(1){
@@ -136,12 +128,10 @@ int main( int argc, char *argv[])
                     right++;
             }
             //Combine the result
-            for(int j = 0; j < next_down - right; j++){
+            for(int j = 0; j < next_down - right; j++)
                 local_lower_ch[left + j + 1] = next_lower_ch[j + right];
-            }
-            left += next_down - right;
+            down = left + 1 + next_down - right;
             right = 0;
-            down = left + 1;
             //Upper
             left = up - 1;
             right = 0;
@@ -159,13 +149,11 @@ int main( int argc, char *argv[])
             for(int j = 0; j < next_up - right; j++){
                 local_upper_ch[left + j + 1] = next_upper_ch[j + right];
             }
-            left += next_up - right;
+            up = left + 1 + next_up - right;
             right = 0;
-            up = left + 1;
         }
         x *= 2;
         y *= 2;
-        //MPI_Barrier(MPI_COMM_WORLD);
     }
     //output
     if(myid == 0){
