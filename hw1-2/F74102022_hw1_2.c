@@ -15,10 +15,7 @@ int cross(struct Point o, struct Point a, struct Point b) {
 
 int compare(const void* a, const void* b)
 {
-    if (((struct Point*)a)->x != ((struct Point*)b)->x)
-        return ((struct Point*)a)->x - ((struct Point*)b)->x;
-    else
-        return ((struct Point*)a)->y - ((struct Point*)b)->y;
+    return ((struct Point*)a)->x - ((struct Point*)b)->x;
 }
 
 int main( int argc, char *argv[])
