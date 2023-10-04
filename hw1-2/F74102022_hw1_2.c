@@ -49,11 +49,11 @@ int main( int argc, char *argv[])
         qsort(P, n, sizeof(struct Point), compare);  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));
-    struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-    struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));
     int local_count = n / numprocs;
     int rest = n % numprocs;
+    struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));
+    struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
+    struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));    
     if(rest == 0){
         MPI_Scatter(P, local_count * sizeof(struct Point), MPI_BYTE, local_P, local_count* sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);              
     }
