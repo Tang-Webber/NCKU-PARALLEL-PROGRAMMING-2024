@@ -140,13 +140,14 @@ int main( int argc, char *argv[])
         }
     }
 
+    /*
     MPI_Bcast(ups, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(downs, numprocs + rest, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_up, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_down, n, PointType, 0, MPI_COMM_WORLD);    
     MPI_Bcast(gathered_up, numprocs * (base_count + rest) * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-
+*/
     //Combine small convex hulls
     if (myid == 0){
         //Iteratvely add id = i to final
@@ -227,7 +228,6 @@ int main( int argc, char *argv[])
         free(ups);
         free(downs);        
     }
-
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
