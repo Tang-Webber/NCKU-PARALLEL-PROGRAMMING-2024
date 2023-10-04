@@ -59,13 +59,19 @@ int main( int argc, char *argv[])
         qsort(P, n, sizeof(struct Point), compare);  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     struct Point* local_P = NULL;    
     struct Point* local_upper_ch = NULL;
     struct Point* local_lower_ch = NULL; 
     int local_count = n / numprocs;
     int rest = n % numprocs;
-    if(rest != 0){
+    if(rest == 0){
+        local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
+        local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
+        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
+        MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);           
+    }
+    else{
         int *recv_counts = (int*)malloc(numprocs * sizeof(int));
         int *displacements = (int*)malloc(numprocs * sizeof(int));
         int base_count = n / numprocs;        
@@ -82,13 +88,6 @@ int main( int argc, char *argv[])
         local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));         
         MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
     }
-    else{
-        local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
-        local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-        MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);    
-    }
-        
     //Local Calculation
     //Set Variable
     int up = 0;
