@@ -92,11 +92,8 @@ int main( int argc, char *argv[])
     //Set Variable
     int up = 0;
     int down = 0;
-    struct Point **gathered_up = NULL;
-    struct Point **gathered_down = NULL;
-    //malloc
-    gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-    gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
+    struct Point **gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+    struct Point **gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));
     for(int i = 0; i < numprocs ;i++){
         gathered_up[i] = (struct Point*)malloc(n * sizeof(struct Point));
         gathered_down[i] = (struct Point*)malloc(n * sizeof(struct Point));
