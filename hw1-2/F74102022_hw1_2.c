@@ -25,7 +25,6 @@ int main( int argc, char *argv[])
 {
     int n, myid, numprocs;
     int left, right;
-    int u, d;
     char input[50];
     int rest = 0;
 
@@ -73,12 +72,12 @@ int main( int argc, char *argv[])
         }
         displacements[i] = i * base_count;
     }
-
+    
     int local_count = recv_counts[myid];
     struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
     //Data Boardcast
-    struct Point* local_upper_ch = (struct Point*)malloc(local_count * sizeof(struct Point));
-    struct Point* local_lower_ch = (struct Point*)malloc(local_count * sizeof(struct Point));
+    struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
+    struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
     MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     //MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
     MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
@@ -87,17 +86,9 @@ int main( int argc, char *argv[])
     //Set Variable
     int up = 0;
     int down = 0;
-    int* ups = NULL;
-    int* downs = NULL;
-    struct Point *final_up= NULL;
-    struct Point *final_down= NULL;
     struct Point **gathered_up = NULL;
     struct Point **gathered_down = NULL;
     //malloc
-    ups = (int*)malloc(numprocs * sizeof(int));
-    downs = (int*)malloc(numprocs * sizeof(int));
-    final_up = (struct Point*)malloc(n * sizeof(struct Point));
-    final_down = (struct Point*)malloc(n * sizeof(struct Point));    
     gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
     gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
     for(int i = 0; i < numprocs ;i++){
@@ -105,107 +96,92 @@ int main( int argc, char *argv[])
         gathered_down[i] = (struct Point*)malloc(n * sizeof(struct Point));
     }
     //Andrew's Monotone Chain
-    if(myid == 0){       
-        for (int i = 0; i < local_count; i++){
-            while (down >= 2 && cross(final_down[down-2], final_down[down-1], local_P[i]) <= 0) down--;
-            final_down[down++] = local_P[i];
-        }
-        for (int i = 0; i < local_count; i++){
-            while (up >= 2 && cross(final_up[up-2], final_up[up-1], local_P[i]) >= 0) up--;
-            final_up[up++] = local_P[i];
-        }    
+    for (int i = 0; i < local_count; i++){
+        while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
+        local_lower_ch[down++] = local_P[i];
     }
-    else{
-        for (int i = 0; i < local_count; i++){
-            while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
-            local_lower_ch[down++] = local_P[i];
+    for (int i = 0; i < local_count; i++){
+        while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
+        local_upper_ch[up++] = local_P[i];
+    }        
+    //Combine
+    struct Point* next_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
+    struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));  
+    int next_up = 0;
+    int next_down = 0;
+    int x = 1;
+    int y = 2;
+    while(x != numprocs){
+        //get data
+        if(myid % y == x){
+            MPI_Send(up, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);
+            MPI_Send(down, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);            
+            MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
+            MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
         }
-        for (int i = 0; i < local_count; i++){
-            while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
-            local_upper_ch[up++] = local_P[i];
-        }        
-    }
-
-    MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-    if (myid != 0) {
-        MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-        MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-    } 
-    else {
-        for (int i = 1; i < numprocs; i++) {
-            MPI_Recv(gathered_up[i], ups[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        }
-    }
-    
-    //Combine small convex hulls
-    if (myid == 0){
-        //Iteratvely add id = i to final
-        //Lower
-        left = downs[0] - 1;
-        right = 0;
-        for(int i = 1; i < numprocs; i++){
-            //Gathered_[i] leftmost and final_[i]rightmost
-            while(1){
-                if(left == 0 || right == downs[i] - 1){
-                    break;
-                }                
-                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
-                    break;
-                }                
-                if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) < 0)
-                    left--;
-                if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
-                    right++;
-            }
-            //Combine the results to final_ch
-            for(int j = 0; j < downs[i] - right; j++){
-                final_down[left + j + 1] = gathered_down[i][j + right];
-            }
-            left += downs[i] - right;
+        if(myid % y == 0){
+            MPI_Recv(next_up, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(next_down, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(next_upper_ch, next_up * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(next_lower_ch, next_down * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            
+            //Lower
+            //cauculate outer common tangent
+            left = down - 1;
             right = 0;
-        }
-        d = left;
-    }
-    if(myid == 0){
-        //Upper
-        left = ups[0] - 1;
-        right = 0;
-        for(int i = 1; i < numprocs; i++){
-            //Gathered_[i] leftmost and final_[i]rightmost
             while(1){
-                if(cross(gathered_up[i][right], final_up[left - 1], final_up[left]) > 0)
+                if(left == 0 || right == next_down - 1)
+                    break;           
+                if(cross(local_lower_ch[left - 1], next_lower_ch[right], local_lower_ch[left]) <= 0 && cross(local_lower_ch[left], next_lower_ch[i][right + 1], next_lower_ch[i][right]) <= 0)
+                    break;         
+                if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) < 0)
                     left--;
-                if(cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) < 0)
+                if(cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) > 0)
                     right++;
-                if((cross(final_up[left - 1], gathered_up[i][right], final_up[left]) >= 0 && cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) >= 0) || left == 0 || right == ups[i]){
+            }
+            //Combine the result
+            for(int j = 0; j < downs[i] - right; j++){
+                local_lower_ch[left + j + 1] = next_lower_ch[j + right];
+            }
+            left += next_down - right;
+            right = 0;
+            down = left + 1;
+
+            //Upper
+            left = up - 1;
+            right = 0;
+            while(1){
+                if(left == 0 || right == next_down - 1)
                     break;
-                }
+                if((cross(local_upper_ch[left - 1], next_upper_ch[right], local_upper_ch[left]) >= 0 && cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) >= 0))
+                    break; 
+                if(cross(next_upper_ch[right], local_upper_ch[left - 1], local_upper_ch[left]) > 0)
+                    left--;
+                if(cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) < 0)
+                    right++;
             }
             //Combine the results to final_ch
             for(int j = 0; j < ups[i] - right; j++){
-                final_up[left + j + 1] = gathered_up[i][j + right];
+                local_upper_ch[left + j + 1] = next_upper_ch[j + right];
             }
-            left += ups[i] - right;
+            left += next_up - right;
             right = 0;
+            up = left + 1;
         }
-        u = left;
-        //MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
-        //MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        x *= 2;
+        y *= 2;
+        MPI_Barrier(MPI_COMM_WORLD);
+        //local , up, down to next loop
     }
 
     //output
     if(myid == 0){
-        //MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //MPI_Recv(&u, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         //output
-        for(int i = 0;i < u; i++){
-            printf("%d ", final_up[i].id);
+        for(int i = 0;i < up; i++){
+            printf("%d ", local_upper_ch[i].id);
         }
-        for(int i = d;i > 0; i--){
-            printf("%d ", final_down[i].id);
+        for(int i = down - 2; i > 0; i--){
+            printf("%d ", local_lower_ch[i].id);
         }
     }
     //Free memory
@@ -213,12 +189,8 @@ int main( int argc, char *argv[])
         free(gathered_up[i]);
         free(gathered_down[i]);
     }       
-    free(final_up);
-    free(final_down);
     free(gathered_up);
-    free(gathered_down);
-    free(ups);
-    free(downs);        
+    free(gathered_down);     
     free(local_P);
     free(local_upper_ch);
     free(local_lower_ch);
