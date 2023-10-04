@@ -142,11 +142,13 @@ int main( int argc, char *argv[])
 
     MPI_Bcast(ups, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(downs, numprocs, MPI_INT, 0, MPI_COMM_WORLD);
+printf("ID: %d Dead test 1\n", myid);
     MPI_Bcast(final_up, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(final_down, n, PointType, 0, MPI_COMM_WORLD);    
+printf("ID: %d Dead test 2\n", myid);
     MPI_Bcast(gathered_up, numprocs * (base_count + rest) * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(gathered_down, numprocs * (base_count + rest) , PointType, 0, MPI_COMM_WORLD);
-
+printf("ID: %d Dead test 3\n", myid);
     //Combine small convex hulls
     if (myid == 0){
         //Iteratvely add id = i to final
@@ -213,6 +215,7 @@ int main( int argc, char *argv[])
             printf("%d ", final_down[i].id);
         }
     }
+printf("ID: %d Dead test 4\n", myid);
     MPI_Barrier(MPI_COMM_WORLD);
     //Free memory
     for (int i = 0; i < numprocs; i++) {
@@ -229,6 +232,7 @@ int main( int argc, char *argv[])
     free(local_upper_ch);
     free(local_lower_ch);
     MPI_Type_free(&PointType);
+printf("ID: %d Dead test 5\n", myid);
     MPI_Finalize();
     return 0;
 }
