@@ -56,10 +56,9 @@ int main( int argc, char *argv[])
             P[i].id = i + 1;
         }
         fclose(input_file);
-        qsort(P, n, sizeof(struct Point), compare);  
+        //qsort(P, n, sizeof(struct Point), compare);  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
     struct Point* local_P = NULL;    
     struct Point* local_upper_ch = NULL;
     struct Point* local_lower_ch = NULL; 
