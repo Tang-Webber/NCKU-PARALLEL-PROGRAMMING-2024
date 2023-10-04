@@ -24,7 +24,6 @@ int compare(const void* a, const void* b)
 int main( int argc, char *argv[])
 {
     int n, myid, numprocs;
-    int left, right;
     char input[50];
 
     MPI_Init(&argc,&argv);
@@ -88,8 +87,6 @@ int main( int argc, char *argv[])
         MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
         MPI_Type_free(&PointType);
     }
-    //Local Calculation
-    //Set Variable
     int up = 0;
     int down = 0;
     struct Point **gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
@@ -107,7 +104,8 @@ int main( int argc, char *argv[])
     }     
     //Combine
     struct Point* next_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-    struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));  
+    struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
+    int left, right;     
     int next_up = 0;
     int next_down = 0;
     int x = 1;
@@ -170,18 +168,14 @@ int main( int argc, char *argv[])
         }
         x *= 2;
         y *= 2;
-        MPI_Barrier(MPI_COMM_WORLD);
-        //local , up, down to next loop
+        //MPI_Barrier(MPI_COMM_WORLD);
     }
     //output
     if(myid == 0){
-        //output
-        for(int i = 0;i < up; i++){
+        for(int i = 0;i < up; i++)
             printf("%d ", local_upper_ch[i].id);
-        }
-        for(int i = down - 2; i > 0; i--){
+        for(int i = down - 2; i > 0; i--)
             printf("%d ", local_lower_ch[i].id);
-        }
     }
     //Free memory
     for (int i = 0; i < numprocs; i++) {
