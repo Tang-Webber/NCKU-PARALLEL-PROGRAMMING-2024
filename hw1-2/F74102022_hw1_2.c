@@ -80,7 +80,7 @@ int main( int argc, char *argv[])
             if (i == numprocs - 1) {
                 recv_counts[i] += rest * sizeof(struct Point);
             }
-            displacements[i] = i * base_count * sizeof(struct Point);
+            displacements[i] = i * base_count ;
         }  
         local_count = recv_counts[myid]; 
         local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
