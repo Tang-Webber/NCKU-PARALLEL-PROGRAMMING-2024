@@ -57,7 +57,7 @@ int main( int argc, char *argv[])
             P[i].id = i + 1;
         }
         fclose(input_file);
-        //qsort(P, n, sizeof(struct Point), compare);  
+        qsort(P, n, sizeof(struct Point), compare);  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -99,11 +99,9 @@ int main( int argc, char *argv[])
     for (int i = 0; i < local_count; i++){
         while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
         local_lower_ch[down++] = local_P[i];
-    }
-    for (int i = 0; i < local_count; i++){
         while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
         local_upper_ch[up++] = local_P[i];
-    }        
+    }     
     //Combine
     struct Point* next_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
     struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));  
