@@ -120,11 +120,11 @@ int main( int argc, char *argv[])
             while(1){
                 if(left == 0 || right == next_down - 1)
                     break;           
-                if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) > 0 && cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) < 0)
+                if(cross(local_lower_ch[left - 1], next_lower_ch[right], local_lower_ch[left]) <= 0 && cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) <= 0)
                     break;         
-                else if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) <= 0)
+                if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) < 0)
                     left--;
-                else
+                if(cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) > 0)
                     right++;
             }
             //Combine the result
@@ -138,11 +138,11 @@ int main( int argc, char *argv[])
             while(1){
                 if(left == 0 || right == next_down - 1)
                     break;
-                if((cross(next_upper_ch[right], local_upper_ch[left - 1], local_upper_ch[left]) < 0 && cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) > 0))
+                if((cross(local_upper_ch[left - 1], next_upper_ch[right], local_upper_ch[left]) >= 0 && cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) >= 0))
                     break; 
-                else if(cross(next_upper_ch[right], local_upper_ch[left - 1], local_upper_ch[left]) >= 0)
+                if(cross(next_upper_ch[right], local_upper_ch[left - 1], local_upper_ch[left]) > 0)
                     left--;
-                else
+                if(cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) < 0)
                     right++;
             }
             //Combine the results to final_ch
