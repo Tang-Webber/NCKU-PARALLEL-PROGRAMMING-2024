@@ -182,8 +182,8 @@ int main( int argc, char *argv[])
     }
     int use = myid / 2 + 2;
     if(myid % 2 == 1){
-        MPI_Recv(ind[myid], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        MPI_Recv(num[use], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&ind[myid], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&num[use], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(SP[use], num[use] * sizeof(struct Point), MPI_BYTE, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
     }
 
@@ -191,7 +191,7 @@ int main( int argc, char *argv[])
     int c = 1;
     q[0] = P[ind[myid]];
     for (int i = 0; i < num[use]; i++){
-        if(cross(P[ind[myid]], P[ind[(myid + 1) % 8]], SP[i]) == 1)
+        if(cross(P[ind[myid]], P[ind[(myid + 1) % 8]], SP[use][i]) == 1)
             q[c++] = SP[use][i];
     }       
     struct Point* local_ch = (struct Point*)malloc(c * sizeof(struct Point));
