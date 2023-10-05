@@ -39,6 +39,10 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
+printf("%d\n", n);
+for(int i=;i<n;i++){
+    printf("%d %d\n", P[i].x, P[i].y);
+}
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     int local_count = n / numprocs;
