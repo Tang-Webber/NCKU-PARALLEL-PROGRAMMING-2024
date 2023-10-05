@@ -8,17 +8,23 @@
 struct Point {
     int id, x, y;
 } P[12000];
+
 int cross(struct Point o, struct Point a, struct Point b) {
-    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x) > 0 ? 1 : -1;
 }
-int compare(const void* a, const void* b)
-{
+int lineDist(struct Point o, struct Point a, struct Point b){
+    return abs((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x));
+}
+int compare(const void* a, const void* b){
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
 }
 
 int main( int argc, char *argv[])
 {
     int n, myid, numprocs;
+    int ind[8];
+    int min, max;
+    
     char input[50];
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -33,144 +39,192 @@ int main( int argc, char *argv[])
             return 1;
         }
         fscanf(input_file, "%d", &n);
+        ind[0] = ind[4] = 0;
         for (int i = 0; i < n; i++) {
             fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
-            P[i].id = i + 1;
+            P[i].id = i;
+            if (P[i].x < P[ind[4]].x)
+                ind[4] = i;
+            if (P[i].x > P[ind[0]].x)
+                ind[0] = i;            
         }
         fclose(input_file);
-        qsort(P, n, sizeof(struct Point), compare);         //sort
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    int local_count = n / numprocs;
-    int rest = n % numprocs;
-    struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));
-    struct Point* local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-    struct Point* local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point));    
-    if(rest == 0){
-        MPI_Scatter(P, local_count * sizeof(struct Point), MPI_BYTE, local_P, local_count* sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);              
-    }
-    else{       //rest
-        int *recv_counts = (int*)malloc(numprocs * sizeof(int));
-        int *displacements = (int*)malloc(numprocs * sizeof(int));
-        int base_count = n / numprocs;        
-        for (int i = 0; i < numprocs; i++) {
-            recv_counts[i] = base_count;
-            if (i == numprocs - 1) {
-                recv_counts[i] += rest;
-            }
-            displacements[i] = i * base_count;
-        }  
-        local_count = recv_counts[myid]; 
-        free(local_P);
-        free(local_upper_ch);
-        free(local_lower_ch);
-        local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
-        local_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-        local_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
+    MPI_Bcast(ind, 8, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 
-        MPI_Datatype PointType;
-        MPI_Aint offsets[3];
-        MPI_Datatype types[3] = {MPI_INT, MPI_INT, MPI_INT};
-        offsets[0] = offsetof(struct Point, id);
-        offsets[1] = offsetof(struct Point, x);
-        offsets[2] = offsetof(struct Point, y);
-        int block_lengths[3] = {1, 1, 1};    
-        MPI_Type_create_struct(3, block_lengths, offsets, types, &PointType);
-        MPI_Type_commit(&PointType);        
-        MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
-        MPI_Type_free(&PointType);
-    }
-    int up = 0;
-    int down = 0;
-    struct Point **gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-    struct Point **gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));
-    for(int i = 0; i < numprocs ;i++){
-        gathered_up[i] = (struct Point*)malloc(n * sizeof(struct Point));
-        gathered_down[i] = (struct Point*)malloc(n * sizeof(struct Point));
-    }
-    //Andrew's Monotone Chain
-    for (int i = 0; i < local_count; i++){
-        while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
-        local_lower_ch[down++] = local_P[i];
-        while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
-        local_upper_ch[up++] = local_P[i];
-    }     
-    //Combine
-    struct Point* next_upper_ch = (struct Point*)malloc(n * sizeof(struct Point));
-    struct Point* next_lower_ch = (struct Point*)malloc(n * sizeof(struct Point)); 
-    int left, right;     
-    int next_up = 0, next_down = 0;
-    int x = 1, y = 2;
-    while(x != numprocs){
-        if(myid % y == x){          //get data
-            MPI_Send(&up, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);
-            MPI_Send(&down, 1, MPI_INT, myid - x, 0, MPI_COMM_WORLD);            
-            MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
-            MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, myid - x, 0, MPI_COMM_WORLD);
-        }
-        if(myid % y == 0){          //recieve data
-            MPI_Recv(&next_up, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(&next_down, 1, MPI_INT, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(next_upper_ch, next_up * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(next_lower_ch, next_down * sizeof(struct Point), MPI_BYTE, myid + x, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            //Lower
-            left = down - 1;
-            right = 0;
-            while(1){
-                if(left == 0 || right == next_down - 1)
-                    break;           
-                if(cross(local_lower_ch[left - 1], next_lower_ch[right], local_lower_ch[left]) <= 0 && cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) <= 0)
-                    break;         
-                if(cross(next_lower_ch[right], local_lower_ch[left - 1], local_lower_ch[left]) < 0)
-                    left--;
-                if(cross(local_lower_ch[left], next_lower_ch[right + 1], next_lower_ch[right]) > 0)
-                    right++;
-            }
-            //Combine the result
-            for(int j = 0; j < next_down - right; j++)
-                local_lower_ch[left + j + 1] = next_lower_ch[j + right];
-            down = left + 1 + next_down - right;
-            right = 0;
-            //Upper
-            left = up - 1;
-            right = 0;
-            while(1){
-                if(left == 0 || right == next_down - 1)
-                    break;
-                if((cross(local_upper_ch[left - 1], next_upper_ch[right], local_upper_ch[left]) >= 0 && cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) >= 0))
-                    break; 
-                if(cross(next_upper_ch[right], local_upper_ch[left - 1], local_upper_ch[left]) > 0)
-                    left--;
-                if(cross(local_upper_ch[left], next_upper_ch[right + 1], next_upper_ch[right]) < 0)
-                    right++;
-            }
-            //Combine the results to final_ch
-            for(int j = 0; j < next_up - right; j++){
-                local_upper_ch[left + j + 1] = next_upper_ch[j + right];
-            }
-            up = left + 1 + next_up - right;
-            right = 0;
-        }
-        x *= 2;
-        y *= 2;
-    }
-    //output
+    int side = (myid >= numprocs / 2) ? -1 : 1;;
+    struct Point SP[6][12000]; 
+    int num[6] = {0};
     if(myid == 0){
-        for(int i = 0;i < up; i++)
-            printf("%d ", local_upper_ch[i].id);
-        for(int i = down - 2; i > 0; i--)
-            printf("%d ", local_lower_ch[i].id);
+        ind[2] = -1;
+        max = 0;
+        for (int i=0; i<n; i++)
+        {
+            int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
+            {
+                SP[0][num[0]++] = P[i];
+                if(temp > max){
+                    ind[2] = i;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[2], 1, MPI_INT, 2, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[0], 1, MPI_INT, 2, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[0], num[0] * sizeof(struct Point), MPI_BYTE, 2, 0, MPI_COMM_WORLD);
     }
-    //Free memory
-    for (int i = 0; i < numprocs; i++) {
-        free(gathered_up[i]);
-        free(gathered_down[i]);
+    if(myid == 4){
+        ind[6] = -1;
+        max = 0;
+        for (int i=0; i<n; i++)
+        {
+            int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
+            {
+                SP[1][num[1]++] = P[i];
+                if(temp > max){
+                    ind[6] = i;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[6], 1, MPI_INT, 6, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[1], 1, MPI_INT, 6, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[1], num[1] * sizeof(struct Point), MPI_BYTE, 6, 0, MPI_COMM_WORLD);
+    }     
+    if(myid == 0){
+        ind[1] = -1;
+        max = 0;
+        for (int i=0; i<num[0]; i++)
+        {
+            int temp = lineDist(P[ind[0]], P[ind[2]], SP[0][i]);
+            if (cross(P[ind[0]], P[ind[2]], SP[0][i]) == side)
+            {
+                SP[2][num[2]++] = SP[0][i];
+                if(temp > max){
+                    ind[1] = SP[0][i].id;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[1], 1, MPI_INT, 1, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[2], 1, MPI_INT, 1, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[2], num[2] * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+    }
+    if(myid == 2){
+        MPI_Recv(&ind[2], 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&num[0], 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(SP[0], num[0] * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        ind[3] = -1;
+        max = 0;
+        for (int i=0; i<num[0]; i++)
+        {
+            int temp = lineDist(P[ind[2]], P[ind[4]], SP[0][i]);
+            if (cross(P[ind[2]], P[ind[4]], SP[0][i]) == side)
+            {
+                SP[3][num[3]++] = SP[0][i];
+                if(temp > max){
+                    ind[1] = SP[0][i].id;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[3], 1, MPI_INT, 3, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[3], 1, MPI_INT, 3, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[3], num[3] * sizeof(struct Point), MPI_BYTE, 3, 0, MPI_COMM_WORLD);
+        
+    }
+    if(myid == 4){
+        ind[5] = -1;
+        max = 0;
+        for (int i=0; i<num[1]; i++)
+        {
+            int temp = lineDist(P[ind[6]], P[ind[4]], SP[1][i]);
+            if (cross(P[ind[6]], P[ind[4]], SP[1][i]) == side)
+            {
+                SP[4][num[4]++] = SP[1][i];
+                if(temp > max){
+                    ind[5] = SP[1][i].id;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[5], 1, MPI_INT, 5, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[4], 1, MPI_INT, 5, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[4], num[4] * sizeof(struct Point), MPI_BYTE, 5, 0, MPI_COMM_WORLD);
+    }    
+    if(myid == 6){
+        MPI_Recv(&ind[6], 1, MPI_INT, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&num[1], 1, MPI_INT, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(SP[1], num[1] * sizeof(struct Point), MPI_BYTE, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);        
+
+        ind[7] = -1;
+        max = 0;
+        for (int i=0; i<num[1]; i++)
+        {
+            int temp = lineDist(P[ind[0]], P[ind[6]], SP[1][i]);
+            if (cross(P[ind[0]], P[ind[6]], SP[1][i]) == side)
+            {
+                SP[5][num[5]++] = SP[1][i];
+                if(temp > max){
+                    ind[7] = SP[1][i].id;
+                    max = temp;                    
+                }
+            }
+        }
+        MPI_Send(&ind[7], 1, MPI_INT, 7, 0, MPI_COMM_WORLD); 
+        MPI_Send(&num[5], 1, MPI_INT, 7, 0, MPI_COMM_WORLD);          
+        MPI_Send(SP[5], num[5] * sizeof(struct Point), MPI_BYTE, 7, 0, MPI_COMM_WORLD);
+    }
+    int use = myid / 2 + 2;
+    if(myid % 2 == 1){
+        MPI_Recv(ind[myid], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(num[use], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(SP[use], num[use] * sizeof(struct Point), MPI_BYTE, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
+    }
+
+    struct Point* q = (struct Point*)malloc(numprocs * sizeof(int));
+    int c = 1;
+    q[0] = P[ind[myid]];
+    for (int i = 0; i < num[use]; i++){
+        if(cross(P[ind[myid]], P[ind[(myid + 1) % 8]], SP[i]) == 1)
+            q[c++] = SP[use][i];
     }       
-    free(gathered_up);
-    free(gathered_down);     
-    free(local_P);
-    free(local_upper_ch);
-    free(local_lower_ch);
+    struct Point* local_ch = (struct Point*)malloc(c * sizeof(struct Point));
+    //Andrew's monotone chain
+    int count = 1;
+    for (int i = 0; i < c; i++){
+        while (count >= 2 && cross(local_ch[count-2], local_ch[count-1], q[i]) == side) count--;
+        local_ch[count++] = q[i];
+    }   
+
+    if (myid != 0) {
+        MPI_Send(local_ch, count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    }     
+    else{
+        struct Point **gathered = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+        for(int i = 0; i < numprocs ;i++){
+            gathered[i] = (struct Point*)malloc(n * sizeof(struct Point));
+        }
+        int *counts = (int*)malloc(numprocs * sizeof(int));
+        MPI_Gather(&count, 1, MPI_INT, counts, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        for(int i = 0;i < count; i++){
+            printf("%d ", local_ch[i].id + 1);
+        }                
+        for (int i = 1; i < numprocs; i++) {
+            MPI_Recv(gathered[i], counts[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            for(int j = 0;j < counts[i]; j++)
+                printf("%d ", gathered[i][j].id + 1); 
+            free(gathered[i]);
+        }     
+        free(gathered);
+    }    
+    free(local_ch);
+    free(q);
     MPI_Finalize();
     return 0;
 }
