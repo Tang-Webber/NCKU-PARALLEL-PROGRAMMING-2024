@@ -221,13 +221,14 @@ int main( int argc, char *argv[])
         }
 printf("break1?\n");
         for (int i = 1; i < numprocs; i++) {
-            //free(gathered[i]);
+            free(gathered[i]);
         }     
 printf("break2?\n");    
-        //free(gathered);
+        free(gathered);
+        free(counts);
     }    
-    //free(local_ch);
-    //free(q);
+    free(local_ch);
+    free(q);
     MPI_Finalize();
     return 0;
 }
