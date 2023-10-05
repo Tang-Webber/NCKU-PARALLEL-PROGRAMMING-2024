@@ -202,8 +202,8 @@ int main( int argc, char *argv[])
     }   
 printf("Id = %d, count = %d\n", myid, count);
     if (myid != 0) {
-        MPI_Send(local_ch, count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         MPI_Send(&count, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(local_ch, count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     }     
     else{
         struct Point **gathered = (struct Point**)malloc(numprocs * sizeof(struct Point*));
