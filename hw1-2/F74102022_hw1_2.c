@@ -40,7 +40,7 @@ int main( int argc, char *argv[])
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
 printf("%d\n", n);
-for(int i=;i<n;i++){
+for(int i=0;i<n;i++){
     printf("%d %d\n", P[i].x, P[i].y);
 }
     }
