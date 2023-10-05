@@ -76,6 +76,7 @@ int main( int argc, char *argv[])
         MPI_Send(&num[0], 1, MPI_INT, 2, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[0], num[0] * sizeof(struct Point), MPI_BYTE, 2, 0, MPI_COMM_WORLD);
     }
+printf("id = %d, test 1\n", myid);
     if(myid == 4){
         ind[6] = -1;
         max = 0;
@@ -95,6 +96,7 @@ int main( int argc, char *argv[])
         MPI_Send(&num[1], 1, MPI_INT, 6, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[1], num[1] * sizeof(struct Point), MPI_BYTE, 6, 0, MPI_COMM_WORLD);
     }     
+printf("id = %d, test 2\n", myid);
     if(myid == 0){
         ind[1] = -1;
         max = 0;
@@ -114,6 +116,7 @@ int main( int argc, char *argv[])
         MPI_Send(&num[2], 1, MPI_INT, 1, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[2], num[2] * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD);
     }
+printf("id = %d, test 3\n", myid);
     if(myid == 2){
         MPI_Recv(&ind[2], 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&num[0], 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -138,6 +141,7 @@ int main( int argc, char *argv[])
         MPI_Send(SP[3], num[3] * sizeof(struct Point), MPI_BYTE, 3, 0, MPI_COMM_WORLD);
         
     }
+printf("id = %d, test 4\n", myid);
     if(myid == 4){
         ind[5] = -1;
         max = 0;
@@ -157,6 +161,7 @@ int main( int argc, char *argv[])
         MPI_Send(&num[4], 1, MPI_INT, 5, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[4], num[4] * sizeof(struct Point), MPI_BYTE, 5, 0, MPI_COMM_WORLD);
     }    
+printf("id = %d, test 5\n", myid);
     if(myid == 6){
         MPI_Recv(&ind[6], 1, MPI_INT, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&num[1], 1, MPI_INT, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -180,13 +185,14 @@ int main( int argc, char *argv[])
         MPI_Send(&num[5], 1, MPI_INT, 7, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[5], num[5] * sizeof(struct Point), MPI_BYTE, 7, 0, MPI_COMM_WORLD);
     }
+printf("id = %d, test 6\n", myid);
     int use = myid / 2 + 2;
     if(myid % 2 == 1){
         MPI_Recv(&ind[myid], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&num[use], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(SP[use], num[use] * sizeof(struct Point), MPI_BYTE, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
     }
-
+printf("receive!\n");
     struct Point* q = (struct Point*)malloc(numprocs * sizeof(int));
     int c = 1;
     q[0] = P[ind[myid]];
@@ -201,9 +207,11 @@ int main( int argc, char *argv[])
         while (count >= 2 && cross(local_ch[count-2], local_ch[count-1], q[i]) == side) count--;
         local_ch[count++] = q[i];
     }   
-
+printf("cauculate!\n");
     if (myid != 0) {
         MPI_Send(local_ch, count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+
+printf("id = %d , send!\n", myid);
     }     
     else{
         struct Point **gathered = (struct Point**)malloc(numprocs * sizeof(struct Point*));
@@ -212,6 +220,7 @@ int main( int argc, char *argv[])
         }
         int *counts = (int*)malloc(numprocs * sizeof(int));
         MPI_Gather(&count, 1, MPI_INT, counts, 1, MPI_INT, 0, MPI_COMM_WORLD);
+printf("GATHER!!!\n");
         for(int i = 0;i < count; i++){
             printf("%d ", local_ch[i].id + 1);
         }                
