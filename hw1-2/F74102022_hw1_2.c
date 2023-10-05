@@ -226,8 +226,8 @@ printf("break1?\n");
 printf("break2?\n");    
         //free(gathered);
     }    
-    free(local_ch);
-    free(q);
+    //free(local_ch);
+    //free(q);
     MPI_Finalize();
     return 0;
 }
