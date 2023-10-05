@@ -1,1 +1,1 @@
-./input/data/coordinate100.txt
+./input/data/coordinate100s.txt
