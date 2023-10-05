@@ -200,7 +200,6 @@ int main( int argc, char *argv[])
         while (count >= 2 && cross(local_ch[count-2], local_ch[count-1], q[i]) == side) count--;
         local_ch[count++] = q[i];
     }   
-printf("Id = %d, count = %d\n", myid, count);
     if (myid != 0) {
         MPI_Send(&count, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
         MPI_Send(local_ch, count * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
@@ -211,25 +210,21 @@ printf("Id = %d, count = %d\n", myid, count);
             gathered[i] = (struct Point*)malloc(n * sizeof(struct Point));
         }
         int *counts = (int*)malloc(numprocs * sizeof(int));
-        //MPI_Gather(&count, 1, MPI_INT, counts, 1, MPI_INT, 0, MPI_COMM_WORLD);
-//printf("GATHER!!!\n");
         for(int i = 0;i < count; i++){
             printf("%d ", local_ch[i].id + 1);
         }                
         for (int i = 1; i < numprocs; i++) {
             MPI_Recv(&counts[i], 1, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(gathered[i], counts[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("get : Id = %d, count : %d \n", i, counts[i]);
-printf("break?\n");
             for(int j = 0;j < counts[i]; j++)
                 printf("%d ", gathered[i][j].id + 1); 
         }
-printf("break?\n");
+printf("break1?\n");
         for (int i = 1; i < numprocs; i++) {
-            free(gathered[i]);
+            //free(gathered[i]);
         }     
-printf("break?\n");    
-        free(gathered);
+printf("break2?\n");    
+        //free(gathered);
     }    
     free(local_ch);
     free(q);
