@@ -52,21 +52,21 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
     }
-
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(ind, 8, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
     int side = (myid >= numprocs / 2) ? -1 : 1;;
+printf("Id= %d, side = %d\n", myid, side);
     struct Point SP[6][12000]; 
-    int num[6] = {0};
+    int num[6] = {0, 0, 0, 0, 0, 0};
     if(myid == 0){
         ind[2] = -1;
         max = 0;
         for (int i=0; i<n; i++)
         {
             int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
-            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == 1)
             {
                 SP[0][num[0]++] = P[i];
                 if(temp > max){
@@ -74,6 +74,7 @@ printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
                     max = temp;                    
                 }
             }
+printf("num0 = %d\n", num[0]);
         }
         MPI_Send(&ind[2], 1, MPI_INT, 2, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[0], 1, MPI_INT, 2, 0, MPI_COMM_WORLD);          
@@ -85,7 +86,7 @@ printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
         for (int i=0; i<n; i++)
         {
             int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
-            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == -1)
             {
                 SP[1][num[1]++] = P[i];
                 if(temp > max){
@@ -94,6 +95,7 @@ printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
                 }
             }
         }
+printf("num0 = %d\n", num[0]);
         MPI_Send(&ind[6], 1, MPI_INT, 6, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[1], 1, MPI_INT, 6, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[1], num[1] * sizeof(struct Point), MPI_BYTE, 6, 0, MPI_COMM_WORLD);
@@ -186,13 +188,14 @@ printf("IND[5] = %d\n", ind[5]);
         MPI_Send(SP[5], num[5] * sizeof(struct Point), MPI_BYTE, 7, 0, MPI_COMM_WORLD);
 printf("IND[6] = %d, IND[7] = %d\n", ind[6], ind[7]);
     }
+
     int use = myid / 2 + 2;
     if(myid % 2 == 1){
         MPI_Recv(&ind[myid], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(&num[use], 1, MPI_INT, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(SP[use], num[use] * sizeof(struct Point), MPI_BYTE, myid - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
     }
-    struct Point* q = (struct Point*)malloc(numprocs * sizeof(int));
+    struct Point* q = (struct Point*)malloc(num[use] * sizeof(struct Point));
     int c = 1;
     q[0] = P[ind[myid]];
     for (int i = 0; i < num[use]; i++){
@@ -200,6 +203,8 @@ printf("IND[6] = %d, IND[7] = %d\n", ind[6], ind[7]);
             q[c++] = SP[use][i];
     }       
     struct Point* local_ch = (struct Point*)malloc(c * sizeof(struct Point));
+    //sort q
+    qsort(q, c, sizeof(struct Point), compare);   
     //Andrew's monotone chain
     int count = 0;
     for (int i = 0; i < c; i++){
