@@ -74,8 +74,8 @@ printf("Id= %d, side = %d\n", myid, side);
                     max = temp;                    
                 }
             }
-printf("num0 = %d\n", num[0]);
         }
+printf("num0 = %d\n", num[0]);        
         MPI_Send(&ind[2], 1, MPI_INT, 2, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[0], 1, MPI_INT, 2, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[0], num[0] * sizeof(struct Point), MPI_BYTE, 2, 0, MPI_COMM_WORLD);
