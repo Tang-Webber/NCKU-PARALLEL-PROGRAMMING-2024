@@ -12,7 +12,8 @@ struct Point {
 int cross(struct Point o, struct Point a, struct Point b) {
     if((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x) > 0 )
         return 1;
-    return -1;
+    else
+        return -1;
 }
 int lineDist(struct Point o, struct Point a, struct Point b){
     return abs((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x));
@@ -57,7 +58,6 @@ int main( int argc, char *argv[])
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
     int side = (myid >= numprocs / 2) ? -1 : 1;;
-printf("Id= %d, side = %d\n", myid, side);
     struct Point SP[6][12000]; 
     int num[6] = {0, 0, 0, 0, 0, 0};
     if(myid == 0){
@@ -66,7 +66,7 @@ printf("Id= %d, side = %d\n", myid, side);
         for (int i=0; i<n; i++)
         {
             int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
-            if (cross(P[ind[0]], P[ind[4]], P[i]) == 1)
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
             {
                 SP[0][num[0]++] = P[i];
                 if(temp > max){
@@ -86,7 +86,7 @@ printf("num0 = %d\n", num[0]);
         for (int i=0; i<n; i++)
         {
             int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
-            if (cross(P[ind[0]], P[ind[4]], P[i]) == -1)
+            if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
             {
                 SP[1][num[1]++] = P[i];
                 if(temp > max){
@@ -95,7 +95,7 @@ printf("num0 = %d\n", num[0]);
                 }
             }
         }
-printf("num0 = %d\n", num[0]);
+printf("num1 = %d\n", num[1]);
         MPI_Send(&ind[6], 1, MPI_INT, 6, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[1], 1, MPI_INT, 6, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[1], num[1] * sizeof(struct Point), MPI_BYTE, 6, 0, MPI_COMM_WORLD);
