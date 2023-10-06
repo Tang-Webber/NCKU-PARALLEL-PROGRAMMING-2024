@@ -10,7 +10,9 @@ struct Point {
 } P[12000];
 
 int cross(struct Point o, struct Point a, struct Point b) {
-    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x) > 0 ? 1 : -1;
+    if((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x) > 0 )
+        return 1;
+    return -1;
 }
 int lineDist(struct Point o, struct Point a, struct Point b){
     return abs((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x));
@@ -50,6 +52,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
     }
+printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(ind, 8, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
@@ -113,6 +116,7 @@ int main( int argc, char *argv[])
         MPI_Send(&ind[1], 1, MPI_INT, 1, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[2], 1, MPI_INT, 1, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[2], num[2] * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD);
+printf("IND[1] = %d\n", ind[1]);
     }
     if(myid == 2){
         MPI_Recv(&ind[2], 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -136,7 +140,7 @@ int main( int argc, char *argv[])
         MPI_Send(&ind[3], 1, MPI_INT, 3, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[3], 1, MPI_INT, 3, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[3], num[3] * sizeof(struct Point), MPI_BYTE, 3, 0, MPI_COMM_WORLD);
-        
+printf("IND[2] = %d, IND[3] = %d\n", ind[2], ind[3]);        
     }
     if(myid == 4){
         ind[5] = -1;
@@ -156,6 +160,7 @@ int main( int argc, char *argv[])
         MPI_Send(&ind[5], 1, MPI_INT, 5, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[4], 1, MPI_INT, 5, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[4], num[4] * sizeof(struct Point), MPI_BYTE, 5, 0, MPI_COMM_WORLD);
+printf("IND[5] = %d\n", ind[5]);
     }    
     if(myid == 6){
         MPI_Recv(&ind[6], 1, MPI_INT, 4, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -179,6 +184,7 @@ int main( int argc, char *argv[])
         MPI_Send(&ind[7], 1, MPI_INT, 7, 0, MPI_COMM_WORLD); 
         MPI_Send(&num[5], 1, MPI_INT, 7, 0, MPI_COMM_WORLD);          
         MPI_Send(SP[5], num[5] * sizeof(struct Point), MPI_BYTE, 7, 0, MPI_COMM_WORLD);
+printf("IND[6] = %d, IND[7] = %d\n", ind[6], ind[7]);
     }
     int use = myid / 2 + 2;
     if(myid % 2 == 1){
@@ -219,11 +225,9 @@ int main( int argc, char *argv[])
             for(int j = 0;j < counts[i]; j++)
                 printf("%d ", gathered[i][j].id + 1); 
         }
-printf("break1?\n");
         for (int i = 1; i < numprocs; i++) {
             free(gathered[i]);
-        }     
-printf("break2?\n");    
+        }        
         free(gathered);
         free(counts);
     }    
