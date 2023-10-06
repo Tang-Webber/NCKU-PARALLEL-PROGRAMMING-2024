@@ -10,13 +10,13 @@ struct Point {
 } P[12000];
 
 int cross(struct Point o, struct Point a, struct Point b) {
-    if((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x) > 0 )
+    if((long int)(a.x - o.x) * (b.y - o.y) - (long int)(a.y - o.y) * (b.x - o.x) > 0 )
         return 1;
     else
         return -1;
 }
-int lineDist(struct Point o, struct Point a, struct Point b){
-    return abs((a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x));
+long int lineDist(struct Point o, struct Point a, struct Point b){
+    return abs((long int)(a.x - o.x) * (b.y - o.y) - (long int)(a.y - o.y) * (b.x - o.x));
 }
 int compare(const void* a, const void* b){
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
@@ -26,7 +26,7 @@ int main( int argc, char *argv[])
 {
     int n, myid, numprocs;
     int ind[8];
-    int min, max;
+    long int min, max;
     
     char input[50];
     MPI_Init(&argc,&argv);
@@ -56,7 +56,7 @@ int main( int argc, char *argv[])
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(ind, 8, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-printf("IND[0] = %d, IND[4] = %d\n", P[ind[0]].x, P[ind[4]].x);
+printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
     int side = (myid >= numprocs / 2) ? -1 : 1;;
     struct Point SP[6][12000]; 
     int num[6] = {0, 0, 0, 0, 0, 0};
@@ -65,7 +65,7 @@ printf("IND[0] = %d, IND[4] = %d\n", P[ind[0]].x, P[ind[4]].x);
         max = 0;
         for (int i=0; i<n; i++)
         {
-            int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
+            long int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
             if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
             {
                 SP[0][num[0]++] = P[i];
@@ -85,7 +85,7 @@ printf("num0 = %d\n", num[0]);
         max = 0;
         for (int i=0; i<n; i++)
         {
-            int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
+            long int temp = lineDist(P[ind[0]], P[ind[4]], P[i]);
             if (cross(P[ind[0]], P[ind[4]], P[i]) == side)
             {
                 SP[1][num[1]++] = P[i];
@@ -105,7 +105,7 @@ printf("num1 = %d\n", num[1]);
         max = 0;
         for (int i=0; i<num[0]; i++)
         {
-            int temp = lineDist(P[ind[0]], P[ind[2]], SP[0][i]);
+            long int temp = lineDist(P[ind[0]], P[ind[2]], SP[0][i]);
             if (cross(P[ind[0]], P[ind[2]], SP[0][i]) == side)
             {
                 SP[2][num[2]++] = SP[0][i];
@@ -129,7 +129,7 @@ printf("IND[1] = %d\n", ind[1]);
         max = 0;
         for (int i=0; i<num[0]; i++)
         {
-            int temp = lineDist(P[ind[2]], P[ind[4]], SP[0][i]);
+            long int temp = lineDist(P[ind[2]], P[ind[4]], SP[0][i]);
             if (cross(P[ind[2]], P[ind[4]], SP[0][i]) == side)
             {
                 SP[3][num[3]++] = SP[0][i];
@@ -149,7 +149,7 @@ printf("IND[2] = %d, IND[3] = %d\n", ind[2], ind[3]);
         max = 0;
         for (int i=0; i<num[1]; i++)
         {
-            int temp = lineDist(P[ind[6]], P[ind[4]], SP[1][i]);
+            long int temp = lineDist(P[ind[6]], P[ind[4]], SP[1][i]);
             if (cross(P[ind[6]], P[ind[4]], SP[1][i]) == side)
             {
                 SP[4][num[4]++] = SP[1][i];
@@ -173,7 +173,7 @@ printf("IND[5] = %d\n", ind[5]);
         max = 0;
         for (int i=0; i<num[1]; i++)
         {
-            int temp = lineDist(P[ind[0]], P[ind[6]], SP[1][i]);
+            long int temp = lineDist(P[ind[0]], P[ind[6]], SP[1][i]);
             if (cross(P[ind[0]], P[ind[6]], SP[1][i]) == side)
             {
                 SP[5][num[5]++] = SP[1][i];
