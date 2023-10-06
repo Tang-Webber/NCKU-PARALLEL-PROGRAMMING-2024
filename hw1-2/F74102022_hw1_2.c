@@ -45,18 +45,18 @@ int main( int argc, char *argv[])
         for (int i = 0; i < n; i++) {
             fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
             P[i].id = i;
-            if (P[i].x < P[ind[4]].x)
+            if (P[i].x > P[ind[4]].x)
                 ind[4] = i;
-            if (P[i].x > P[ind[0]].x)
+            if (P[i].x < P[ind[0]].x)
                 ind[0] = i;            
         }
         fclose(input_file);
     }
-printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
+
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(ind, 8, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-
+printf("IND[0] = %d, IND[4] = %d\n", ind[0], ind[4]);
     int side = (myid >= numprocs / 2) ? -1 : 1;;
     struct Point SP[6][12000]; 
     int num[6] = {0};
