@@ -147,7 +147,7 @@ MPI_Barrier(MPI_COMM_WORLD);
             MPI_Recv(local_A[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);            
         }
     } 
-printf("calculate done!\n");
+//printf("calculate done!\n");
     size += 2;
     if (myid != 0) {
         if(t % 2 == 0){         //A->B->A
@@ -187,8 +187,8 @@ printf("print id = 0\n");
                 }
             } 
         }
-        MPI_Recv(temp, (size + rest)* m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i=1 ;i < size + rest - 2;i++){
+        MPI_Recv(temp, (size + n % numprocs)* m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        for(int i=1 ;i < size + n % numprocs - 2;i++){
             for(int j=0;j<m;j++){
                 printf("%d ", temp[i][j]);
             }
