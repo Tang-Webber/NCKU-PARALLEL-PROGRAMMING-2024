@@ -151,7 +151,7 @@ MPI_Barrier(MPI_COMM_WORLD);
             MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
             //receive
             MPI_Recv(local_A[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
-            MPI_Recv(local_A[size + rest + 1], m, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);            
+            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);            
         }
     } 
 printf("calculate done!\n");
