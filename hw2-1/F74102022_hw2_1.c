@@ -151,25 +151,25 @@ MPI_Barrier(MPI_COMM_WORLD);
     //size += 2;
     int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
     if(t % 2 == 0){         //A->B->A
-        for(int i=0;i<size;i++){
+        for(int i=0;i<size+rest;i++){
             for(int j=0;j<m;j++){
                 result[i*m + j] = local_A[i+1][j];
             }
         }
-        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-        //MPI_Send(local_A, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     }
     else{
-        for(int i=0;i<size;i++){
+        for(int i=0;i<size+rest;i++){
             for(int j=0;j<m;j++){
                 result[i*m + j] = local_B[i+1][j];
             }
         }
-        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-        //MPI_Send(local_B, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     }
+
 printf("id = %d, send!\n", myid);
-    if (myid == 0) {
+    if(myid != 0){
+        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    }
+    else {
         for(int i = 0; i < size * m; i++){
             printf("%d ", result[i]);
         }
