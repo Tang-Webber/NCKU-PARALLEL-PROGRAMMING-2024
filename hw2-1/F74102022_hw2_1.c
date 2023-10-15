@@ -30,8 +30,7 @@ int main( int argc, char *argv[]){
         fscanf(input_file, "%d", &t);
         fscanf(input_file, "%d %d", &n, &m);
         size = n / numprocs;
-
-printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
+//printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
 
         A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
         for (int i = 0; i < n + 2 * numprocs; i++) {
@@ -41,12 +40,11 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
                 fscanf(input_file, "%d", &A[i+k][j]);
-printf("%d ", i+k);
+//printf("%d ", i+k);
             }
             if((i+1) % size == 0 && k < 15)
                 k += 2;
         }      
-printf("test\n");  
         size += 2;      //actual size = n / numprocs + 2
         for(int i = 1; i < numprocs ; i++){
             for (int j = 0; j < m ; j++) {
@@ -54,18 +52,11 @@ printf("test\n");
                 A[i * size][j] = A[i * size - 2][j];
             }                  
         }   
-printf("test\n");
         for (int j = 0; j < m ; j++) {
             A[0][j] = A[n + 2 * numprocs - 2][j];
             A[n + 2 * numprocs - 1][j] = A[1][j];
         }  
-printf("get A\n");
-for(int i=0 ;i <n + 2 * numprocs;i++){
-for(int j=0;j<m;j++){
-printf("%d ", A[i][j]);
-}
-printf("\n");
-} 
+
         fscanf(input_file, "%d", &D);
         K = (int**)malloc(D * sizeof(int*));
         for(int i = 0; i < D; i++) {
@@ -82,7 +73,6 @@ printf("\n");
     //MPI_Bcast(&D, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-printf("Bcast done!\n");
     rest = n % numprocs;
     size = n / numprocs + 2;
     int** local_A;
@@ -118,7 +108,14 @@ printf("Bcast done!\n");
         }
         MPI_Scatterv(A, recv_counts, displacements, MPI_INT, local_A, recv_counts[myid], MPI_INT, 0, MPI_COMM_WORLD);
     }
-printf("scatter done !\n");
+for(int i=0 ;i <n + 2 * numprocs;i++){
+printf("id = %d ", myid); 
+for(int j=0;j<m;j++){
+printf("%d ", A[i][j]);
+}
+printf("\n");
+} 
+
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
