@@ -95,7 +95,9 @@ int main( int argc, char *argv[]){
         }       
     }
     int front = (myid + 1) % numprocs;
-    int back = (myid - 1) % numprocs;
+    int back = myid - 1;
+    if(back < 0)
+        back += numprocs;
 printf("ID = %d, front = %d, back = %d, size = %d, rest = %d, m = %d\n", myid, front, back, size, rest, m);
     //calculate
     size -= 2;
@@ -118,7 +120,6 @@ printf("test0\nid = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
             MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
-printf("test1\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 printf("test2\n");             
