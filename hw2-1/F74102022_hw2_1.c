@@ -79,16 +79,15 @@ int main( int argc, char *argv[]){
     for(int i = 0; i < n + 2 * numprocs;i++){
        MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
     }    
-    
+
     size = n / numprocs + 2;
-    int** local_A;
-    int** local_B;
     if(myid == numprocs -1)
-        size += n % numprocs;
-        
-    local_A = (int**)malloc(size * sizeof(int*));
-    local_B = (int**)malloc(size * sizeof(int*));
-    for(int i = 0; i < size; i++) {
+        rest = n % numprocs;
+    int** local_A;
+    int** local_B;        
+    local_A = (int**)malloc((size + rest) * sizeof(int*));
+    local_B = (int**)malloc((size + rest) * sizeof(int*));
+    for(int i = 0; i < size + rest; i++) {
         local_A[i] = (int*)malloc(m * sizeof(int));
         local_B[i] = (int*)malloc(m * sizeof(int));
         for(int j=0;j<m;j++){
@@ -100,7 +99,6 @@ printf("id = %d\n", myid );
 for(int i=0 ;i <size;i++){
 printf("id = %d : %d %d %d \n", myid, local_A[i][0], local_A[i][1], local_A[i][2]); 
 } 
-printf("?????");
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
