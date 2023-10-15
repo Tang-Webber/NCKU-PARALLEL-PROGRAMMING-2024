@@ -119,7 +119,7 @@ printf("test0\nid = %d, size = %d, rest = %d\n", myid, size, rest);
 printf("test1\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("test2\n");             
+printf("test2\n%d\n", local_B[size+rest+1][0]);             
             MPI_Recv(local_B[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 printf("test3\n");       
         } 
