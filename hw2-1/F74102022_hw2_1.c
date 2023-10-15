@@ -30,17 +30,19 @@ int main( int argc, char *argv[]){
         fscanf(input_file, "%d", &t);
         fscanf(input_file, "%d %d", &n, &m);
         size = n / numprocs;
-//printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
-
-        A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
-        for (int i = 0; i < n + 2 * numprocs; i++) {
-            A[i] = (int*)malloc(m * sizeof(int));
-        }
+    }
+    MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
+    for (int i = 0; i < n + 2 * numprocs; i++) {
+        A[i] = (int*)malloc(m * sizeof(int));
+    }    
+    if (myid == 0) {
         k = 1;    
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
                 fscanf(input_file, "%d", &A[i+k][j]);
-//printf("%d ", i+k);
             }
             if((i+1) % size == 0 && k < 15)
                 k += 2;
@@ -69,51 +71,31 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
-    MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(&D, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    rest = n % numprocs;
+    for(int i = 0; i < n + 2 * numprocs){
+       MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
+    }    
+    
     size = n / numprocs + 2;
     int** local_A;
     int** local_B;
-MPI_Barrier(MPI_COMM_WORLD);
-    //scatter
-    if(rest == 0){
-        local_A = (int**)malloc(size * sizeof(int*));
-        local_B = (int**)malloc(size * sizeof(int*));
-        for(int i = 0; i < size; i++) {
-            local_A[i] = (int*)malloc(m * sizeof(int));
-            local_B[i] = (int*)malloc(m * sizeof(int));
-        }
-        MPI_Scatter(A, size * m * sizeof(int), MPI_BYTE, local_A, size * m * sizeof(int), MPI_BYTE, 0, MPI_COMM_WORLD);              
+    if(myid == numprocs -1)
+        size += n % numprocs;
+        
+    local_A = (int**)malloc(size * sizeof(int*));
+    local_B = (int**)malloc(size * sizeof(int*));
+    for(int i = 0; i < size; i++) {
+        local_A[i] = (int*)malloc(m * sizeof(int));
+        local_B[i] = (int*)malloc(m * sizeof(int));
+        for(int j=0;j<m;j++){
+            local_A[i][j] = A[myid * size + i][j];
+        }       
     }
-    else{       //rest
-        int *recv_counts = (int*)malloc(numprocs * sizeof(int));
-        int *displacements = (int*)malloc(numprocs * sizeof(int));      
-        for(int i = 0; i < numprocs; i++) {
-            recv_counts[i] = size * m;
-            if (i == numprocs - 1) {
-                recv_counts[i] += rest * m;
-            }
-            displacements[i] = i * recv_counts[i];
-        }  
-        size = recv_counts[myid] / m; 
 
-        local_A = (int**)malloc(size * sizeof(int*));
-        local_B = (int**)malloc(size * sizeof(int*));
-        for(int i = 0; i < size; i++) {
-            local_A[i] = (int*)malloc(m * sizeof(int));
-            local_B[i] = (int*)malloc(m * sizeof(int));
-        }
-        MPI_Scatterv(A, recv_counts, displacements, MPI_INT, local_A, recv_counts[myid], MPI_INT, 0, MPI_COMM_WORLD);
-    }
 printf("id = %d\n", myid );
-for(int i=0 ;i <n + 2 * numprocs;i++){
+for(int i=0 ;i <size;i++){
 printf("id = %d : %d %d %d \n", myid, local_A[i][0], local_A[i][1], local_A[i][2]); 
 } 
 printf("?????");
-MPI_Barrier(MPI_COMM_WORLD);
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
