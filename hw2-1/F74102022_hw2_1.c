@@ -108,6 +108,7 @@ printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + 
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
             for(int y = 1; y <= size + rest; y++) {
+                /*
                 local_B[y][0] = local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +
                                 local_A[y][m - 1]     * K[1][0] + local_A[y][0]         * K[1][1] + local_A[y][1]         * K[1][2] +
                                 local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2];
@@ -119,8 +120,9 @@ printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + 
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
                                     local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2];
                 }
+                */
             }
-printf("test0\nid = %d, size = %d, rest = %d\n", myid, size, rest);
+printf("test0 id = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
             MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
