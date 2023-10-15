@@ -113,17 +113,14 @@ MPI_Barrier(MPI_COMM_WORLD);
 printf("test0: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);  
 printf("%d %d %d\n%d %d %d\n%d %d %d\n%d\n", local_A[y - 1][m - 1], local_A[y - 1][0], local_A[y - 1][1], local_A[y][m - 1], local_A[y][0], local_A[y][1], local_A[y + 1][m - 1], local_A[y + 1][0], local_A[y + 1][1], local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +local_A[y][m - 1] * K[1][0] + local_A[y][0] * K[1][1] + local_A[y][1] * K[1][2] +local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2]);              
 printf("B:%d\n", local_B[y][0]);
-MPI_Barrier(MPI_COMM_WORLD);
                 local_B[y][0] = local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +
                                 local_A[y][m - 1]     * K[1][0] + local_A[y][0]         * K[1][1] + local_A[y][1]         * K[1][2] +
                                 local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2];
-printf("test1: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);   
-MPI_Barrier(MPI_COMM_WORLD);                  
+printf("test1: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                   
                 local_B[y][m - 1] = local_A[y - 1][m - 2] * K[0][0] + local_A[y - 1][m - 1] * K[0][1] +  local_A[y - 1][0]* K[0][2] +
                                     local_A[y][m - 2]     * K[1][0] + local_A[y][m - 1]     * K[1][1] +  local_A[y][0]    * K[1][2] +
                                     local_A[y + 1][m - 2] * K[2][0] + local_A[y + 1][m - 1] * K[2][1] +  local_A[y + 1][0]* K[2][2];
-printf("test2: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);    
-MPI_Barrier(MPI_COMM_WORLD);                 
+printf("test2: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                   
                 for(int z = 1; z < m - 1; z++) {
                     local_B[y][z] = local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
