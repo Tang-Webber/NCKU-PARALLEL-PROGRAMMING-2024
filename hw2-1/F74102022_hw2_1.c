@@ -43,7 +43,7 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
                 fscanf(input_file, "%d", &A[i+k][j]);
 printf("%d ", i+k);
             }
-            if(i % size == 0 && k <= 17 && i != 0)
+            if(i % size == 0 && k < 15 && i != 0)
                 k += 2;
         }      
 printf("test\n");  
