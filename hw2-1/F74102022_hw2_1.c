@@ -110,34 +110,29 @@ MPI_Barrier(MPI_COMM_WORLD);
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
             for(int y = 1; y <= size + rest; y++) {
-printf("test0: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);  
-printf("%d %d %d\n%d %d %d\n%d %d %d\n%d\n", local_A[y - 1][m - 1], local_A[y - 1][0], local_A[y - 1][1], local_A[y][m - 1], local_A[y][0], local_A[y][1], local_A[y + 1][m - 1], local_A[y + 1][0], local_A[y + 1][1], local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +local_A[y][m - 1] * K[1][0] + local_A[y][0] * K[1][1] + local_A[y][1] * K[1][2] +local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2]);              
-printf("B:%d\n", local_B[y][0]);
                 local_B[y][0] = local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +
                                 local_A[y][m - 1]     * K[1][0] + local_A[y][0]         * K[1][1] + local_A[y][1]         * K[1][2] +
-                                local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2];
-printf("test1: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                   
+                                local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2];                
                 local_B[y][m - 1] = local_A[y - 1][m - 2] * K[0][0] + local_A[y - 1][m - 1] * K[0][1] +  local_A[y - 1][0]* K[0][2] +
                                     local_A[y][m - 2]     * K[1][0] + local_A[y][m - 1]     * K[1][1] +  local_A[y][0]    * K[1][2] +
-                                    local_A[y + 1][m - 2] * K[2][0] + local_A[y + 1][m - 1] * K[2][1] +  local_A[y + 1][0]* K[2][2];
-printf("test2: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                   
+                                    local_A[y + 1][m - 2] * K[2][0] + local_A[y + 1][m - 1] * K[2][1] +  local_A[y + 1][0]* K[2][2];              
                 for(int z = 1; z < m - 1; z++) {
                     local_B[y][z] = local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
                                     local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2];
                 }
-printf("test3: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                 
+printf("test: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                 
             }
 printf("test4: id = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
             MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
-printf("test1\n");
+printf("send\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("test2\n");             
+printf("id = %d,get1\n", myid);             
             MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("test3\n");       
+printf("id = %d,get2\n", myid);       
         } 
         else { //local_B -> local_A
             for(int y = 1; y <= size + rest; y++) {
