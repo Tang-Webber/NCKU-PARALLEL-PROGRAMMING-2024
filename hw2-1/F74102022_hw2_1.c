@@ -176,7 +176,7 @@ int main( int argc, char *argv[]){
     } 
     else {
         temp = (int**)malloc(n / numprocs + rest * sizeof(int*));
-        for(i = 0; i < size; i++) {
+        for(int i = 0; i < size; i++) {
             temp[i] = (int*)malloc(m * sizeof(int));
         }
 
