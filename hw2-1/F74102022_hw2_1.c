@@ -176,6 +176,7 @@ printf("id = %d, send!\n", myid);
 printf("print id = 0\n");
         for (int v = 1; v < numprocs - 1; v++) {
             MPI_Recv(result, size * m, MPI_INT, v, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+printf("id = %d, receive!\n", v);
             for(int i = 0; i < size * m;i++){
                  printf("%d ", result[i]);
             }
