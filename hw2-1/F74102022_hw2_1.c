@@ -87,21 +87,22 @@ int main( int argc, char *argv[]){
     int** local_B;        
     local_A = (int**)malloc((size + rest) * sizeof(int*));
     local_B = (int**)malloc((size + rest) * sizeof(int*));
-printf("Id = %d, array size : %d\n", myid, size + rest);
+//printf("Id = %d, array size : %d\n", myid, size + rest);
     for(int i = 0; i < size + rest; i++) {
         local_A[i] = (int*)malloc(m * sizeof(int));
         local_B[i] = (int*)malloc(m * sizeof(int));
         for(int j=0;j<m;j++){
             local_A[i][j] = A[myid * size + i][j];
-printf("%d ", local_A[i][j]);
+            local_B[i][j] = 0;//
+//printf("%d ", local_A[i][j]);
         }   
-printf("\n");    
+//printf("\n");    
     }
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
         back += numprocs;
-printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + rest);
+//printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + rest);
 MPI_Barrier(MPI_COMM_WORLD);
     //calculate
     size -= 2;
@@ -120,7 +121,7 @@ printf("test: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
                                     local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2];
                 }
-                
+printf("test: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                 
             }
 printf("test0 id = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
