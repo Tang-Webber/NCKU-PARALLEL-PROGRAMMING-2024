@@ -105,6 +105,7 @@ int main( int argc, char *argv[]){
         back += numprocs;
 //printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + rest);
 MPI_Barrier(MPI_COMM_WORLD);
+printf("%d", t);
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
@@ -121,18 +122,18 @@ MPI_Barrier(MPI_COMM_WORLD);
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
                                     local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2];
                 }
-printf("test: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                 
+//printf("test: id = %d, size = %d, rest = %d, x = %d, y = %d\n", myid, size, rest, x, y);                 
             }
-printf("test4: id = %d, size = %d, rest = %d\n", myid, size, rest);
+//printf("test4: id = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
             MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
-printf("send\n");
+//printf("send\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get1\n", myid);             
+//printf("id = %d,get1\n", myid);             
             MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get2\n", myid);       
+//printf("id = %d,get2\n", myid);       
         } 
         else { //local_B -> local_A
             for(int y = 1; y <= size + rest; y++) {
@@ -153,10 +154,8 @@ printf("id = %d,get2\n", myid);
             MPI_Send(local_A[size + rest], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD);           
             //receive
             MPI_Recv(local_A[0], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("test4\n");         
+            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
         }
-printf("1\n");
     } 
 printf("calculate done!\n");
     size += 2;
