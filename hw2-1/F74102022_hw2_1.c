@@ -106,16 +106,16 @@ MPI_Barrier(MPI_COMM_WORLD);
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
             for(int y = 1; y <= size + rest; y++) {
-                local_B[y][0] = local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +
+                local_B[y][0] = (local_A[y - 1][m - 1] * K[0][0] + local_A[y - 1][0]     * K[0][1] + local_A[y - 1][1]     * K[0][2] +
                                 local_A[y][m - 1]     * K[1][0] + local_A[y][0]         * K[1][1] + local_A[y][1]         * K[1][2] +
-                                local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2];                
-                local_B[y][m - 1] = local_A[y - 1][m - 2] * K[0][0] + local_A[y - 1][m - 1] * K[0][1] +  local_A[y - 1][0]* K[0][2] +
+                                local_A[y + 1][m - 1] * K[2][0] + local_A[y + 1][0]     * K[2][1] + local_A[y + 1][1]     * K[2][2]) / 9;                
+                local_B[y][m - 1] = (local_A[y - 1][m - 2] * K[0][0] + local_A[y - 1][m - 1] * K[0][1] +  local_A[y - 1][0]* K[0][2] +
                                     local_A[y][m - 2]     * K[1][0] + local_A[y][m - 1]     * K[1][1] +  local_A[y][0]    * K[1][2] +
-                                    local_A[y + 1][m - 2] * K[2][0] + local_A[y + 1][m - 1] * K[2][1] +  local_A[y + 1][0]* K[2][2];              
+                                    local_A[y + 1][m - 2] * K[2][0] + local_A[y + 1][m - 1] * K[2][1] +  local_A[y + 1][0]* K[2][2]) / 9;              
                 for(int z = 1; z < m - 1; z++) {
-                    local_B[y][z] = local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
+                    local_B[y][z] = (local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
                                     local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
-                                    local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2];
+                                    local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2]) / 9;
                 }                
             }
             //send
@@ -127,16 +127,16 @@ MPI_Barrier(MPI_COMM_WORLD);
         } 
         else { //local_B -> local_A
             for(int y = 1; y <= size + rest; y++) {
-                local_A[y][0] = local_B[y - 1][m - 1] * K[0][0] + local_B[y - 1][0]     * K[0][1] + local_B[y - 1][1]     * K[0][2] +
+                local_A[y][0] = (local_B[y - 1][m - 1] * K[0][0] + local_B[y - 1][0]     * K[0][1] + local_B[y - 1][1]     * K[0][2] +
                                 local_B[y][m - 1]     * K[1][0] + local_B[y][0]         * K[1][1] + local_B[y][1]         * K[1][2] +
-                                local_B[y + 1][m - 1] * K[2][0] + local_B[y + 1][0]     * K[2][1] + local_B[y + 1][1]     * K[2][2];
-                local_A[y][m - 1] = local_B[y - 1][m-2] * K[0][0] + local_B[y - 1][m - 1] * K[0][1] + local_B[y - 1][0] * K[0][2] +
+                                local_B[y + 1][m - 1] * K[2][0] + local_B[y + 1][0]     * K[2][1] + local_B[y + 1][1]     * K[2][2]) / 9;
+                local_A[y][m - 1] = (local_B[y - 1][m-2] * K[0][0] + local_B[y - 1][m - 1] * K[0][1] + local_B[y - 1][0] * K[0][2] +
                                     local_B[y][m-2]     * K[1][0] + local_B[y][m - 1]     * K[1][1] + local_B[y][0]     * K[1][2] +
-                                    local_B[y + 1][m-2] * K[2][0] + local_B[y + 1][m - 1] * K[2][1] + local_B[y + 1][0] * K[2][2];
+                                    local_B[y + 1][m-2] * K[2][0] + local_B[y + 1][m - 1] * K[2][1] + local_B[y + 1][0] * K[2][2]) / 9;
                 for(int z = 1; z < m - 1; z++) {
-                    local_A[y][z] = local_B[y - 1][z - 1] * K[0][0] + local_B[y - 1][z] * K[0][1] + local_B[y - 1][z + 1] * K[0][2] +
+                    local_A[y][z] = (local_B[y - 1][z - 1] * K[0][0] + local_B[y - 1][z] * K[0][1] + local_B[y - 1][z + 1] * K[0][2] +
                                     local_B[y][z - 1]     * K[1][0] + local_B[y][z]     * K[1][1] + local_B[y][z + 1]     * K[1][2] +
-                                    local_B[y + 1][z - 1] * K[2][0] + local_B[y + 1][z] * K[2][1] + local_B[y + 1][z + 1] * K[2][2];
+                                    local_B[y + 1][z - 1] * K[2][0] + local_B[y + 1][z] * K[2][1] + local_B[y + 1][z + 1] * K[2][2]) / 9;
                 }
             }
             //send
@@ -166,16 +166,16 @@ MPI_Barrier(MPI_COMM_WORLD);
     }
     if(myid != 0){
         MPI_Send(result, (size + rest) * m, MPI_INT, 0, 0, MPI_COMM_WORLD);
-printf("id = %d, send!\n", myid);       
+//printf("id = %d, send!\n", myid);       
     }
     else {
         for(int i = 0; i < size * m; i++){
             printf("%d ", result[i]);
         }
-printf("print id = 0\n");
+//printf("print id = 0\n");
         for (int v = 1; v < numprocs - 1; v++) {
             MPI_Recv(result, size * m, MPI_INT, v, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d, receive!\n", v);
+//printf("id = %d, receive!\n", v);
             for(int i = 0; i < size * m;i++){
                  printf("%d ", result[i]);
             }
