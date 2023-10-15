@@ -38,7 +38,7 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
             A[i] = (int*)malloc(m * sizeof(int));
         }
         k = 1;    
-        for (int i = 1; i < n ; i++) {
+        for (int i = 0; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
                 fscanf(input_file, "%d", &A[i+k][j]);
 printf("%d ", i+k);
