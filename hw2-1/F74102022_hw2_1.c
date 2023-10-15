@@ -108,9 +108,9 @@ int main( int argc, char *argv[]){
         }
         MPI_Scatterv(A, recv_counts, displacements, MPI_INT, local_A, recv_counts[myid], MPI_INT, 0, MPI_COMM_WORLD);
     }
-    
+
 for(int i=0 ;i <n + 2 * numprocs;i++){
-printf("id = %d : %d %d \n", myid, local_A[i][0], local_A[i][1], local_A[i][2]); 
+printf("id = %d : %d %d %d \n", myid, local_A[i][0], local_A[i][1], local_A[i][2]); 
 printf("");
 } 
 
