@@ -87,18 +87,21 @@ int main( int argc, char *argv[]){
     int** local_B;        
     local_A = (int**)malloc((size + rest) * sizeof(int*));
     local_B = (int**)malloc((size + rest) * sizeof(int*));
+printf("Id = %d, array size : %d\n", myid, size + rest);
     for(int i = 0; i < size + rest; i++) {
         local_A[i] = (int*)malloc(m * sizeof(int));
         local_B[i] = (int*)malloc(m * sizeof(int));
         for(int j=0;j<m;j++){
             local_A[i][j] = A[myid * size + i][j];
-        }       
+printf("%d ", local_A[i][j]);
+        }   
+printf("\n");    
     }
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
         back += numprocs;
-printf("ID = %d, front = %d, back = %d, size = %d, rest = %d, m = %d\n", myid, front, back, size, rest, m);
+printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + rest);
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
@@ -120,6 +123,7 @@ printf("test0\nid = %d, size = %d, rest = %d\n", myid, size, rest);
             //send
             MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
+printf("test1\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 printf("test2\n");             
