@@ -30,15 +30,11 @@ int main( int argc, char *argv[]){
         fscanf(input_file, "%d", &t);
         fscanf(input_file, "%d %d", &n, &m);
         size = n / numprocs;
-    }
-    MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
-    for (int i = 0; i < n + 2 * numprocs; i++) {
-        A[i] = (int*)malloc(m * sizeof(int));
-    }    
-    if (myid == 0) {
+
+        A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
+        for (int i = 0; i < n + 2 * numprocs; i++) {
+            A[i] = (int*)malloc(m * sizeof(int));
+        }     
         k = 1;    
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
@@ -71,7 +67,16 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
-    for(int i = 0; i < n + 2 * numprocs){
+    MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    if(myid!=0){
+        A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
+        for (int i = 0; i < n + 2 * numprocs; i++) {
+            A[i] = (int*)malloc(m * sizeof(int));
+        }   
+    }
+    for(int i = 0; i < n + 2 * numprocs;i++){
        MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
     }    
     
