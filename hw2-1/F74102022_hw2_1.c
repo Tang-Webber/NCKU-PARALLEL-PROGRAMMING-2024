@@ -32,6 +32,7 @@ int main( int argc, char *argv[]){
         size = n / numprocs;
 
 printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
+
         A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
         for (int i = 0; i < n + 2 * numprocs; i++) {
             A[i] = (int*)malloc(m * sizeof(int));
@@ -40,10 +41,12 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
                 fscanf(input_file, "%d", &A[i+k][j]);
+printf("%d ", i+k);
             }
             if(i % size == 0 && k <= 17 && i != 0)
                 k += 2;
-        }        
+        }      
+printf("test\n");  
         size += 2;      //actual size = n / numprocs + 2
         for(int i = 1; i < numprocs ; i++){
             for (int j = 0; j < m ; j++) {
@@ -51,6 +54,7 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
                 A[i * size][j] = A[i * size - 2][j];
             }                  
         }   
+printf("test\n");
         for (int j = 0; j < m ; j++) {
             A[0][j] = A[n + 2 * numprocs - 2][j];
             A[n + 2 * numprocs - 1][j] = A[1][j];
