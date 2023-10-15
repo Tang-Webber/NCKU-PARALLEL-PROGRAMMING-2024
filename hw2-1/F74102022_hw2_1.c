@@ -77,7 +77,7 @@ int main( int argc, char *argv[]){
     size = n / numprocs + 2;
     int** local_A;
     int** local_B;
-
+MPI_Barrier(MPI_COMM_WORLD);
     //scatter
     if(rest == 0){
         local_A = (int**)malloc(size * sizeof(int*));
@@ -108,12 +108,12 @@ int main( int argc, char *argv[]){
         }
         MPI_Scatterv(A, recv_counts, displacements, MPI_INT, local_A, recv_counts[myid], MPI_INT, 0, MPI_COMM_WORLD);
     }
-
+printf("id = %d\n", myid );
 for(int i=0 ;i <n + 2 * numprocs;i++){
 printf("id = %d : %d %d %d \n", myid, local_A[i][0], local_A[i][1], local_A[i][2]); 
-printf("");
 } 
-
+printf("?????");
+MPI_Barrier(MPI_COMM_WORLD);
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
