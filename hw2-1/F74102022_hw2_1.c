@@ -161,6 +161,7 @@ for(int i=0;i<m;i++){
             //receive
             MPI_Recv(local_A[0], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             MPI_Recv(local_A[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
+printf("id = %d, t = %d", myid, t);           
         }
     } 
 printf("calculate done!\n");
