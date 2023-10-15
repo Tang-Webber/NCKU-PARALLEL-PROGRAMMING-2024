@@ -164,10 +164,9 @@ MPI_Barrier(MPI_COMM_WORLD);
             }
         }
     }
-
-printf("id = %d, send!\n", myid);
     if(myid != 0){
-        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(result, (size + rest) * m, MPI_INT, 0, 0, MPI_COMM_WORLD);
+printf("id = %d, send!\n", myid);       
     }
     else {
         for(int i = 0; i < size * m; i++){
