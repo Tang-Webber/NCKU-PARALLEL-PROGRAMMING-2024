@@ -150,71 +150,40 @@ MPI_Barrier(MPI_COMM_WORLD);
 //printf("calculate done!\n");
     //size += 2;
     int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
-    if (myid != 0) {
-        if(t % 2 == 0){         //A->B->A
-            for(int i=0;i<size;i++){
-                for(int j=0;j<m;j++){
-                    result[i*m + j] = local_A[i+1][j];
-                }
+    if(t % 2 == 0){         //A->B->A
+        for(int i=0;i<size;i++){
+            for(int j=0;j<m;j++){
+                result[i*m + j] = local_A[i+1][j];
             }
-            MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-            //MPI_Send(local_A, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         }
-        else{
-            for(int i=0;i<size;i++){
-                for(int j=0;j<m;j++){
-                    result[i*m + j] = local_B[i+1][j];
-                }
+        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        //MPI_Send(local_A, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    }
+    else{
+        for(int i=0;i<size;i++){
+            for(int j=0;j<m;j++){
+                result[i*m + j] = local_B[i+1][j];
             }
-            MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
-            //MPI_Send(local_B, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         }
+        MPI_Send(result, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        //MPI_Send(local_B, (size + rest) * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    }
 printf("id = %d, send!\n", myid);
-    } 
-    else {
-        //temp = (int**)malloc(n / numprocs + rest * sizeof(int*));
-        //for(int i = 0; i < n / numprocs + rest; i++) {
-        //    temp[i] = (int*)malloc(m * sizeof(int));
-        //}
-
-        if(t % 2 == 0){
-            for(int i=1 ;i < size - 2;i++){
-                for(int j=0;j<m;j++){
-                    printf("%d ", local_A[i][j]);
-                }
-            }            
-        }
-        else{
-            for(int i=1 ;i < size - 2;i++){
-                for(int j=0;j<m;j++){
-                    printf("%d ", local_B[i][j]);
-                }
-            } 
+    if (myid == 0) {
+        for(int i = 0; i < size * m; i++){
+            printf("%d ", result[i]);
         }
 printf("print id = 0\n");
         for (int v = 1; v < numprocs - 1; v++) {
-            MPI_Recv(result, size  * m, MPI_INT, v, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(result, size * m, MPI_INT, v, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             for(int i = 0; i < size * m;i++){
                  printf("%d ", result[i]);
             }
-            //MPI_Recv(temp, size * m, MPI_INT, v, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            //for(int i=1 ;i < size - 2;i++){
-            //    for(int j=0;j<m;j++){
-            //        printf("%d ", temp[i][j]);
-            //    }
-            //} 
-
         }
-        //MPI_Recv(temp, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(result, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         for(int i = 0; i < (size + n % numprocs) * m; i++){
             printf("%d ", result[i]);
         }
-        //for(int i=1 ;i < size + n % numprocs - 2;i++){
-        //    for(int j=0;j<m;j++){
-        //        printf("%d ", temp[i][j]);
-        //    }
-        //} 
     }
     MPI_Finalize();
     return 0;
