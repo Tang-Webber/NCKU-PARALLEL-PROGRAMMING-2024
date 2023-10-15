@@ -37,13 +37,13 @@ printf("t:%d n:%d m:%d size:%d\n", t, n, m, size);
         for (int i = 0; i < n + 2 * numprocs; i++) {
             A[i] = (int*)malloc(m * sizeof(int));
         }
-        k = 1;
-        for (int i = 0; i < n ; i++) {
+        k = 1;    
+        for (int i = 1; i < n ; i++) {
             for (int j = 0; j < m ; j++) {
                 fscanf(input_file, "%d", &A[i+k][j]);
 printf("%d ", i+k);
             }
-            if(i % size == 0 && k < 15 && i != 0)
+            if((i+1) % size == 0 && k < 15)
                 k += 2;
         }      
 printf("test\n");  
