@@ -113,7 +113,7 @@ int main( int argc, char *argv[]){
 
         local_A = (int**)malloc(size * sizeof(int*));
         local_B = (int**)malloc(size * sizeof(int*));
-        for(i = 0; i < size; i++) {
+        for(int i = 0; i < size; i++) {
             local_A[i] = (int*)malloc(m * sizeof(int));
             local_B[i] = (int*)malloc(m * sizeof(int));
         }
