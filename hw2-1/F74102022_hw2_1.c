@@ -105,7 +105,6 @@ int main( int argc, char *argv[]){
         back += numprocs;
 //printf("ID = %d, front = %d, back = %d, size = %d\n", myid, front, back, size + rest);
 MPI_Barrier(MPI_COMM_WORLD);
-printf("%d", t);
     //calculate
     size -= 2;
     for(int x = 0; x < t; x++) {
@@ -130,11 +129,8 @@ printf("%d", t);
             MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);
 //printf("send\n");
             //receive
-            MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get1\n", myid);        
-            MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get2\n", myid);   
-  
+            MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+            MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         } 
         else { //local_B -> local_A
             for(int y = 1; y <= size + rest; y++) {
@@ -151,13 +147,11 @@ printf("id = %d,get2\n", myid);
                 }
             }
             //send
-            MPI_Send(local_A[1], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD);
-            MPI_Send(local_A[size + rest], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD);           
+            MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+            MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
             //receive
-            MPI_Recv(local_A[0], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get1\n", myid);             
-            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
-printf("id = %d,get2\n", myid);            
+            MPI_Recv(local_A[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
+            MPI_Recv(local_A[size + rest + 1], m, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);            
         }
     } 
 printf("calculate done!\n");
