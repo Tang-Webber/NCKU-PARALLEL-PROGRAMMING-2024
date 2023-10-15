@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stddef.h>
 
 int main( int argc, char *argv[]){
     int t, D, n, m, myid, numprocs;
@@ -36,7 +38,7 @@ int main( int argc, char *argv[]){
             k = 1;
             for (int i = 0; i < n ; i++) {
                 for (int j = 0; j < m ; j++) {
-                    fscanf(input_file, "%d", &A_t[i+k][j]);
+                    fscanf(input_file, "%d", &A[i+k][j]);
                 }
                 if(i % size == 0 && k <= 17 && i != 0)
                     k += 2;
@@ -84,13 +86,14 @@ int main( int argc, char *argv[]){
 
     rest = n % numprocs;
     size = n / numprocs + 2;
-    int** local_A, local_B;
+    int** local_A;
+    int** local_B;
 
     //scatter
     if(rest == 0){
         local_A = (int**)malloc(size * sizeof(int*));
         local_B = (int**)malloc(size * sizeof(int*));
-        for(i = 0; i < size; i++) {
+        for(int i = 0; i < size; i++) {
             local_A[i] = (int*)malloc(m * sizeof(int));
             local_B[i] = (int*)malloc(m * sizeof(int));
         }
@@ -164,7 +167,7 @@ int main( int argc, char *argv[]){
 
     size += 2;
     if (myid != 0) {
-        if(t % 2 == 0){         A->B->A
+        if(t % 2 == 0){         //A->B->A
             MPI_Send(local_A, size * m, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
         }
         else{
