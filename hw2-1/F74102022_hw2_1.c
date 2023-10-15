@@ -10,7 +10,7 @@ int main( int argc, char *argv[]){
     int count = 0;
     char input[50];
     int** A;
-    int** K;
+    int K[3][3];
     int** temp;
     int size;
     int rest = 0;
@@ -56,10 +56,10 @@ int main( int argc, char *argv[]){
         }  
 
         fscanf(input_file, "%d", &D);
-        K = (int**)malloc(D * sizeof(int*));
-        for(int i = 0; i < D; i++) {
-            K[i] = (int*)malloc(D * sizeof(int));
-        }
+        //K = (int**)malloc(D * sizeof(int*));
+        //for(int i = 0; i < D; i++) {
+        //    K[i] = (int*)malloc(D * sizeof(int));
+        //}
         for(int i = 0; i < D; i++) {
             for(int j = 0; j < D; j++) {
                 fscanf(input_file, "%d", &K[i][j]);
@@ -70,6 +70,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(K, 9, MPI_INT, 0, MPI_COMM_WORLD);
     if(myid!=0){
         A = (int**)malloc((n + 2 * numprocs) * sizeof(int*));
         for (int i = 0; i < n + 2 * numprocs; i++) {
