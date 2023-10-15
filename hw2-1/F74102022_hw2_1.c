@@ -131,15 +131,10 @@ printf("%d", t);
 //printf("send\n");
             //receive
             MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("id = %d,get1\n", myid);   
-for(int i=0;i<m;i++){
-    printf("%d ", local_B[0][i]);
-}          
+printf("id = %d,get1\n", myid);        
             MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 printf("id = %d,get2\n", myid);   
-for(int i=0;i<m;i++){
-    printf("%d ", local_B[size + rest + 1][i]);
-}      
+  
         } 
         else { //local_B -> local_A
             for(int y = 1; y <= size + rest; y++) {
@@ -160,8 +155,9 @@ for(int i=0;i<m;i++){
             MPI_Send(local_A[size + rest], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD);           
             //receive
             MPI_Recv(local_A[0], m, MPI_INT, (myid - 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+printf("id = %d,get1\n", myid);             
             MPI_Recv(local_A[size + rest + 1], m, MPI_INT, (myid + 1) % numprocs, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  
-printf("id = %d, t = %d", myid, t);           
+printf("id = %d,get2\n", myid);            
         }
     } 
 printf("calculate done!\n");
