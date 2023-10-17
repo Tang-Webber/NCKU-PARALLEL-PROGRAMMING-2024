@@ -51,10 +51,12 @@ int main( int argc, char *argv[]){
 
     if(size >= 0){                      //6
         if(myid == 0){
+/*
 for(int z=0;z<n;z++){
     printf("%d ", dist[z]);
 }
 printf("\n");
+*/
             selected[0] = true;
             dist[0] = 0;
             for(int i=0;i<n;i++){           //initialize
@@ -89,7 +91,6 @@ printf("\n");
             printf("%d ", dist[i]);
         }
     }
-
 
 
     MPI_Finalize();
