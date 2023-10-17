@@ -72,6 +72,7 @@ printf("\n");
                         min[1] = dist[j];
                     }
                 }
+printf("choose dist[%d]=%d", min[0], min[1]);                
                 selected[min[0]] = true;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < dist[min[0]] + Adj[min[0]][j]){
