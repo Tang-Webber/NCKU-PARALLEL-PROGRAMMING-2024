@@ -5,12 +5,13 @@
 #include <stdlib.h>
 #include <stddef.h>
 
+short Adj[50000][50000];
+
 int main( int argc, char *argv[]){
     int n, myid, numprocs;
     char input[50];
-    //short Adj[50000][50000];
+    
     short **A;
-
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
@@ -33,7 +34,7 @@ int main( int argc, char *argv[]){
         short temp;
         while (stop == 1) {
             stop = fscanf(input_file, "%d %d %hd", &x, &y, &temp);
-            A[x][y] = temp;
+            Adj[x][y] = temp;
         }
         fclose(input_file);
     }
@@ -45,7 +46,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     //MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
-printf("%hd\n", A[0][2]);
+printf("%hd\n", Adj[0][2]);
     MPI_Finalize();
     return 0;
 }
