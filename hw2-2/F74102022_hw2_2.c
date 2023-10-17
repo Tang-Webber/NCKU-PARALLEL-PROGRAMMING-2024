@@ -53,6 +53,10 @@ int main( int argc, char *argv[]){
 
     if(size >= 0){                      //6
         if(myid == 0){
+for(int z=0;z<n;z++){
+    printf("%d ", dist[z]);
+}
+printf("\n");
             selected[0] = true;
             dist[0] = 0;
             for(int i=0;i<n;i++){           //initialize
@@ -61,10 +65,6 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 1; i < n; i++){
-for(int z=0;z<n;z++){
-    printf("%d ", dist[z]);
-}
-printf("\n");
                 min[1] = 1000;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
