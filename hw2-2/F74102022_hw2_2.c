@@ -30,11 +30,11 @@ int main( int argc, char *argv[]){
         //    A[i] = (short**)malloc(n  * sizeof(short*));
         //}     
   
-        int EOF = 1;
+        int stop = 1;
         int x, y;
         short temp;
-        while (EOF == 1) {
-            EOF = fscanf(input_file, "%d %d %hd", &x, %y, &temp);
+        while (stop == 1) {
+            stop = fscanf(input_file, "%d %d %hd", &x, &y, &temp);
             Adj[x][y] = temp;
         }
         fclose(input_file);
