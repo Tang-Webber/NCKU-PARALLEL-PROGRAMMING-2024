@@ -77,7 +77,7 @@ printf("choose dist[%d]=%d\n", min[0], min[1]);
                 for(int j = 0; j < n; j++){
 printf("%d vs %d + %d \n", dist[j] ,dist[min[0]], Adj[min[0]][j]);
                     if(!selected[j] && dist[j] > dist[min[0]] + Adj[min[0]][j]){
-                        dist[min[0]] = Adj[min[0]][j];
+                        dist[j] = dist[min[0]] + Adj[min[0]][j];
                     }
                 }
             }
