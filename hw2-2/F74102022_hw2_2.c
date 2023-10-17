@@ -44,7 +44,7 @@ int main( int argc, char *argv[]){
         }  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
 printf("%hd\n", A[0][2]);
     MPI_Finalize();
     return 0;
