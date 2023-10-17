@@ -51,7 +51,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
 
-    if(size == 0){                      //6
+    if(size >= 0){                      //6
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;
@@ -61,21 +61,15 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 1; i < n; i++){
-for(int z=0;z<n;z++){
-    printf("%d ", dist[z]);
-}
-printf("\n");
                 min[1] = 1000;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
                         min[0] = j;
                         min[1] = dist[j];
                     }
-                }
-printf("choose dist[%d]=%d\n", min[0], min[1]);                
+                }               
                 selected[min[0]] = true;
                 for(int j = 0; j < n; j++){
-printf("%d vs %d + %d \n", dist[j] ,dist[min[0]], Adj[min[0]][j]);
                     if(!selected[j] && dist[j] > dist[min[0]] + Adj[min[0]][j]){
                         dist[j] = dist[min[0]] + Adj[min[0]][j];
                     }
