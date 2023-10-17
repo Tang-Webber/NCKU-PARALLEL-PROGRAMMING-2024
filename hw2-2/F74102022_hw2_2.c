@@ -74,7 +74,7 @@ printf("\n");
                 }             
                 selected[min[0]] = true;
                 for(int j = 0; j < n; j++){
-                    if(!selected[j] && Adj[i][j] != -1 && dist[j] > dist[min[0]] + Adj[min[0]][j]){
+                    if(!selected[j] && Adj[min[0]][j] != -1 && dist[j] > dist[min[0]] + Adj[min[0]][j]){
                         dist[j] = dist[min[0]] + Adj[min[0]][j];
                     }
                 }
