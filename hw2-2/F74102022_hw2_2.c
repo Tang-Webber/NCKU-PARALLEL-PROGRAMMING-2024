@@ -33,7 +33,6 @@ int main( int argc, char *argv[]){
         short temp;
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %hd", &x, &y, &temp);
-printf("%d %d %hd\n", x, y, temp);
             Adj[x][y] = temp;
         }
         fclose(input_file);
@@ -45,7 +44,7 @@ printf("%d %d %hd\n", x, y, temp);
         }  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
 printf("%hd\n", Adj[0][2]);
     MPI_Finalize();
     return 0;
