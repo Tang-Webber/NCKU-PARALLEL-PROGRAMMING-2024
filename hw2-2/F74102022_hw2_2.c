@@ -31,7 +31,7 @@ int main( int argc, char *argv[]){
   
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
-                Adj[i][j] = 10000;
+                Adj[i][j] = -1;
             }
             dist[i] = 100000;
             selected[i] = false;
@@ -74,7 +74,7 @@ printf("\n");
                 }             
                 selected[min[0]] = true;
                 for(int j = 0; j < n; j++){
-                    if(!selected[j] && dist[j] > dist[min[0]] + Adj[min[0]][j]){
+                    if(!selected[j] && Adj[i][j] != -1 && dist[j] > dist[min[0]] + Adj[min[0]][j]){
                         dist[j] = dist[min[0]] + Adj[min[0]][j];
                     }
                 }
