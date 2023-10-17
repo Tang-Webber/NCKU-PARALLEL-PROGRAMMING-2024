@@ -65,7 +65,7 @@ printf("\n");
                 }
             }
             for(int i = 1; i < n; i++){
-                min[1] = 1000;
+                min[1] = 100000;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
                         min[0] = j;
