@@ -60,7 +60,7 @@ printf("\n");
             selected[0] = true;
             dist[0] = 0;
             for(int i=0;i<n;i++){           //initialize
-                if(Adj[0][i] != 1000){
+                if(Adj[0][i] != -1){
                     dist[i] = Adj[0][i];
                 }
             }
