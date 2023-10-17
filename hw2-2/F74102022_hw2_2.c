@@ -61,13 +61,17 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 1; i < n; i++){
+for(int z=0;z<n;z++){
+    printf("%d ", dist[z]);
+}
+printf("\n");
                 min[1] = 1000;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
                         min[0] = j;
                         min[1] = dist[j];
                     }
-                }               
+                }             
                 selected[min[0]] = true;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] > dist[min[0]] + Adj[min[0]][j]){
