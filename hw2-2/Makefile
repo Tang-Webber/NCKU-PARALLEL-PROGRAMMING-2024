@@ -1,11 +1,11 @@
-CC := mpic++
+CC := mpicc
 CFLAGS := -Wall
 TARGET := hw2_2
 v := 1
 
 all: $(TARGET)
 
-$(TARGET):F74102022_hw2_2.cpp
+$(TARGET):F74102022_hw2_2.c
 	$(CC) -o $@ $^
 
 judge: all
