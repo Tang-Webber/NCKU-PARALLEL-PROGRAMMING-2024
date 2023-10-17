@@ -11,7 +11,6 @@ int main( int argc, char *argv[]){
     int n, myid, numprocs;
     char input[50];
     int size;
-    int choose[50000] = {0};  
     bool selected[50000];
     int dist[50000];   
     int min[2];         //(index, dist)
@@ -34,10 +33,9 @@ int main( int argc, char *argv[]){
             for(int j=0;j<n;j++){
                 Adj[i][j] = 1000;
             }
-            choose[i] = 1000;
+            dist[i] = 1000;
             selected[i] = false;
         }
-        choose[0] = 0;
 
         int x, y;
         short temp;
