@@ -24,14 +24,10 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
-    }
-
-    A = (short**)malloc(n  * sizeof(short*));
-    for (int i = 0; i < n; i++) {
-        A[i] = (short**)malloc(n  * sizeof(short*));
-    }    
-
-    if (myid == 0) {
+        A = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            A[i] = (short*)malloc(n  * sizeof(short*));
+        }    
         int stop = 1;
         int x, y;
         short temp;
@@ -40,6 +36,12 @@ int main( int argc, char *argv[]){
             A[x][y] = temp;
         }
         fclose(input_file);
+    }
+    if(myid != 0){
+        A = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            A[i] = (short*)malloc(n  * sizeof(short*));
+        }  
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
