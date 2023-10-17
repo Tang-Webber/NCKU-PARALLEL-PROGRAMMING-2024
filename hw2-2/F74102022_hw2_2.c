@@ -31,9 +31,9 @@ int main( int argc, char *argv[]){
   
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
-                Adj[i][j] = 1000;
+                Adj[i][j] = 10000;
             }
-            dist[i] = 1000;
+            dist[i] = 100000;
             selected[i] = false;
         }
 
