@@ -34,6 +34,7 @@ int main( int argc, char *argv[]){
         short temp;
         while (stop == 1) {
             stop = fscanf(input_file, "%d %d %hd", &x, &y, &temp);
+printf("%d %d %hd\n", x, y, temp);
             Adj[x][y] = temp;
         }
         fclose(input_file);
