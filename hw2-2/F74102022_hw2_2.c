@@ -8,7 +8,7 @@
 int main( int argc, char *argv[]){
     int n, myid, numprocs;
     char input[50];
-    short Adj[50000][50000];
+    //short Adj[50000][50000];
     short **A;
 
     MPI_Init(&argc,&argv);
@@ -24,24 +24,26 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
+    }
 
-        //A = (short**)malloc(n  * sizeof(short*));
-        //for (int i = 0; i < n; i++) {
-        //    A[i] = (short**)malloc(n  * sizeof(short*));
-        //}     
-  
+    A = (short**)malloc(n  * sizeof(short*));
+    for (int i = 0; i < n; i++) {
+        A[i] = (short**)malloc(n  * sizeof(short*));
+    }    
+
+    if (myid == 0) {
         int stop = 1;
         int x, y;
         short temp;
         while (stop == 1) {
             stop = fscanf(input_file, "%d %d %hd", &x, &y, &temp);
-            Adj[x][y] = temp;
+            A[x][y] = temp;
         }
         fclose(input_file);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
-printf("%hd\n", Adj[0][2]);
+    MPI_Bcast(A, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
+printf("%hd\n", A[0][2]);
     MPI_Finalize();
     return 0;
 }
