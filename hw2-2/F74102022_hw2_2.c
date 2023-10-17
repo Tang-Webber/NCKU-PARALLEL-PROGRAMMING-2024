@@ -53,6 +53,8 @@ int main( int argc, char *argv[]){
 
     if(size == 0){                      //6
         if(myid == 0){
+            selected[0] = true;
+            dist[0] = 0;
             for(int i=0;i<n;i++){           //initialize
                 if(Adj[0][i] != 1000){
                     dist[i] = Adj[0][i];
