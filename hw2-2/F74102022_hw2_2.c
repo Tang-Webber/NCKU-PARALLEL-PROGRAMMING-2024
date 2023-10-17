@@ -44,7 +44,6 @@ int main( int argc, char *argv[]){
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %hd", &x, &y, &temp);
             Adj[x][y] = temp;
-printf("%d %d %d", x, y, temp);
         }
         fclose(input_file);
     }
@@ -62,6 +61,10 @@ printf("%d %d %d", x, y, temp);
                 }
             }
             for(int i = 1; i < n; i++){
+for(int z=0;z<n;z++){
+    printf("%d ", dist[z]);
+}
+printf("\n");
                 min[1] = 1000;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
