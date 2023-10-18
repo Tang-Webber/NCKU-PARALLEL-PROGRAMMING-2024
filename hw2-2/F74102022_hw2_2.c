@@ -15,6 +15,7 @@ void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
         inout_array[1] = in_array[1];
         inout_array[0] = in_array[0];
     }
+printf("index:%d dict:%d\n", inout_array[0], inout_array[1]);
 }
 
 int main( int argc, char *argv[]){
@@ -38,7 +39,7 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
-        
+
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
                 Adj[i][j] = -1;
@@ -93,11 +94,18 @@ int main( int argc, char *argv[]){
     int global_min[2];
 
     //MPI_Reduce(min, &result, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
-    if(size > 0){                         //1000 50000
+    if(size != 0){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size
         selected[0] = true;
         dist[0] = 0;
-        for(int i = 1; i < n; i++){
+        /*
+        for(int i=0;i<size;i++){           //initialize
+            if(Adj[0][myid * size + i] != -1){
+                dist[myid * size + i] = Adj[0][myid * size + i];
+            }
+        }*/
+
+        for(int i = 0; i < n; i++){
             min[1] = 100000;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
@@ -126,7 +134,6 @@ int main( int argc, char *argv[]){
         }
     }
 
-//printf("%hd\n", Adj[0][2]);
     if(myid == 0){
         for(int i=0;i<n;i++){
             printf("%d ", dist[i]);
