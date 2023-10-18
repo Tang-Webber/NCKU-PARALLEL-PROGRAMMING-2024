@@ -10,7 +10,7 @@ short Adj[50000][50000];            //adjacency matrix
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
     int *inout_array = (int *)inout;
-//printf("index:%d dict:%d VS. index:%d dict:%d \n", inout_array[0], inout_array[1], in_array[0], in_array[1]);
+printf("index:%d dict:%d VS. index:%d dict:%d \n", inout_array[0], inout_array[1], in_array[0], in_array[1]);
     if (in_array[1] < inout_array[1]) {
         inout_array[1] = in_array[1];
         inout_array[0] = in_array[0];
@@ -116,10 +116,8 @@ int main( int argc, char *argv[]){
             //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
             
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
-if(global_min[1] != 100000){
-printf("Myid = %d, local : %d , dict=%d\n", myid, min[0],min[1]);
-printf("Myid = %d, global: %d , dict=%d\n", myid,global_min[0],global_min[1]);
-}
+//printf("Myid = %d, local : %d , dict=%d\n", myid, min[0],min[1]);
+//printf("Myid = %d, global: %d , dict=%d\n", myid,global_min[0],global_min[1]);
             selected[global_min[0]] = true;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > dist[global_min[0]] + Adj[global_min[0]][myid * size + j]){
@@ -140,7 +138,7 @@ printf("Myid = %d, global: %d , dict=%d\n", myid,global_min[0],global_min[1]);
 
     if(myid == 0){
         for(int i=0;i<n;i++){
-            printf("%d ", dist[i]);
+            //printf("%d ", dist[i]);
             //printf("%d ", selected[i]);
         }
     }
