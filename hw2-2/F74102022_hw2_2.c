@@ -103,6 +103,7 @@ int main( int argc, char *argv[]){
         }
 
         for(int i = 1; i < n; i++){
+printf("test %d", i);
             min[1] = global_min[1] = 100000;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
@@ -119,16 +120,16 @@ int main( int argc, char *argv[]){
                     dist[myid * size + j] = dist[global_min[0]] + Adj[global_min[0]][myid * size + j];
                 }
             }
-            if(myid!=0){
-                MPI_Send(&dist[myid * size], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
-            }
-            else{
-                for(int k=1;k<numprocs;k++){
-                    MPI_Recv(&dist[k * size], size, MPI_INT, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                }
-            }
-            MPI_Bcast(dist, n, MPI_INT, 0, MPI_COMM_WORLD);
+
         }
+        if(myid!=0){
+            MPI_Send(&dist[myid * size], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
+        }
+        else{
+            for(int k=1;k<numprocs;k++){
+                MPI_Recv(&dist[k * size], size, MPI_INT, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            }
+        }      
     }
 
     if(myid == 0){
