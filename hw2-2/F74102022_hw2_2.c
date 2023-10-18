@@ -70,7 +70,7 @@ int main( int argc, char *argv[]){
         MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
     }
     //MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
-    
+    /*
     for(int i=0; i<n;i++){
         dist[i] = 100000;
         selected[i] = false;
@@ -152,7 +152,7 @@ int main( int argc, char *argv[]){
             //printf("%d ", selected[i]);
         }
     }
-
+*/
     MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
