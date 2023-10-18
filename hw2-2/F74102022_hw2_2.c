@@ -65,11 +65,11 @@ int main( int argc, char *argv[]){
         for (int i = 0; i < n; i++) {
             Adj[i] = (short*)malloc(n * sizeof(short));
         }  
-    }
+    }*/
     for(int i=0;i<n;i++){
         MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-    }*/
-    MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
+    }
+    //MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
     
     for(int i=0; i<n;i++){
         dist[i] = 100000;
