@@ -115,7 +115,8 @@ int main( int argc, char *argv[]){
             //MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
             //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
-printf("choose %d , dict=%d\n",global_min[0],global_min[1]);
+printf("Myid = %d, choose %d , dict=%d\n", myid, min[0],min[1]);
+printf("           Choose %d , dict=%d\n",global_min[0],global_min[1]);
             selected[global_min[0]] = true;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > dist[global_min[0]] + Adj[global_min[0]][myid * size + j]){
