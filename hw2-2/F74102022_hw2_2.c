@@ -92,38 +92,40 @@ int main( int argc, char *argv[]){
     int global_min[3];
 
     if(size > 60){                         //1000 50000
-        //each process calculate n / numprocs , loop start from myid * size      
+        //each process calculate n / numprocs , loop start from myid * size     
+        int start = myid * size;
+        int end = start + size; 
         selected[0] = true;
         dist[0] = 0;
-        MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-        //MPI_Bcast(&Adj[0][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-        for(int j=0;j<size;j++){           //initialize
-            if(Adj[0][myid * size + j] != -1){
-                dist[myid * size + j] = Adj[0][myid * size + j];
+        //MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&Adj[0][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
+        for(int j = start; j < end; j++){           //initialize
+            if(Adj[0][j] != -1){
+                dist[j] = Adj[0][j];
             }
         }
 
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 100000;
-            for(int j = 0; j < size; j++){
-                if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
-                    min[0] = myid * size + j;
-                    min[1] = dist[myid * size + j];
+            for(int j = start; j < end; j++){
+                if(!selected[j] && dist[j] < min[1]){
+                    min[0] = j;
+                    min[1] = dist[j];
                 }
             }        
 
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
-            MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-            //MPI_Bcast(&Adj[global_min[0]][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-            for(int j = 0; j < size; j++){
-                if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > global_min[1] + Adj[global_min[0]][myid * size + j]){
-                    dist[myid * size + j] = global_min[1] + Adj[global_min[0]][myid * size + j];
+            //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&Adj[global_min[0]][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
+            for(int j = start; j < end; j++){
+                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][j];
                 }
             }
         }
         if(myid!=0){
-            MPI_Send(&dist[myid * size], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
+            MPI_Send(&dist[start], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
         }
         else{
             for(int k=1;k<numprocs;k++){
