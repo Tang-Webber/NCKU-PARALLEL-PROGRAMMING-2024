@@ -65,16 +65,14 @@ int main( int argc, char *argv[]){
             Adj[i] = (short*)malloc(n * sizeof(short));
         }  
     }
-    for(int i=0;i<n;i++){
-        MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-    }
+    //for(int i=0;i<n;i++){
+    //    MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+    //}
     
-
     for(int i=0; i<n;i++){
         dist[i] = 100000;
         selected[i] = false;
     }
-
 
     size = n / numprocs;
     if(size >= 0){                      //6
@@ -107,7 +105,6 @@ int main( int argc, char *argv[]){
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     int global_min[2];
 
-    //MPI_Reduce(min, &result, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
     if(size < 0){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size      
         selected[0] = true;
