@@ -65,9 +65,9 @@ int main( int argc, char *argv[]){
             Adj[i] = (short*)malloc(n * sizeof(short));
         }  
     }
-    //for(int i=0;i<n;i++){
-    //    MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-    //}
+    for(int i=0;i<n;i++){
+        MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+    }
     
 
     for(int i=0; i<n;i++){
@@ -77,7 +77,7 @@ int main( int argc, char *argv[]){
 
 
     size = n / numprocs;
-    if(size == 0){                      //6
+    if(size >= 0){                      //6
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;
@@ -108,7 +108,7 @@ int main( int argc, char *argv[]){
     int global_min[2];
 
     //MPI_Reduce(min, &result, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
-    if(size > 0){                         //1000 50000
+    if(size < 0){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size      
         selected[0] = true;
         dist[0] = 0;
@@ -127,12 +127,9 @@ int main( int argc, char *argv[]){
                 }
             }        
 
-            //MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
-            //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
-            
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
-//printf("Myid = %d, local : %d , dict=%d || global: %d , dict=%d\n", myid, min[0],min[1],global_min[0],global_min[1]);
             selected[global_min[0]] = true;
+
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > dist[global_min[0]] + Adj[global_min[0]][myid * size + j]){
                     dist[myid * size + j] = dist[global_min[0]] + Adj[global_min[0]][myid * size + j];
