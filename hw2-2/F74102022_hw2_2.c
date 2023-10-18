@@ -137,7 +137,7 @@ int main( int argc, char *argv[]){
         }
     }
 
-    MPI_Op_free(&custom_op);
+    //MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
 }
