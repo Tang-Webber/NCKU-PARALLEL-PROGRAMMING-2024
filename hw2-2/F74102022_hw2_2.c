@@ -39,14 +39,12 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
-    }
 
-    Adj = (short**)malloc(n  * sizeof(short*));
-    for (int i = 0; i < n; i++) {
-        Adj[i] = (short*)malloc(n * sizeof(short));
-    }   
-    if (myid == 0) {
-        FILE *input_file = fopen(input, "r");
+        Adj = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            Adj[i] = (short*)malloc(n * sizeof(short));
+        }   
+
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
                 Adj[i][j] = -1;
@@ -62,9 +60,15 @@ int main( int argc, char *argv[]){
         fclose(input_file);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    for(int i=0;i<n;i++){
-        MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+    if(myid!=0){
+        Adj = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            Adj[i] = (short*)malloc(n * sizeof(short));
+        }  
     }
+    //for(int i=0;i<n;i++){
+    //    MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+    //}
     
 
     for(int i=0; i<n;i++){
