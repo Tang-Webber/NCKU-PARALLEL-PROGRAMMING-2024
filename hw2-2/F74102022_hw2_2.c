@@ -114,7 +114,7 @@ int main( int argc, char *argv[]){
 
             //MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
             //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
-            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
+            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
 
             selected[global_min[0]] = true;
             for(int j = 0; j < size; j++){
