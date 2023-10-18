@@ -130,13 +130,13 @@ int main( int argc, char *argv[]){
             MPI_Bcast(dist, n, MPI_INT, 0, MPI_COMM_WORLD);
         }
     }
-*/
+
     if(myid == 0){
         for(int i=0;i<n;i++){
             printf("%d ", dist[i]);
         }
     }
-
+*/
     //MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
