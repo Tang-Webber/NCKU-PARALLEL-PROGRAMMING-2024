@@ -108,7 +108,7 @@ int main( int argc, char *argv[]){
     MPI_Op custom_op;
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     int global_min[2];
-
+/*
     if(size > 70){                         //50000
         //each process calculate n / numprocs , loop start from myid * size      
         selected[0] = true;
@@ -147,7 +147,7 @@ int main( int argc, char *argv[]){
             MPI_Bcast(dist, n, MPI_INT, 0, MPI_COMM_WORLD);
         }
     }
-
+*/
     if(myid == 0){
         for(int i=0;i<n;i++){
             printf("%d ", dist[i]);
