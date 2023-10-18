@@ -21,7 +21,7 @@ int main( int argc, char *argv[]){
     char input[50];
     int size;
     bool selected[50000];
-    short dist[50000];   
+    int dist[50000];   
     int min[2];         //(index, dist)
     short **Adj;
 
