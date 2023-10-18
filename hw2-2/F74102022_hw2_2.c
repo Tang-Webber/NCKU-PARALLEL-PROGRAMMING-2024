@@ -137,7 +137,8 @@ printf("Myid = %d, global: %d , dict=%d\n", myid,global_min[0],global_min[1]);
 
     if(myid == 0){
         for(int i=0;i<n;i++){
-            printf("%d ", dist[i]);
+            //printf("%d ", dist[i]);
+            printf("%d ", selected[i]);
         }
     }
 
