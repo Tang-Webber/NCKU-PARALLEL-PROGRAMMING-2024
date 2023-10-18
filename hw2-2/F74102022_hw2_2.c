@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-//short Adj[50000][50000];            //adjacency matrix 
+short Adj[50000][50000];            //adjacency matrix 
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
@@ -23,7 +23,7 @@ int main( int argc, char *argv[]){
     bool selected[50000];
     int dist[50000];   
     int min[2];         //(index, dist)
-    short **Adj;
+    //short **Adj;
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -59,6 +59,7 @@ int main( int argc, char *argv[]){
         fclose(input_file);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    /*
     if(myid!=0){
         Adj = (short**)malloc(n  * sizeof(short*));
         for (int i = 0; i < n; i++) {
@@ -67,7 +68,8 @@ int main( int argc, char *argv[]){
     }
     for(int i=0;i<n;i++){
         MPI_Bcast(Adj[i], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-    }
+    }*/
+    MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
     
     for(int i=0; i<n;i++){
         dist[i] = 100000;
