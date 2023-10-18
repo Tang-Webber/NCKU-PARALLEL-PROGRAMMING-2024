@@ -46,7 +46,7 @@ int main( int argc, char *argv[]){
         Adj[i] = (short*)malloc(n * sizeof(short));
     }   
     if (myid == 0) {
-
+        FILE *input_file = fopen(input, "r");
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
                 Adj[i][j] = -1;
