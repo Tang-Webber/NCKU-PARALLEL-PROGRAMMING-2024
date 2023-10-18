@@ -10,12 +10,11 @@ short Adj[50000][50000];            //adjacency matrix
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
     int *inout_array = (int *)inout;
-
+printf("index:%d dict:%d VS. index:%d dict:%d \n", inout_array[0], inout_array[1], in_array[0], in_array[1]);
     if (in_array[1] < inout_array[1]) {
         inout_array[1] = in_array[1];
         inout_array[0] = in_array[0];
     }
-printf("index:%d dict:%d\n", inout_array[0], inout_array[1]);
 }
 
 int main( int argc, char *argv[]){
