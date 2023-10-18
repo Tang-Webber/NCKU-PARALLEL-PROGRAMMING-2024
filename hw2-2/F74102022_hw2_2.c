@@ -59,10 +59,10 @@ int main( int argc, char *argv[]){
         selected[i] = false;
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(Adj, 25000000 * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD);
 
     size = n / numprocs;
-    if(size >= 0){                      //6
+    if(size == 0){                      //6
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;
@@ -93,7 +93,7 @@ int main( int argc, char *argv[]){
     int global_min[2];
 
     //MPI_Reduce(min, &result, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
-    if(size < 0){                         //1000 50000
+    if(size != 0){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size
         selected[0] = true;
         dist[0] = 0;
