@@ -96,7 +96,7 @@ int main( int argc, char *argv[]){
         selected[0] = true;
         dist[0] = 0;
         MPI_Bcast(&Adj[0][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-        for(int j=0;j<size;i++){           //initialize
+        for(int j=0;j<size;j++){           //initialize
             if(Adj[0][myid * size + j] != -1){
                 dist[myid * size + j] = Adj[0][myid * size + j];
             }
