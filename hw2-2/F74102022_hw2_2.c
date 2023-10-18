@@ -97,23 +97,24 @@ int main( int argc, char *argv[]){
         //each process calculate n / numprocs , loop start from myid * size
         selected[0] = true;
         dist[0] = 0;
-        /*
-        for(int i=0;i<size;i++){           //initialize
-            if(Adj[0][myid * size + i] != -1){
-                dist[myid * size + i] = Adj[0][myid * size + i];
+        for(int i=0;i<n;i++){           //initialize
+            if(Adj[0][i] != -1){
+                dist[i] = Adj[0][i];
             }
-        }*/
+        }
 
-        for(int i = 0; i < n; i++){
+        for(int i = 1; i < n; i++){
             min[1] = 100000;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
                     min[0] = myid * size + j;
                     min[1] = dist[myid * size + j];
                 }
-            }             
-            MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
-            MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
+            }        
+
+            //MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
+            //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
 
             selected[global_min[0]] = true;
             for(int j = 0; j < size; j++){
