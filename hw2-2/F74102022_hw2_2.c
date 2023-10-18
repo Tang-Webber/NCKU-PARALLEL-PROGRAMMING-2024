@@ -104,7 +104,7 @@ int main( int argc, char *argv[]){
         }
 
         for(int i = 1; i < n; i++){
-            min[1] = 100000;
+            min[1] = global_min[1] = 100000;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
                     min[0] = myid * size + j;
@@ -114,6 +114,7 @@ int main( int argc, char *argv[]){
 
             //MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
             //MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
+            
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
 if(global_min[1] != 100000){
 printf("Myid = %d, local : %d , dict=%d\n", myid, min[0],min[1]);
