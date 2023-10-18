@@ -38,12 +38,12 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
-
+        /*
         Adj = (short**)malloc(n  * sizeof(short*));
         for (int i = 0; i < n; i++) {
             Adj[i] = (short*)malloc(n * sizeof(short));
         }   
-
+*/
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
                 Adj[i][j] = -1;
