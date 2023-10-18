@@ -5,7 +5,17 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-short Adj[50000][50000];            //adjacency matrix         
+short Adj[50000][50000];            //adjacency matrix 
+
+void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
+    int *in_array = (int *)in;
+    int *inout_array = (int *)inout;
+
+    if (in_array[1] < inout_array[1]) {
+        inout_array[1] = in_array[1];
+        inout_array[0] = in_array[0];
+    }
+}
 
 int main( int argc, char *argv[]){
     int n, myid, numprocs;
@@ -47,16 +57,12 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
-    size = n / numprocs;
+    MPI_Bcast(dist, 50000, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(selected, 50000, MPI_BOOL, 0, MPI_COMM_WORLD);
 
-    if(size >= 0){                      //6
+    size = n / numprocs;
+    if(size == 0){                      //6
         if(myid == 0){
-/*
-for(int z=0;z<n;z++){
-    printf("%d ", dist[z]);
-}
-printf("\n");
-*/
             selected[0] = true;
             dist[0] = 0;
             for(int i=0;i<n;i++){           //initialize
@@ -81,8 +87,42 @@ printf("\n");
             }
         }
     }
-    else{                       //1000 50000
+    MPI_Op custom_op;
+    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
+    int global_min[2];
 
+    //MPI_Reduce(min, &result, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
+    if(size > 0){                         //1000 50000
+        //each process calculate n / numprocs , loop start from myid * size
+        selected[0] = true;
+        dist[0] = 0;
+        for(int i = 1; i < n; i++){
+            min[1] = 100000;
+            for(int j = 0; j < size; j++){
+                if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
+                    min[0] = myid * size + j;
+                    min[1] = dist[myid * size + j];
+                }
+            }             
+            MPI_Reduce(min, global_min, 2, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
+            MPI_Bcast(global_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
+
+            selected[global_min[0]] = true;
+            for(int j = 0; j < size; j++){
+                if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > dist[global_min[0]] + Adj[global_min[0]][myid * size + j]){
+                    dist[myid * size + j] = dist[global_min[0]] + Adj[global_min[0]][myid * size + j];
+                }
+            }
+            if(myid!=0){
+                MPI_Send(&dist[myid * size], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
+            }
+            else{
+                for(int k=1;k<numprocs;k++){
+                    MPI_Recv(&dist[k * size], size, MPI_INT, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                }
+            }
+            MPI_Bcast(dist, n, MPI_INT, 0, MPI_COMM_WORLD);
+        }
     }
 
 //printf("%hd\n", Adj[0][2]);
@@ -92,7 +132,7 @@ printf("\n");
         }
     }
 
-
+    MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
 }
