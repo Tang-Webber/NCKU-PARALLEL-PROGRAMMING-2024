@@ -61,7 +61,7 @@ int main( int argc, char *argv[]){
     }
 
     size = n / numprocs;
-    if(size <= 60){                      //6
+    if(size < 5000){                      //6
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;
@@ -91,7 +91,7 @@ int main( int argc, char *argv[]){
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     int global_min[3];
 
-    if(size > 60){                         //1000 50000
+    if(size > 5000){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size     
         int start = myid * size;
         int end = start + size; 
