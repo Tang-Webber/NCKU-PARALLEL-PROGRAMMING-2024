@@ -38,13 +38,11 @@ int main( int argc, char *argv[]){
             return 1;
         }
         fscanf(input_file, "%d", &n);
-  
+        
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
                 Adj[i][j] = -1;
-            }
-            dist[i] = 100000;
-            selected[i] = false;
+            } 
         }
 
         int x, y;
@@ -55,10 +53,13 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
+
+    for(int i=0; i<n;i++){
+        dist[i] = 100000;
+        selected[i] = false;
+    }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(Adj, 25000000, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(dist, 50000, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(selected, 50000, MPI_BOOL, 0, MPI_COMM_WORLD);
 
     size = n / numprocs;
     if(size == 0){                      //6
