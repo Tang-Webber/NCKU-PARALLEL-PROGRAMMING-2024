@@ -53,13 +53,17 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    for(int i=0;i<n;i++){
+        MPI_Bcast(Adj[i], n * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD);
+    }
+    
 
     for(int i=0; i<n;i++){
         dist[i] = 100000;
         selected[i] = false;
     }
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(Adj, 25000000 * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD);
+
 
     size = n / numprocs;
     if(size == 0){                      //6
