@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-short Adj[50000][50000];            //adjacency matrix 
+//short Adj[50000][50000];            //adjacency matrix 
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
