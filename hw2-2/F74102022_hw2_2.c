@@ -61,7 +61,7 @@ int main( int argc, char *argv[]){
     }
 
     size = n / numprocs;
-    if(size <= 70){                      //6
+    if(size <= 60){                      //6
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;
@@ -91,19 +91,18 @@ int main( int argc, char *argv[]){
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     int global_min[2];
 
-    if(size > 70){                         //1000 50000
+    if(size > 60){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size      
         selected[0] = true;
         dist[0] = 0;
-        MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-        for(int i=0;i<n;i++){           //initialize
-            if(Adj[0][i] != -1){
-                dist[i] = Adj[0][i];
+        MPI_Bcast(&Adj[0][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
+        for(int j=0;j<size;i++){           //initialize
+            if(Adj[0][myid * size + j] != -1){
+                dist[myid * size + j] = Adj[0][myid * size + j];
             }
         }
 
         for(int i = 1; i < n; i++){
-printf("test %d", i);
             min[1] = global_min[1] = 100000;
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && dist[myid * size + j] < min[1]){
@@ -114,7 +113,7 @@ printf("test %d", i);
 
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
-            MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&Adj[global_min[0]][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
             for(int j = 0; j < size; j++){
                 if(!selected[myid * size + j] && Adj[global_min[0]][myid * size + j] != -1 && dist[myid * size + j] > dist[global_min[0]] + Adj[global_min[0]][myid * size + j]){
                     dist[myid * size + j] = dist[global_min[0]] + Adj[global_min[0]][myid * size + j];
