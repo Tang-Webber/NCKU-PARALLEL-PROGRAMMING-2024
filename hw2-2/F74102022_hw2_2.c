@@ -119,6 +119,9 @@ int main( int argc, char *argv[]){
                     dist[myid * size + j] = dist[global_min[0]] + Adj[global_min[0]][myid * size + j];
                 }
             }
+ 
+        //MPI_Bcast(dist,50000 , MPI_INT, 0, MPI_COMM_WORLD);
+        }
         if(myid!=0){
             MPI_Send(&dist[myid * size], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
         }
@@ -126,10 +129,7 @@ int main( int argc, char *argv[]){
             for(int k=1;k<numprocs;k++){
                 MPI_Recv(&dist[k * size], size, MPI_INT, k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
-        }     
-        MPI_Bcast(dist,50000 , MPI_INT, 0, MPI_COMM_WORLD);
-        }
-
+        }    
     }
 
     if(myid == 0){
