@@ -52,7 +52,6 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
-    /*
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     
     for(int i=0; i<n;i++){
@@ -90,7 +89,7 @@ int main( int argc, char *argv[]){
     MPI_Op custom_op;
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     int global_min[2];
-/*
+printf("test1\n");
     if(size > 70){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size      
         selected[0] = true;
@@ -101,7 +100,7 @@ int main( int argc, char *argv[]){
                 dist[i] = Adj[0][i];
             }
         }
-
+printf("test2\n");
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 100000;
             for(int j = 0; j < size; j++){
@@ -110,7 +109,7 @@ int main( int argc, char *argv[]){
                     min[1] = dist[myid * size + j];
                 }
             }        
-
+printf("test 3-%d\n", i);
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
@@ -136,7 +135,7 @@ int main( int argc, char *argv[]){
             printf("%d ", dist[i]);
         }
     }
-*/
+
     //MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
