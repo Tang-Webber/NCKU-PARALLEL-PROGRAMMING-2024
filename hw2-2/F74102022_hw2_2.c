@@ -58,7 +58,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-    if(size < 7000){                      //6, 1000
+    if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
             selected[0] = true;
@@ -105,7 +105,7 @@ int main( int argc, char *argv[]){
             selected[0] = true;
             dist[0] = 0;            
         }        
-        MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+        //MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
         for(int j = 0; j < size; j++){ 
             if(temp[j] != -1){
                 dist[j] = temp[j];
@@ -121,8 +121,8 @@ int main( int argc, char *argv[]){
                 }
             }        
 
-            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
-            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            //MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
+            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             if(global_min[0] == min[0])
                 selected[min[0] - start] = true;
             
