@@ -141,8 +141,8 @@ int main( int argc, char *argv[]){
                 selected[min[0] - start] = true;
             
             for(int j = 0; j < size; j++){
-                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
-                    dist[j] = global_min[1] + Adj[global_min[0]][j];
+                if(!selected[j] && Adj[global_min[0]][start+j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][start+j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][start+j];
                 }
             }
         }
