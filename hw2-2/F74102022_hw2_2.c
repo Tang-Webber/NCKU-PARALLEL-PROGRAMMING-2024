@@ -129,7 +129,8 @@ int main( int argc, char *argv[]){
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             //MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
-printf("%d : %d\n", global_min[0], global_min[1]);
+if(myid == 7)
+    printf("%d : %d\n", global_min[0], global_min[1]);
             MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, block_size, MPI_SHORT, 0, MPI_COMM_WORLD);
     
             for(int j = 0; j < size; j++){
