@@ -101,7 +101,7 @@ int main( int argc, char *argv[]){
             sendcounts[i] = block_size;
             displacements[i] = i * block_size;
         }    
-        int *temp = (int *)malloc(block_size * sizeof(int));
+        short *temp = (short *)malloc(block_size * sizeof(short));
         
         int start = myid * size;
         int end = start + size; 
