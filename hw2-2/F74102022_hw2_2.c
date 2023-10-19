@@ -31,7 +31,8 @@ int main( int argc, char *argv[]){
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-
+    MPI_Op custom_op;
+    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -57,7 +58,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-
+    
     if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
@@ -92,23 +93,9 @@ int main( int argc, char *argv[]){
             }
         }
     }
-    MPI_Op custom_op;
-    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);    
-    if(size > 70){                               //1000 50000
+    else{                               //1000 50000
         //each process calculate size = n / numprocs  
-        //short *temp = (short *)malloc(size * sizeof(short));
-        for(int i=0;i<n;i++){
-            if(myid == 0){
-                for(int j=0;j<numprocs;j++){
-                    MPI_Send(Adj[i], n, MPI_SHORT, j, 0, MPI_COMM_WORLD);
-                }                
-            }
-            else{
-                MPI_Recv(Adj[i], n, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-            }
-
-        }
-
+        short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
         //initialize
         for(int i = 0; i < size; i++){
@@ -119,10 +106,10 @@ int main( int argc, char *argv[]){
             selected[0] = true;
             dist[0] = 0;            
         }        
-        //MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+        MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
         for(int j = 0; j < size; j++){ 
-            if(Adj[0][j] != -1){
-                dist[j] = Adj[0][j];
+            if(temp[j] != -1){
+                dist[j] = temp[j];
             }
         }
         //loop 49999 times
@@ -136,13 +123,13 @@ int main( int argc, char *argv[]){
             }        
 
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
-            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             if(global_min[0] == min[0])
                 selected[min[0] - start] = true;
             
             for(int j = 0; j < size; j++){
-                if(!selected[j] && Adj[global_min[0]][start+j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][start+j]){
-                    dist[j] = global_min[1] + Adj[global_min[0]][start+j];
+                if(!selected[j] && temp[j] != -1 && dist[j] > global_min[1] + temp[j]){
+                    dist[j] = global_min[1] + temp[j];
                 }
             }
         }
