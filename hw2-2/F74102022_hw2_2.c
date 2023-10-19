@@ -117,13 +117,19 @@ int main( int argc, char *argv[]){
 
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
-            //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Bcast(&Adj[global_min[0]][start], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-
+            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            /*
             for(int j = 0; j < size; j++){
                 if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
                     dist[start+j] = global_min[1] + temp[j];
+                }
+            }
+            */
+            for(int j = 0; j < size; j++){
+                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][j];
                 }
             }
         }
