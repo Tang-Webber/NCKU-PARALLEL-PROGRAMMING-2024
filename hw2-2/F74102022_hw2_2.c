@@ -26,8 +26,6 @@ int main( int argc, char *argv[]){
     bool selected[3125];
     int dist[3125];   
     int min[2];         //(index, dist)
-    //short temp[6250];
-    //short **Adj;
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -63,19 +61,20 @@ int main( int argc, char *argv[]){
     if(size < 70){                      //6
         if(myid == 0){
             //initialize
-            selected[0] = true;
-            dist[0] = 0;            
-            for(int i=1; i<n;i++){
+          
+            for(int i=0; i<n;i++){
                 dist[i] = 99999;
                 selected[i] = false;
             }
+            selected[0] = true;
+            dist[0] = 0;  
             for(int i=0;i<n;i++){           
                 if(Adj[0][i] != -1){
                     dist[i] = Adj[0][i];
                 }
             }
             for(int i = 1; i < n; i++){
-                min[1] = 100000;
+                min[1] = 99999;
                 for(int j = 0; j < n; j++){
                     if(!selected[j] && dist[j] < min[1]){
                         min[0] = j;
