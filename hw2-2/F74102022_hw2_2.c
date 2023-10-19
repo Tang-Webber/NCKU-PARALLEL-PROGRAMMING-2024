@@ -23,8 +23,8 @@ int main( int argc, char *argv[]){
     int n, myid, numprocs;
     char input[50];
     int size;
-    bool selected[3125];
-    int dist[3125];   
+    bool selected[50000];
+    int dist[50000];   
     int min[2];         //(index, dist)
     int global_min[2];
 
