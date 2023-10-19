@@ -26,11 +26,13 @@ int main( int argc, char *argv[]){
     bool selected[3125];
     int dist[3125];   
     int min[2];         //(index, dist)
+    int global_min[2];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-
+    MPI_Op custom_op;
+    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -54,21 +56,18 @@ int main( int argc, char *argv[]){
         }
         fclose(input_file);
     }
-
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-
-    if(size < 70){                      //6
+    if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
-          
-            for(int i=0; i<n;i++){
+            selected[0] = true;
+            dist[0] = 0;            
+            for(int i = 1; i < n; i++){
                 dist[i] = 99999;
                 selected[i] = false;
             }
-            selected[0] = true;
-            dist[0] = 0;  
-            for(int i=0;i<n;i++){           
+            for(int i = 0; i < n; i++){           
                 if(Adj[0][i] != -1){
                     dist[i] = Adj[0][i];
                 }
@@ -93,15 +92,10 @@ int main( int argc, char *argv[]){
             }
         }
     }
-    MPI_Op custom_op;
-    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
-    int global_min[2];
-
-    if(size > 70){                         //1000 50000
-        //each process calculate n / numprocs , loop start from myid * size   
+    else{                               //1000 50000
+        //each process calculate size = n / numprocs  
         short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
-        int end = start + size; 
         //initialize
         for(int i = 0; i < size; i++){
             dist[i] = 99999;
