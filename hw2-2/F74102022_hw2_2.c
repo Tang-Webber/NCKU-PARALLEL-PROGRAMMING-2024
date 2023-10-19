@@ -10,7 +10,10 @@ short Adj[50000][50000];            //adjacency matrix
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
     int *inout_array = (int *)inout;
-    if (in_array[1] <= inout_array[1]) {
+    if (in_array[1] == inout_array[1] && inout_array[0] > in_array[0]){
+        inout_array[0] = in_array[0];
+    }
+    else if (in_array[1] < inout_array[1]) {
         inout_array[1] = in_array[1];
         inout_array[0] = in_array[0];
     }
@@ -114,6 +117,7 @@ int main( int argc, char *argv[]){
                 dist[j] = Adj[0][j];
             }
         }
+printf("weird : dict[0] = %d, dict[1] = %d, dict[10000] = %d, dict[49990] = %d\n ", dict[0], dict[1], dict[10000], dict[49990] );
 
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 100000;
