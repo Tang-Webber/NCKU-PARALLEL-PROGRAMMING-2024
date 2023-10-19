@@ -93,18 +93,19 @@ int main( int argc, char *argv[]){
     }
     MPI_Op custom_op;
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
-    int global_min[3] = {1};
+    int global_min[2];
 
     if(size > 70){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size 
-        int *sendcounts = (int *)malloc(numprocs * sizeof(int));
-        int *displacements = (int *)malloc(numprocs * sizeof(int));
-        int block_size = n / numprocs;
-        for (int i = 0; i < numprocs; i++) {
-            sendcounts[i] = block_size;
-            displacements[i] = i * block_size;
-        }    
-        short *temp = (short *)malloc(block_size * sizeof(short));
+
+        //int *sendcounts = (int *)malloc(numprocs * sizeof(int));
+        //int *displacements = (int *)malloc(numprocs * sizeof(int));
+        //int block_size = n / numprocs;
+        //for (int i = 0; i < numprocs; i++) {
+        //    sendcounts[i] = block_size;
+        //    displacements[i] = i * block_size;
+        //}    
+        short *temp = (short *)malloc(size * sizeof(short));
         
         int start = myid * size;
         int end = start + size; 
@@ -130,14 +131,10 @@ int main( int argc, char *argv[]){
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
-            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             //MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
-//if(i <= 2){
-//    printf("i= %d | ID:%d, choose %d : %d | global %d : %d\n",i, myid, min[0], min[1],global_min[0],global_min[1] );
-//}
-//if(myid == 9)
-//    printf("%d : %d\n", global_min[0], global_min[1]);
-            MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, block_size, MPI_SHORT, 0, MPI_COMM_WORLD);
+
+            //MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);
     
             for(int j = 0; j < size; j++){
                 if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
