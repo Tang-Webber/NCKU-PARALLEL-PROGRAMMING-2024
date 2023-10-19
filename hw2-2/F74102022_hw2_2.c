@@ -88,6 +88,9 @@ int main( int argc, char *argv[]){
                     }
                 }
             }
+            for(int i = 0; i < n; i++){
+                printf("%d ", dist[i]);
+            }
         }
     }
     MPI_Op custom_op;
