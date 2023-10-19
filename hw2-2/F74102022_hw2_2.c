@@ -117,7 +117,7 @@ int main( int argc, char *argv[]){
                 dist[j] = Adj[0][j];
             }
         }
-printf("weird : dict[0] = %d, dict[1] = %d, dict[10000] = %d, dict[49990] = %d\n ", dict[0], dict[1], dict[10000], dict[49990] );
+printf("weird : dist[0] = %d, dist[1] = %d, dist[10000] = %d, dist[49990] = %d\n ", dist[0], dist[1], dist[10000], dist[49990] );
 
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 100000;
