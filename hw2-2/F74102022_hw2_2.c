@@ -90,7 +90,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Op custom_op;
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
-    int global_min[3];
+    int global_min[3] = {1};
 
     if(size > 70){                         //1000 50000
         //each process calculate n / numprocs , loop start from myid * size 
@@ -129,7 +129,7 @@ int main( int argc, char *argv[]){
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             //MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
-if(myid == 7)
+if(myid == 9)
     printf("%d : %d\n", global_min[0], global_min[1]);
             MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, block_size, MPI_SHORT, 0, MPI_COMM_WORLD);
     
