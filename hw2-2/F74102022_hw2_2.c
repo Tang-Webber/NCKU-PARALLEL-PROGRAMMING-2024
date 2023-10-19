@@ -119,20 +119,20 @@ int main( int argc, char *argv[]){
             selected[global_min[0]] = true;
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Bcast(&Adj[global_min[0]][start], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, &Adj[global_min[0]][start], size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-            /*
+            MPI_Scatter(Adj[global_min[0]], n, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, &Adj[global_min[0]][start], size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            
             for(int j = 0; j < size; j++){
                 if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
                     dist[start+j] = global_min[1] + temp[j];
                 }
             }
-            */
+            /*
             for(int j = start; j < end; j++){
                 if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
                     dist[j] = global_min[1] + Adj[global_min[0]][j];
                 }
-            }
+            }*/
         }
         if(myid!=0){
             MPI_Send(&dist[start], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
