@@ -54,7 +54,9 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     //MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
-    
+    fot(int i=0 ;i<n;i++){
+        MPI_Scatter(Adj[i], size, MPI_SHORT, &Adj[i][myid*size], size, MPI_SHORT, 0, MPI_COMM_WORLD);
+    }
     for(int i=0; i<n;i++){
         dist[i] = 100000;
         selected[i] = false;
@@ -98,7 +100,7 @@ int main( int argc, char *argv[]){
         short temp[6250];
         selected[0] = true;
         dist[0] = 0;
-        MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
+        //MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
         //MPI_Bcast(&Adj[0][myid * size], size , MPI_SHORT, 0, MPI_COMM_WORLD);
         for(int j = start; j < end; j++){           //initialize
             if(Adj[0][j] != -1){
@@ -119,11 +121,18 @@ int main( int argc, char *argv[]){
             selected[global_min[0]] = true;
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Bcast(&Adj[global_min[0]][start], size , MPI_SHORT, 0, MPI_COMM_WORLD);
-            MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-
+            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            /*
             for(int j = 0; j < size; j++){
                 if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
                     dist[start+j] = global_min[1] + temp[j];
+                }
+            }
+            
+            */
+            for(int j = start; j < end; j++){
+                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][j];
                 }
             }
         }
