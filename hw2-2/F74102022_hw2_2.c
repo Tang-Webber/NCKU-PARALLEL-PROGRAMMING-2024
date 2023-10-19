@@ -122,7 +122,7 @@ int main( int argc, char *argv[]){
             MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
 
             for(int j = 0; j < size; j++){
-                if(!selected[start+j] && temp[j] != -1 && dist[startj] > global_min[1] + temp[j]){
+                if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
                     dist[start+j] = global_min[1] + temp[j];
                 }
             }
