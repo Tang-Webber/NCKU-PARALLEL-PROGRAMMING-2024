@@ -117,7 +117,6 @@ int main( int argc, char *argv[]){
                 dist[j] = Adj[0][j];
             }
         }
-printf("weird : dist[0] = %d, dist[1] = %d, dist[10000] = %d, dist[49990] = %d\n ", dist[0], dist[1], dist[10000], dist[49990] );
 
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 100000;
@@ -127,19 +126,17 @@ printf("weird : dist[0] = %d, dist[1] = %d, dist[10000] = %d, dist[49990] = %d\n
                     min[1] = dist[j];
                 }
             }        
-if(i <= 2){
-    printf("i= %d | ID:%d, choose %d : %d\n",i, myid, min[0], min[1]);
-}
+
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             selected[global_min[0]] = true;
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             //MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
-if(i <= 2){
-    printf("i= %d | ID:%d, choose %d : %d | global %d : %d\n",i, myid, min[0], min[1],global_min[0],global_min[1] );
-}
-if(myid == 9)
-    printf("%d : %d\n", global_min[0], global_min[1]);
+//if(i <= 2){
+//    printf("i= %d | ID:%d, choose %d : %d | global %d : %d\n",i, myid, min[0], min[1],global_min[0],global_min[1] );
+//}
+//if(myid == 9)
+//    printf("%d : %d\n", global_min[0], global_min[1]);
             MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, block_size, MPI_SHORT, 0, MPI_COMM_WORLD);
     
             for(int j = 0; j < size; j++){
@@ -147,12 +144,6 @@ if(myid == 9)
                     dist[start+j] = global_min[1] + temp[j];
                 }
             }
-            /*
-            for(int j = start; j < end; j++){
-                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
-                    dist[j] = global_min[1] + Adj[global_min[0]][j];
-                }
-            }*/
         }
         if(myid!=0){
             MPI_Send(&dist[start], size, MPI_INT, 0, 0, MPI_COMM_WORLD);     
@@ -166,7 +157,7 @@ if(myid == 9)
 
     if(myid == 0){
         for(int i=0;i<n;i++){
-            //printf("%d ", dist[i]);
+            printf("%d ", dist[i]);
         }
     }
 
