@@ -23,6 +23,7 @@ int main( int argc, char *argv[]){
     bool selected[50000];
     int dist[50000];   
     int min[2];         //(index, dist)
+    //short temp[6250];
     //short **Adj;
 
     MPI_Init(&argc,&argv);
@@ -92,10 +93,18 @@ int main( int argc, char *argv[]){
     int global_min[3];
 
     if(size > 70){                         //1000 50000
-        //each process calculate n / numprocs , loop start from myid * size     
+        //each process calculate n / numprocs , loop start from myid * size 
+        int *sendcounts = (int *)malloc(numprocs * sizeof(int));
+        int *displacements = (int *)malloc(numprocs * sizeof(int));
+        int block_size = n / numprocs;
+        for (int i = 0; i < numprocs; i++) {
+            sendcounts[i] = block_size;
+            displacements[i] = i * block_size;
+        }    
+        int *temp = (int *)malloc(block_size * sizeof(int));
+        
         int start = myid * size;
         int end = start + size; 
-        short temp[6250];
         selected[0] = true;
         dist[0] = 0;
         MPI_Bcast(Adj[0], n , MPI_SHORT, 0, MPI_COMM_WORLD);
@@ -120,9 +129,10 @@ int main( int argc, char *argv[]){
             //MPI_Bcast(Adj[global_min[0]], n , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Bcast(&Adj[global_min[0]][start], size , MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-            MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
-            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, &Adj[global_min[0]][start], size, MPI_SHORT, 0, MPI_COMM_WORLD);              
+            //MPI_Scatter(Adj[global_min[0]], size * sizeof(short), MPI_BYTE, temp, size * sizeof(short), MPI_BYTE, 0, MPI_COMM_WORLD); 
             
+            MPI_Scatterv(Adj[global_min[0]], sendcounts, displacements, MPI_SHORT, temp, block_size, MPI_SHORT, 0, MPI_COMM_WORLD);
+    
             for(int j = 0; j < size; j++){
                 if(!selected[start+j] && temp[j] != -1 && dist[start+j] > global_min[1] + temp[j]){
                     dist[start+j] = global_min[1] + temp[j];
