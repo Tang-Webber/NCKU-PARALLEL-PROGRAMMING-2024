@@ -54,7 +54,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     //MPI_Bcast(Adj, 2500000000 , MPI_SHORT, 0, MPI_COMM_WORLD);
-    fot(int i=0 ;i<n;i++){
+    for(int i=0 ;i<n;i++){
         MPI_Scatter(Adj[i], size, MPI_SHORT, &Adj[i][myid*size], size, MPI_SHORT, 0, MPI_COMM_WORLD);
     }
     for(int i=0; i<n;i++){
