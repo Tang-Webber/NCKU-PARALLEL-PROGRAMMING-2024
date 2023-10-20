@@ -101,7 +101,7 @@ int main( int argc, char *argv[]){
         for(int i=0;i<n;i++){
             if(myid == 0){
                 for(int j=1;j<numprocs;j++){
-                    MPI_Send(&Adj[i][i*size], size, MPI_SHORT, j, 0, MPI_COMM_WORLD);
+                    MPI_Send(&Adj[i][j*size], size, MPI_SHORT, j, 0, MPI_COMM_WORLD);
                 }
             }
             else{
