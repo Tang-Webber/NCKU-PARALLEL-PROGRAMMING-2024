@@ -60,7 +60,7 @@ int main( int argc, char *argv[]){
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-    
+    /*
     if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
@@ -154,7 +154,7 @@ int main( int argc, char *argv[]){
             }
         }
     }
-
+    */
     MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
