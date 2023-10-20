@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 short Adj[50000][50000];            //adjacency matrix
-short local_adj[50000][3125]; 
+//short local_adj[50000][3125]; 
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
@@ -99,7 +99,15 @@ int main( int argc, char *argv[]){
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
         for(int i=0;i<n;i++){
-            MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
+            if(myid == 0){
+                for(int j=1;j<numprocs;j++){
+                    MPI_Send(&Adj[i][i*size], size, MPI_SHORT, j, 0, MPI_COMM_WORLD);
+                }
+            }
+            else{
+                MPI_Recv(Adj[i], size, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            }
+            //MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
         }        
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
@@ -114,8 +122,8 @@ int main( int argc, char *argv[]){
         }        
         //MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
         for(int j = 0; j < size; j++){ 
-            if(local_adj[0][j] != -1){
-                dist[j] = local_adj[0][j];
+            if(Adj[0][j] != -1){
+                dist[j] = Adj[0][j];
             }
         }
         //loop 49999 times
@@ -134,8 +142,8 @@ int main( int argc, char *argv[]){
                 selected[min[0] - start] = true;
             
             for(int j = 0; j < size; j++){
-                if(!selected[j] && local_adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + local_adj[global_min[0]][j]){
-                    dist[j] = global_min[1] + local_adj[global_min[0]][j];
+                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][j];
                 }
             }
         }
