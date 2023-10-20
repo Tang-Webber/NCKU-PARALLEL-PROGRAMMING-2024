@@ -136,7 +136,7 @@ int main( int argc, char *argv[]){
                 }
             }        
 
-            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
+            //MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             if(global_min[0] == min[0])
                 selected[min[0] - start] = true;
