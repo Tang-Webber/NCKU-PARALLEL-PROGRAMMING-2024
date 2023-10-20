@@ -99,7 +99,6 @@ int main( int argc, char *argv[]){
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
         for(int i=0;i<n;i++){
-            /*
             if(myid == 0){
                 for(int j=1;j<numprocs;j++){
                     MPI_Send(&Adj[i][j*size], size, MPI_SHORT, j, 0, MPI_COMM_WORLD);
@@ -108,7 +107,6 @@ int main( int argc, char *argv[]){
             else{
                 MPI_Recv(Adj[i], size, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
-            */
             //MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
         }        
         //short *temp = (short *)malloc(size * sizeof(short));
