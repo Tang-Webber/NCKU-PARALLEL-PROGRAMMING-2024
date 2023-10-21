@@ -66,6 +66,7 @@ int main( int argc, char *argv[]){
         for(int i = 0 ; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[myid * size + i - k][j];
+                local_B[i][j] = 0;
             }
         }     
     }
@@ -73,11 +74,13 @@ int main( int argc, char *argv[]){
         for(int i = 0; i < k; i++){
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[numprocs * size + i - k][j];
+                local_B[i][j] = 0;
             }
         }
         for(int i = k; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[i][j];
+                local_B[i][j] = 0;
             }
         }   
     }
@@ -85,11 +88,13 @@ int main( int argc, char *argv[]){
         for(int i = 0; i < size + rest + k ; i++) {
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[myid * size + i - k][j];
+                local_B[i][j] = 0;
             }
         }
         for(int i = 0; i < k; i++){
             for(int j = 0; j < m; j++){
                 local_A[size + rest + k + i][j] = A[i][j];
+                local_B[i][j] = 0;
             }
         }  
     }  
