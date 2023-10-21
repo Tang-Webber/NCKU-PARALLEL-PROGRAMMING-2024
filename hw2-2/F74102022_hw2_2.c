@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-short Adj[50000][3][2];            //adjacency matrix
+short Adj[50000][5][2];            //adjacency matrix
 short count[50000];
 
 
