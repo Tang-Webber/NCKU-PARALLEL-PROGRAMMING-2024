@@ -95,8 +95,11 @@ int main( int argc, char *argv[]){
 
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
-        MPI_Bcast(Adj, 10000000, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);       
+        for(int i=0;i<n;i++){
+            MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
+        }
         /*for(int i=0;i<n;i++){
             if(myid == 0){
                 for(int j=1;j<count[i];j++){
@@ -123,7 +126,7 @@ int main( int argc, char *argv[]){
             dist[0] = 0;            
         }                 
         for(int j = 0; j < count[0]; j++){ 
-            dist[Adj[0][0][j]] = Adj[0][1][j];
+            dist[Adj[0][0][i]] = Adj[0][1][i];
         }
         //loop 49999 times
         for(int i = 1; i < n; i++){
