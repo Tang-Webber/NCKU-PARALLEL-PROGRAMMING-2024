@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-int Adj[50000][5][2];            //adjacency matrix
+int Adj[50000][100][2];            //adjacency matrix
 short count[50000];
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
@@ -56,12 +56,6 @@ int main( int argc, char *argv[]){
             count[x]++;
         }
         fclose(input_file);
-        int M = -1;
-        for(int i = 0;i<n;i++){
-            if(count[i] > M)
-                M = count[i];
-        }
-        printf("%d", M);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
@@ -94,7 +88,7 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 0; i < n; i++){
-                //printf("%d ", dist[i]);
+                printf("%d ", dist[i]);
             }
         }
     }
