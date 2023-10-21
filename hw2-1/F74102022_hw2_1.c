@@ -92,7 +92,7 @@ int main( int argc, char *argv[]){
         }
         for(int i = k; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
-                local_A[i][j] = A[i - k][j - k];
+                local_A[i][j] = A[i - k][j];
                 local_B[i][j] = 0;
             }
         }   
@@ -111,7 +111,7 @@ int main( int argc, char *argv[]){
             }
         }  
     }  
-if(myid == 0){
+if(myid == numprocs - 1){
 for(int i=0;i<size + rest + 2 *k;i++){
     for(int j=0;j<m;j++){
 printf("%d ", local_A[i][j]);
