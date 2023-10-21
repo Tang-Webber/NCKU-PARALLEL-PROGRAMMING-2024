@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-short Adj[50000][5][2];            //adjacency matrix
+int Adj[50000][5][2];            //adjacency matrix
 short count[50000];
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
@@ -51,7 +51,7 @@ int main( int argc, char *argv[]){
         int x;
         short y, temp;
         while (!feof(input_file)) {
-            fscanf(input_file, "%d %hd %hd", &x, &y, &temp);
+            fscanf(input_file, "%d %d %d", &x, &y, &temp);
             Adj[x][count[x]][0] = y;
             Adj[x][count[x]][1] = temp;
             count[x]++;
