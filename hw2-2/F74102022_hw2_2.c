@@ -48,7 +48,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
     
-    if(size < 70){                      //6, 1000
+    if(size >= 0){
         if(myid == 0){
             //initialize
             selected[0] = true;
@@ -80,29 +80,14 @@ int main( int argc, char *argv[]){
             }
         }
     }
-
-    if(size > 70){                      //1000 50000
+    else{                      
         //each process calculate size = n / numprocs  
         MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);       
-        //for(int i=0;i<n;i++){
-        //    MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
-        //    MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
-        //}
-        
         for(int i=0;i<n;i++){
-            if(myid == 0){
-                for(int j=1;j<numprocs;j++){
-                    MPI_Send(Adj[i][0], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
-                    MPI_Send(Adj[i][1], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
-                }
-            }
-            else{
-                MPI_Recv(Adj[i][0], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(Adj[i][1], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            }
-        }    
-        
-        //short *temp = (short *)malloc(size * sizeof(short));
+            MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
+        }
+
         int start = myid * size;
         int end = start + size;
         //initialize
@@ -117,7 +102,7 @@ int main( int argc, char *argv[]){
         for(int i = 0; i < count[0]; i++){ 
             dist[Adj[0][0][i]] = Adj[0][1][i];
         }
-        //loop 49999 times
+        //loop (n - 1) times
         for(int i = 1; i < n; i++){
             min[1] = 99999;
             for(int j = start; j < end; j++){
@@ -136,7 +121,6 @@ int main( int argc, char *argv[]){
                 }       
             }
             MPI_Bcast(min, 2, MPI_INT, 0, MPI_COMM_WORLD);
-            //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);
             //MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);              
             selected[min[0]] = true;
             
