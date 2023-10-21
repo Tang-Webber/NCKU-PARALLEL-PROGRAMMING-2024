@@ -15,6 +15,7 @@ int main( int argc, char *argv[]){
     int size;
     int rest = 0;
     int k;
+    int D2;
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
@@ -64,6 +65,7 @@ int main( int argc, char *argv[]){
     //MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
     size = n / numprocs;
     k = D / 2;
+    D2 = D * D ;
     for(int i = 0; i < n;i++){
        MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
     }    
@@ -130,19 +132,16 @@ int main( int argc, char *argv[]){
                             local_B[y][z] += local_A[y + i][z + j] * K[i+k][j+k];
                         }
                     }
+                    local_B[y][z] /= D2;
                 }
                 for(int z = k; z < m - k; z++) {
                     local_B[y][z] = 0;
                     for(int i = -k; i <= k ; i++){
                         for(int j = -k; j <= k; j++){
                             local_B[y][z] += local_A[y + i][z + j] * K[i+k][j+k];
-if(myid == 0){printf("%d * %d \n", local_A[y + i][z + j] , K[i+k][j+k]);}
                         }
                     }
-                    //local_B[y][z] = (local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
-                    //                local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
-                    //                local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2]) / 9;
-if(myid == 0){printf("%d\n", local_B[y][z] );}
+                    local_B[y][z] /= D2;
                 }   
                 for(int z = m - k; z < m; z++) {
                     local_B[y][z] = 0;
@@ -151,6 +150,7 @@ if(myid == 0){printf("%d\n", local_B[y][z] );}
                             local_B[y][z] += local_A[y + i][(z + j) % m] * K[i+k][j+k];
                         }                  
                     }
+                    local_B[y][z] /= D2;
                 } 
 //printf("%d %d %d %d\n", local_B[y][0], local_B[y][1], local_B[y][10], local_B[y][11]);           
             }     
@@ -174,6 +174,7 @@ if(myid == 0){printf("%d\n", local_B[y][z] );}
                         for(int j = -z; j <= k; j++){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
                         }
+                        local_A[y][z] /= D2;
                     }
                 }
                 for(int z = k; z < m - k; z++) {
@@ -183,6 +184,7 @@ if(myid == 0){printf("%d\n", local_B[y][z] );}
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
 //if(myid == 0){printf("%d * %d \n", local_B[y + i][z + j] , K[i+k][j+k]);}
                         }
+                        local_A[y][z] /= D2;
                     }
                 }
                 for(int z = m - k; z < m; z++) {
@@ -191,6 +193,7 @@ if(myid == 0){printf("%d\n", local_B[y][z] );}
                         for(int j = -k; j <= k; j++){
                             local_A[y][z] += local_B[y + i][(z + j) % m] * K[i+k][j+k];
                         }
+                        local_A[y][z] /= D2;
                     }
                 }
             }
