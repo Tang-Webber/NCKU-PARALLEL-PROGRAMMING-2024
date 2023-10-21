@@ -53,7 +53,7 @@ int main( int argc, char *argv[]){
     //for(int i = 0; i < n;i++){
     //   MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
     //}    
-
+printf("????\n");
     if(myid == numprocs -1)
         rest = n % numprocs;
     int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
@@ -62,6 +62,7 @@ int main( int argc, char *argv[]){
         local_A[i] = (int*)malloc(m * sizeof(int));
         local_B[i] = (int*)malloc(m * sizeof(int));   
     }  
+printf("!!!!!!\n");
     if(myid != 0 && myid != numprocs - 1){
         for(int i = 0 ; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
