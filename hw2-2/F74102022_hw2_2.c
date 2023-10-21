@@ -100,20 +100,20 @@ int main( int argc, char *argv[]){
         for(int i=0;i<n;i++){
             MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
-        }
+        }*/ 
         for(int i=0;i<n;i++){
             if(myid == 0){
-                for(int j=1;j<count[i];j++){
-                    MPI_Send(&Adj[i][count[i]], 2, MPI_INT, j, 0, MPI_COMM_WORLD);
+                for(int j=1;j<numprocs;j++){
+                    MPI_Send(&Adj[i][0], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
+                    MPI_Send(&Adj[i][1], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
                 }
             }
             else{
-                MPI_Recv(Adj[i], size, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(Adj[i][0], count[i], MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(Adj[i][1], count[i], MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
-            
-            //MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
         }    
-        */    
+           
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
         int end = start + size;
