@@ -177,6 +177,7 @@ int main( int argc, char *argv[]){
                 MPI_Recv(local_A[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(local_A[size + rest + 1 + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
+        }
     }
 
 printf("calculate done!\n");
