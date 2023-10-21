@@ -62,7 +62,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
     
-    if(size < 70){                      //6, 1000
+    if(size >=0){                      //6, 1000
         if(myid == 0){
             //initialize
             selected[0] = true;
