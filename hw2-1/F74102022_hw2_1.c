@@ -84,6 +84,7 @@ int main( int argc, char *argv[]){
         }     
     }
     else if (myid == 0){
+printf("人還在\n");
         for(int i = 0; i < k; i++){
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[n * size + i - k][j];
@@ -95,7 +96,8 @@ int main( int argc, char *argv[]){
                 local_A[i][j] = A[i - k][j];
                 local_B[i][j] = 0;
             }
-        }   
+        }  
+printf("人沒了?\n");       
     }
     else{
         for(int i = 0; i < size + rest + k ; i++) {
