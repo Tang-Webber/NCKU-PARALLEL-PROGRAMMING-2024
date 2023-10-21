@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-//short Adj[50000][50000];            //adjacency matrix
-short count[50000]; 
+short Adj[50000][50000];            //adjacency matrix
+//short local_adj[50000][3125]; 
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
@@ -46,8 +46,7 @@ int main( int argc, char *argv[]){
         fscanf(input_file, "%d", &n);
         for(int i=0; i<n;i++){
             for(int j=0;j<n;j++){
-                //Adj[i][j] = -1;
-                count[i] = 0;
+                Adj[i][j] = -1;
             } 
         }
 
@@ -55,20 +54,13 @@ int main( int argc, char *argv[]){
         short temp;
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %hd", &x, &y, &temp);
-            count[i]++;
-            //Adj[x][y] = temp;
+            Adj[x][y] = temp;
         }
         fclose(input_file);
-        short M = -1;
-        for(int i = 0;i<n;i++){
-            if(count[i] > M)
-                M = count;
-        }
-        printf("%hd", M);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-    /*
+    
     if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
@@ -162,7 +154,7 @@ int main( int argc, char *argv[]){
             }
         }
     }
-*/
+
     MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
