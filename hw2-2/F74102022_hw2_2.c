@@ -22,7 +22,7 @@ int main( int argc, char *argv[]){
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-    
+
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -88,19 +88,7 @@ int main( int argc, char *argv[]){
             MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
         }
-        /*for(int i=0;i<n;i++){
-            if(myid == 0){
-                for(int j=1;j<count[i];j++){
-                    MPI_Send(&Adj[i][count[i]], 2, MPI_INT, j, 0, MPI_COMM_WORLD);
-                }
-            }
-            else{
-                MPI_Recv(Adj[i], size, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            }
-            
-            //MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
-        }    
-        */    
+
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
         int end = start + size;
@@ -118,7 +106,7 @@ int main( int argc, char *argv[]){
         }
         //loop 49999 times
         for(int i = 1; i < n; i++){
-            min[1] = global_min[1] = 99999;
+            min[1] = 99999;
             for(int j = start; j < end; j++){
                 if(!selected[j] && dist[j] < min[1]){
                     min[0] = j;
@@ -132,7 +120,8 @@ int main( int argc, char *argv[]){
                         min[1] = local_min[i][1];
                         min[0] = local_min[i][0];
                     }
-                }                
+                }       
+printf("choose index %d : %d\n", min[0], min[1]);         
             }
             MPI_Bcast(min, 2, MPI_INT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
