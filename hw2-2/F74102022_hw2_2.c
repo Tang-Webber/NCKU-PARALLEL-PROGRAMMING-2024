@@ -48,7 +48,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
     
-    if(size >= 0){
+    if(size >= 0){                  //solo
         if(myid == 0){
             //initialize
             selected[0] = true;
