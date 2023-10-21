@@ -55,14 +55,14 @@ int main( int argc, char *argv[]){
         short temp;
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %hd", &x, &y, &temp);
-            count[i]++;
+            count[x]++;
             //Adj[x][y] = temp;
         }
         fclose(input_file);
         short M = -1;
         for(int i = 0;i<n;i++){
             if(count[i] > M)
-                M = count;
+                M = count[i];
         }
         printf("%hd", M);
     }
