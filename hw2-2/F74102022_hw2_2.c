@@ -125,7 +125,7 @@ int main( int argc, char *argv[]){
             selected[0] = true;
             dist[0] = 0;            
         }                 
-        for(int j = 0; j < count[0]; j++){ 
+        for(int i = 0; i < count[0]; i++){ 
             dist[Adj[0][0][i]] = Adj[0][1][i];
         }
         //loop 49999 times
