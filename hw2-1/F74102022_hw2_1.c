@@ -84,7 +84,6 @@ int main( int argc, char *argv[]){
         }     
     }
     else if (myid == 0){
-printf("人還在\n");
         for(int i = 0; i < k; i++){
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[n + i - k][j];
@@ -96,8 +95,7 @@ printf("人還在\n");
                 local_A[i][j] = A[i - k][j];
                 local_B[i][j] = 0;
             }
-        }  
-printf("人沒了?\n");       
+        }       
     }
     else{
         for(int i = 0; i < size + rest + k ; i++) {
@@ -113,7 +111,6 @@ printf("人沒了?\n");
             }
         }  
     }   
-printf("test 3 %d\n", myid);
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
@@ -161,7 +158,6 @@ printf("test 3 %d\n", myid);
                 MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
                 MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
             }
-printf("test 4\n");
         } 
         else {          //local_B -> local_A
             for(int y = k; y < size + rest + k; y++) {
@@ -205,7 +201,6 @@ printf("test 4\n");
             }        
         }
     }
-printf("test 5\n");
     //size += 2;
     int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
     if(t % 2 == 0){         //A->B->A
