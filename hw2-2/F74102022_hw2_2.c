@@ -8,7 +8,6 @@
 short Adj[50000][5][2];            //adjacency matrix
 short count[50000];
 
-
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
     int *inout_array = (int *)inout;
@@ -84,8 +83,8 @@ int main( int argc, char *argv[]){
                 }             
                 selected[min[0]] = true;
                 for(int j = 0; j < count[min[0]]; j++){
-                    if(!selected[Adj[min[0]][j][0]] && dist[Adj[min[0]][j][0]] > dist[min[0]] + Adj[min[0]][j][1]){
-                        dist[Adj[min[0]][j][0]] = dist[min[0]] + Adj[min[0]][j][1];
+                    if(!selected[Adj[min[0]][j][0]] && dist[Adj[min[0]][j][0]] > min[1] + Adj[min[0]][j][1]){
+                        dist[Adj[min[0]][j][0]] = min[1] + Adj[min[0]][j][1];
                     }
                 }
             }
