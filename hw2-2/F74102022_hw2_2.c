@@ -109,8 +109,8 @@ int main( int argc, char *argv[]){
                 }
             }
             else{
-                MPI_Recv(Adj[i][0], count[i], MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(Adj[i][1], count[i], MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(Adj[i][0], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(Adj[i][1], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
         }    
            
