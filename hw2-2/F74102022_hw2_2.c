@@ -8,18 +8,6 @@
 int Adj[50000][2][100];            //adjacency matrix
 short count[50000];
 
-void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
-    int *in_array = (int *)in;
-    int *inout_array = (int *)inout;
-    if (in_array[1] == inout_array[1] && inout_array[0] > in_array[0]){
-        inout_array[0] = in_array[0];
-    }
-    else if (in_array[1] < inout_array[1]) {
-        inout_array[1] = in_array[1];
-        inout_array[0] = in_array[0];
-    }
-}
-
 int main( int argc, char *argv[]){
     int n, myid, numprocs;
     char input[50];
@@ -28,13 +16,13 @@ int main( int argc, char *argv[]){
     int dist[50000];  
     int final[50000]; 
     int min[2];         //(index, dist)
-    int global_min[2];
+    
+    int local_min[16][2];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-    MPI_Op custom_op;
-    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
+    
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -137,15 +125,22 @@ int main( int argc, char *argv[]){
                     min[1] = dist[j];
                 }
             }        
-
-            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
+            MPI_Gather(min, 2, MPI_INT, local_min, 2, MPI_INT, 0, MPI_COMM_WORLD);
+            if(myid == 0){
+                for(int i=1;i< numprocs;i++){
+                    if(local_min[i][1] < min[1]){
+                        min[1] = local_min[i][1];
+                        min[0] = local_min[i][0];
+                    }
+                }                
+            }
+            MPI_Bcast(min, 2, MPI_INT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-            if(global_min[0] == min[0])
-                selected[min[0]] = true;
+            selected[min[0]] = true;
             
-            for(int j = 0; j < count[global_min[0]]; j++){
-                if(!selected[Adj[global_min[0]][0][j]] && dist[Adj[global_min[0]][0][j]] > global_min[1] + Adj[global_min[0]][1][j]){
-                    dist[Adj[global_min[0]][0][j]] = min[1] + Adj[global_min[0]][1][j];
+            for(int j = 0; j < count[min[0]]; j++){
+                if(!selected[Adj[min[0]][0][j]] && dist[Adj[min[0]][0][j]] > min[1] + Adj[min[0]][1][j]){
+                    dist[Adj[min[0]][0][j]] = min[1] + Adj[min[0]][1][j];
                 }
             }
         }
@@ -157,7 +152,6 @@ int main( int argc, char *argv[]){
         }
     }
 
-    MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
 }
