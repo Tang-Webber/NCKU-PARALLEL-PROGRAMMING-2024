@@ -87,11 +87,11 @@ int main( int argc, char *argv[]){
 printf("人還在\n");
         for(int i = 0; i < k; i++){
             for(int j = 0; j < m; j++){
-                local_A[i][j] = A[n * size + i - k][j];
+                local_A[i][j] = A[n + i - k][j];
                 local_B[i][j] = 0;
             }
         }
-        for(int i = k; i < size + rest + 2 * k ; i++) {
+        for(int i = k; i < size + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
                 local_A[i][j] = A[i - k][j];
                 local_B[i][j] = 0;
