@@ -142,6 +142,7 @@ if(myid == 0){printf("%d * %d \n", local_A[y + i][z + j] , K[i+k][j+k]);}
                     //local_B[y][z] = (local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
                     //                local_A[y][z - 1]     * K[1][0] + local_A[y][z]     * K[1][1] + local_A[y][z + 1]     * K[1][2] +
                     //                local_A[y + 1][z - 1] * K[2][0] + local_A[y + 1][z] * K[2][1] + local_A[y + 1][z + 1] * K[2][2]) / 9;
+if(myid == 0){printf("%d\n", local_B[y][z] );}
                 }   
                 for(int z = m - k; z < m; z++) {
                     local_B[y][z] = 0;
@@ -180,7 +181,7 @@ if(myid == 0){printf("%d * %d \n", local_A[y + i][z + j] , K[i+k][j+k]);}
                     for(int i = -k; i <= k ; i++){
                         for(int j = -k; j <= k; j++){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
-if(myid == 0){printf("%d * %d \n", local_B[y + i][z + j] , K[i+k][j+k]);}
+//if(myid == 0){printf("%d * %d \n", local_B[y + i][z + j] , K[i+k][j+k]);}
                         }
                     }
                 }
