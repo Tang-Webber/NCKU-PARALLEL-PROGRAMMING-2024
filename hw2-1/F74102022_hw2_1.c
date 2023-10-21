@@ -61,7 +61,7 @@ int main( int argc, char *argv[]){
     for(int i = 0; i < D;i++){
        MPI_Bcast(K[i], D, MPI_INT, 0, MPI_COMM_WORLD);
     }  
-    
+printf("test 1\n");    
     //MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
     size = n / numprocs;
     k = D / 2;
@@ -71,6 +71,7 @@ int main( int argc, char *argv[]){
     }    
     if(myid == numprocs -1)
         rest = n % numprocs;
+printf("test 2\n");
     int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
     int** local_B = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
     for(int i = 0; i < size + rest + 2 * k; i++) {
@@ -113,7 +114,7 @@ int main( int argc, char *argv[]){
             }
         }  
     }   
-
+printf("test 3\n");
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
@@ -161,6 +162,7 @@ int main( int argc, char *argv[]){
                 MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
                 MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
             }
+printf("test 4\n");
         } 
         else {          //local_B -> local_A
             for(int y = k; y < size + rest + k; y++) {
@@ -204,7 +206,7 @@ int main( int argc, char *argv[]){
             }        
         }
     }
-
+printf("test 5\n");
     //size += 2;
     int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
     if(t % 2 == 0){         //A->B->A
