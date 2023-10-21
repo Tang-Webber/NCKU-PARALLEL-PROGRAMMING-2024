@@ -174,8 +174,8 @@ int main( int argc, char *argv[]){
                         for(int j = -z; j <= k; j++){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
                         }
-                        local_A[y][z] /= D2;
                     }
+                    local_A[y][z] /= D2;
                 }
                 for(int z = k; z < m - k; z++) {
                     local_A[y][z] = 0;
@@ -184,8 +184,8 @@ int main( int argc, char *argv[]){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
 //if(myid == 0){printf("%d * %d \n", local_B[y + i][z + j] , K[i+k][j+k]);}
                         }
-                        local_A[y][z] /= D2;
                     }
+                    local_A[y][z] /= D2;
                 }
                 for(int z = m - k; z < m; z++) {
                     local_A[y][z] = 0;
@@ -193,8 +193,8 @@ int main( int argc, char *argv[]){
                         for(int j = -k; j <= k; j++){
                             local_A[y][z] += local_B[y + i][(z + j) % m] * K[i+k][j+k];
                         }
-                        local_A[y][z] /= D2;
                     }
+                    local_A[y][z] /= D2;
                 }
             }
             MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
