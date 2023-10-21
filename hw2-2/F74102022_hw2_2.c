@@ -95,12 +95,13 @@ int main( int argc, char *argv[]){
 
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
-        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);       
+        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);  
+        /*     
         for(int i=0;i<n;i++){
             MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
         }
-        /*for(int i=0;i<n;i++){
+        for(int i=0;i<n;i++){
             if(myid == 0){
                 for(int j=1;j<count[i];j++){
                     MPI_Send(&Adj[i][count[i]], 2, MPI_INT, j, 0, MPI_COMM_WORLD);
