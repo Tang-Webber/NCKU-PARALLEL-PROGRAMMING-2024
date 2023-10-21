@@ -48,12 +48,12 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&D, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(K, 100, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
     size = n / numprocs;
     k = D / 2;
-    MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
-    //for(int i = 0; i < n;i++){
-    //   MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
-    //}    
+    for(int i = 0; i < n;i++){
+       MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
+    }    
     if(myid == numprocs -1)
         rest = n % numprocs;
     int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
@@ -97,6 +97,7 @@ int main( int argc, char *argv[]){
     int back = myid - 1;
     if(back < 0)
         back += numprocs;
+printf("k=%d\n", k);
     //calculate
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
