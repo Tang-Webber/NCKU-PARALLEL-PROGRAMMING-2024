@@ -94,6 +94,7 @@ printf("%d !!!!!\n", myid);
             }
         }  
     }
+printf("%d @@@@@\n", myid);   
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
