@@ -151,17 +151,16 @@ int main( int argc, char *argv[]){
                         }                  
                     }
                     local_B[y][z] /= D2;
-                } 
-//printf("%d %d %d %d\n", local_B[y][0], local_B[y][1], local_B[y][10], local_B[y][11]);           
+                }       
             }     
-            //for(int i = 0; i < k; i++){
+            for(int i = 0; i < k; i++){
                 //send
                 MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
                 MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
                 //receive
                 MPI_Recv(local_B[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
                 MPI_Recv(local_B[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
-            //}
+            }
         } 
         else {          //local_B -> local_A
             for(int y = k; y < size + rest + k; y++) {
@@ -182,7 +181,6 @@ int main( int argc, char *argv[]){
                     for(int i = -k; i <= k ; i++){
                         for(int j = -k; j <= k; j++){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
-//if(myid == 0){printf("%d * %d \n", local_B[y + i][z + j] , K[i+k][j+k]);}
                         }
                     }
                     local_A[y][z] /= D2;
@@ -197,11 +195,13 @@ int main( int argc, char *argv[]){
                     local_A[y][z] /= D2;
                 }
             }
-            MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
-            MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
-            //receive
-            MPI_Recv(local_A[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
-            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+            for(int i = 0; i < k; i++){
+                MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+                MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
+                //receive
+                MPI_Recv(local_A[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
+                MPI_Recv(local_A[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+            }        
         }
     }
 
