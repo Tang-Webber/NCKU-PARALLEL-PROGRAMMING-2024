@@ -104,8 +104,8 @@ int main( int argc, char *argv[]){
         for(int i=0;i<n;i++){
             if(myid == 0){
                 for(int j=1;j<numprocs;j++){
-                    MPI_Send(&Adj[i][0], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
-                    MPI_Send(&Adj[i][1], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
+                    MPI_Send(Adj[i][0], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
+                    MPI_Send(Adj[i][1], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
                 }
             }
             else{
