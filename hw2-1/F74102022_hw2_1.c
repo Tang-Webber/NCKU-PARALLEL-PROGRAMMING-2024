@@ -10,7 +10,7 @@ int main( int argc, char *argv[]){
     int count = 0;
     char input[50];
     int A[1000][1000];
-    int K[10][10];
+    int** K;
     int** temp;
     int size;
     int rest = 0;
@@ -36,6 +36,10 @@ int main( int argc, char *argv[]){
             }
         }      
         fscanf(input_file, "%d", &D);
+        K = (int**)malloc(D * sizeof(int*));
+        for(int i = 0; i < D; i++) {
+            K[i] = (int*)malloc(D * sizeof(int));
+        }
         for(int i = 0; i < D; i++) {
             for(int j = 0; j < D; j++) {
                 fscanf(input_file, "%d", &K[i][j]);
@@ -47,7 +51,16 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&D, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(K, 100, MPI_INT, 0, MPI_COMM_WORLD);
+    if(myid != 0){
+        K = (int**)malloc(D * sizeof(int*));
+        for(int i = 0; i < D; i++) {
+            K[i] = (int*)malloc(D * sizeof(int));
+        }
+    }
+    for(int i = 0; i < D;i++){
+       MPI_Bcast(K[i], D, MPI_INT, 0, MPI_COMM_WORLD);
+    }  
+    
     //MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
     size = n / numprocs;
     k = D / 2;
@@ -98,14 +111,7 @@ int main( int argc, char *argv[]){
             }
         }  
     }  
-if(myid == 2){
-for(int i=0;i<size + rest + k;i++){
-    for(int j=0;j<m;j++){
-printf("%d ", local_A[i][j]);
-    }
-printf("\n");
-}  
-}
+
 MPI_Barrier(MPI_COMM_WORLD); 
 
     int front = (myid + 1) % numprocs;
