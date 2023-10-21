@@ -132,11 +132,12 @@ int main( int argc, char *argv[]){
             
             for(int i = 0; i < k; i++){
                 //send
-                MPI_Send(local_B[i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+printf("id = %d | send to %d and %d \n", myid, front, back);
+                MPI_Send(local_B[k + i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
                 MPI_Send(local_B[size + rest - i], m, MPI_INT, front, 0, MPI_COMM_WORLD);
                 //receive
                 MPI_Recv(local_B[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-                MPI_Recv(local_B[size + rest + 1 + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
+                MPI_Recv(local_B[size + rest + k + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
             }
         } 
         else {          //local_B -> local_A
@@ -171,11 +172,11 @@ int main( int argc, char *argv[]){
                         }
             for(int i = 0; i < k; i++){
                 //send
-                MPI_Send(local_A[i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+                MPI_Send(local_A[k + i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
                 MPI_Send(local_A[size + rest - i], m, MPI_INT, front, 0, MPI_COMM_WORLD);
                 //receive
                 MPI_Recv(local_A[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(local_A[size + rest + 1 + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(local_A[size + rest + k + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
         }
     }
@@ -209,10 +210,10 @@ int main( int argc, char *argv[]){
                  printf("%d ", result[i]);
             }
         }
-        //MPI_Recv(result, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        //for(int i = 0; i < (size + n % numprocs) * m; i++){
-        //    printf("%d ", result[i]);
-        //}
+        MPI_Recv(result, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        for(int i = 0; i < (size + n % numprocs) * m; i++){
+            printf("%d ", result[i]);
+        }
     }
     MPI_Finalize();
     return 0;
