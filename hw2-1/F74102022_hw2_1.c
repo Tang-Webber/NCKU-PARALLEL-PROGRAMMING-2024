@@ -112,8 +112,6 @@ int main( int argc, char *argv[]){
         }  
     }  
 
-MPI_Barrier(MPI_COMM_WORLD); 
-
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
@@ -138,6 +136,7 @@ MPI_Barrier(MPI_COMM_WORLD);
                     for(int i = -k; i <= k ; i++){
                         for(int j = -k; j <= k; j++){
                             local_B[y][z] += local_A[y + i][z + j] * K[i+k][j+k];
+printf("%d ", local_B[y][z]);
                         }
                     }
                     //local_B[y][z] = (local_A[y - 1][z - 1] * K[0][0] + local_A[y - 1][z] * K[0][1] + local_A[y - 1][z + 1] * K[0][2] +
@@ -154,12 +153,12 @@ MPI_Barrier(MPI_COMM_WORLD);
                 } 
 //printf("%d %d %d %d\n", local_B[y][0], local_B[y][1], local_B[y][10], local_B[y][11]);           
             }
-for(int i=0;i<size + rest + k;i++){
-    for(int j=0;j<m;j++){
-printf("%d ", local_B[i][j]);
-    }
+//for(int i=0;i<size + rest + k;i++){
+//    for(int j=0;j<m;j++){
+//printf("%d ", local_B[i][j]);
+//    }
 printf("\n");
-}            
+//}            
             //for(int i = 0; i < k; i++){
                 //send
                 MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
@@ -187,6 +186,7 @@ printf("\n");
                     for(int i = -k; i <= k ; i++){
                         for(int j = -k; j <= k; j++){
                             local_A[y][z] += local_B[y + i][z + j] * K[i+k][j+k];
+printf("%d ", local_A[i][j]);
                         }
                     }
                 }
@@ -198,12 +198,6 @@ printf("\n");
                         }
                     }
                 }
-for(int i=0;i<size + rest + k;i++){
-    for(int j=0;j<m;j++){
-printf("%d ", local_A[i][j]);
-    }
-printf("\n");
-}   
             }
             MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
