@@ -97,7 +97,6 @@ int main( int argc, char *argv[]){
     int back = myid - 1;
     if(back < 0)
         back += numprocs;
-printf("k=%d\n", k);
     //calculate
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
@@ -131,12 +130,12 @@ printf("k=%d\n", k);
                             local_B[y][z] += local_A[y + i][(z + j) % m] * K[i+k][j+k];
                         }                  
                     }
-                }            
+                } 
+printf("%d %d %d %d\n", local_B[y][0], local_B[y][1], local_B[y][10], local_B[y][11]);           
             }
             
             //for(int i = 0; i < k; i++){
                 //send
-printf("id = %d | send to %d and %d \n", myid, front, back);
                 MPI_Send(local_B[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
                 MPI_Send(local_B[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
                 //receive
@@ -173,8 +172,8 @@ printf("id = %d | send to %d and %d \n", myid, front, back);
                         }
                     }
                 }
+printf("%d %d %d %d\n", local_B[y][0], local_B[y][1], local_B[y][10], local_B[y][11]); 
             }
-printf("id = %d | send to %d and %d \n", myid, front, back);
             MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
             MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
             //receive
