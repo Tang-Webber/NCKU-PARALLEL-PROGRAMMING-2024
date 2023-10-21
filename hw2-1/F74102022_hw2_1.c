@@ -61,8 +61,6 @@ int main( int argc, char *argv[]){
     for(int i = 0; i < D;i++){
        MPI_Bcast(K[i], D, MPI_INT, 0, MPI_COMM_WORLD);
     }  
-printf("test 1\n");    
-    //MPI_Bcast(A, 1000000, MPI_INT, 0, MPI_COMM_WORLD); 
     size = n / numprocs;
     k = D / 2;
     D2 = D * D ;
@@ -71,7 +69,6 @@ printf("test 1\n");
     }    
     if(myid == numprocs -1)
         rest = n % numprocs;
-printf("test 2\n");
     int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
     int** local_B = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
     for(int i = 0; i < size + rest + 2 * k; i++) {
@@ -114,7 +111,7 @@ printf("test 2\n");
             }
         }  
     }   
-printf("test 3\n");
+printf("test 3 %d\n", myid);
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
