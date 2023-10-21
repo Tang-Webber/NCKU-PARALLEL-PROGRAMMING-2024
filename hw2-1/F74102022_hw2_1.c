@@ -171,15 +171,13 @@ printf("id = %d | send to %d and %d \n", myid, front, back);
                         }
                     }
                 }
-                        }
-            for(int i = 0; i < k; i++){
-                //send
-                MPI_Send(local_A[k + i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
-                MPI_Send(local_A[size + rest - i], m, MPI_INT, front, 0, MPI_COMM_WORLD);
-                //receive
-                MPI_Recv(local_A[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(local_A[size + rest + k + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
+printf("id = %d | send to %d and %d \n", myid, front, back);
+            MPI_Send(local_A[1], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+            MPI_Send(local_A[size + rest], m, MPI_INT, front, 0, MPI_COMM_WORLD);           
+            //receive
+            MPI_Recv(local_A[0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);          
+            MPI_Recv(local_A[size + rest + 1], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
         }
     }
 
