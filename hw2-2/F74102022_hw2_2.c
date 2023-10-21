@@ -48,8 +48,7 @@ int main( int argc, char *argv[]){
             count[i] = 0;
         }
 
-        int x;
-        short y, temp;
+        int x, y, temp;
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %d", &x, &y, &temp);
             Adj[x][count[x]][0] = y;
