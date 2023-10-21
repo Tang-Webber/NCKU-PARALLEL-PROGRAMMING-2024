@@ -5,8 +5,9 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-//short Adj[50000][50000];            //adjacency matrix
-short count[50000]; 
+short Adj[50000][3][2];            //adjacency matrix
+short count[50000];
+
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     int *in_array = (int *)in;
@@ -45,30 +46,27 @@ int main( int argc, char *argv[]){
         }
         fscanf(input_file, "%d", &n);
         for(int i=0; i<n;i++){
-            for(int j=0;j<n;j++){
-                //Adj[i][j] = -1;
-                count[i] = 0;
+            for(int j=0;j<3;j++){
+                for(int k=0;k<2;k++){
+                    Adj[i][j][k] = -1;
+                }
             } 
+            count[i] = 0;
         }
 
-        int x, y;
-        short temp;
+        int x;
+        short y, temp;
         while (!feof(input_file)) {
-            fscanf(input_file, "%d %d %hd", &x, &y, &temp);
+            fscanf(input_file, "%d %hd %hd", &x, &y, &temp);
+            Adj[x][count[x]][0] = y;
+            Adj[x][count[x]][1] = temp;
             count[x]++;
-            //Adj[x][y] = temp;
         }
         fclose(input_file);
-        short M = -1;
-        for(int i = 0;i<n;i++){
-            if(count[i] > M)
-                M = count[i];
-        }
-        printf("%hd", M);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
-    /*
+    
     if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
@@ -78,10 +76,8 @@ int main( int argc, char *argv[]){
                 dist[i] = 99999;
                 selected[i] = false;
             }
-            for(int i = 0; i < n; i++){           
-                if(Adj[0][i] != -1){
-                    dist[i] = Adj[0][i];
-                }
+            for(int i = 0; i < count[0]; i++){           
+                dist[Adj[0][i][0]] = Adj[0][i][1];
             }
             for(int i = 1; i < n; i++){
                 min[1] = 99999;
@@ -92,9 +88,9 @@ int main( int argc, char *argv[]){
                     }
                 }             
                 selected[min[0]] = true;
-                for(int j = 0; j < n; j++){
-                    if(!selected[j] && Adj[min[0]][j] != -1 && dist[j] > dist[min[0]] + Adj[min[0]][j]){
-                        dist[j] = dist[min[0]] + Adj[min[0]][j];
+                for(int j = 0; j < count[min[0]]; j++){
+                    if(!selected[Adj[min[0]][j][0]] && dist[Adj[min[0]][j][0]] > dist[min[0]] + Adj[min[0]][j][1]){
+                        dist[Adj[min[0]][j][0]] = dist[min[0]] + Adj[min[0]][j][1];
                     }
                 }
             }
@@ -103,7 +99,7 @@ int main( int argc, char *argv[]){
             }
         }
     }
-
+/*
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
         for(int i=0;i<n;i++){
