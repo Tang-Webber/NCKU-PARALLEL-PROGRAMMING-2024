@@ -89,7 +89,6 @@ int main( int argc, char *argv[]){
             }
         }  
     }
-printf("done %d\n", myid);
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
@@ -133,11 +132,11 @@ printf("done %d\n", myid);
             for(int i = 0; i < k; i++){
                 //send
 printf("id = %d | send to %d and %d \n", myid, front, back);
-                MPI_Send(local_B[k + i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
-                MPI_Send(local_B[size + rest - i], m, MPI_INT, front, 0, MPI_COMM_WORLD);
+                MPI_Send(&local_B[k + i][0], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+                MPI_Send(&local_B[size + rest - i][0], m, MPI_INT, front, 0, MPI_COMM_WORLD);
                 //receive
-                MPI_Recv(local_B[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-                MPI_Recv(local_B[size + rest + k + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
+                MPI_Recv(&local_B[i][0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+                MPI_Recv(&local_B[size + rest + k + i][0], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
             }
         } 
         else {          //local_B -> local_A
