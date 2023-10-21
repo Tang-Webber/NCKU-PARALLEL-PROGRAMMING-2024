@@ -100,7 +100,6 @@ int main( int argc, char *argv[]){
             MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
         }
-        /*
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
         int end = start + size;
@@ -126,7 +125,7 @@ int main( int argc, char *argv[]){
                 }
             }        
 
-            //MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
+            MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             if(global_min[0] == min[0])
                 selected[min[0]] = true;
@@ -138,7 +137,6 @@ int main( int argc, char *argv[]){
             }
         }
         MPI_Gather(&dist[start], size, MPI_INT, final, size, MPI_INT, 0, MPI_COMM_WORLD);
-        */
         if(myid == 0){
             for(int i=0;i<n;i++){
                 printf("%d ", final[i]);
