@@ -56,8 +56,14 @@ int main( int argc, char *argv[]){
 
     if(myid == numprocs -1)
         rest = n % numprocs;
-    int local_A[150][1000];
-    int local_B[150][1000] = {0};        
+    int** local_A;
+    int** local_B;        
+    local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
+    local_B = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
+    for(int i = 0; i < size + rest + 2 * k; i++) {
+        local_A[i] = (int*)malloc(m * sizeof(int));
+        local_B[i] = (int*)malloc(m * sizeof(int)); 
+    }    
     if(myid != 0 && myid != numprocs - 1){
         for(int i = 0 ; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
