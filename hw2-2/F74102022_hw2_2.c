@@ -95,25 +95,12 @@ int main( int argc, char *argv[]){
 
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
-        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);  
-        /*     
+        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);   
         for(int i=0;i<n;i++){
             MPI_Bcast(Adj[i][0], count[i], MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Bcast(Adj[i][1], count[i], MPI_INT, 0, MPI_COMM_WORLD);
-        }*/ 
-        for(int i=0;i<n;i++){
-            if(myid == 0){
-                for(int j=1;j<numprocs;j++){
-                    MPI_Send(Adj[i][0], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
-                    MPI_Send(Adj[i][1], count[i], MPI_INT, j, 0, MPI_COMM_WORLD);
-                }
-            }
-            else{
-                MPI_Recv(Adj[i][0], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(Adj[i][1], count[i], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            }
-        }    
-           
+        }
+        /*
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
         int end = start + size;
@@ -151,6 +138,7 @@ int main( int argc, char *argv[]){
             }
         }
         MPI_Gather(&dist[start], size, MPI_INT, final, size, MPI_INT, 0, MPI_COMM_WORLD);
+        */
         if(myid == 0){
             for(int i=0;i<n;i++){
                 printf("%d ", final[i]);
