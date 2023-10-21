@@ -180,9 +180,8 @@ int main( int argc, char *argv[]){
         }
     }
 
-printf("calculate done!\n");
     //size += 2;
-    int *result = (int*)malloc((size + numprocs) * m * sizeof(int));
+    int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
     if(t % 2 == 0){         //A->B->A
         for(int i=0;i<size+rest;i++){
             for(int j=0;j<m;j++){
@@ -210,10 +209,10 @@ printf("calculate done!\n");
                  printf("%d ", result[i]);
             }
         }
-        MPI_Recv(result, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i = 0; i < (size + n % numprocs) * m; i++){
-            printf("%d ", result[i]);
-        }
+        //MPI_Recv(result, (size + n % numprocs) * m, MPI_INT, numprocs - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //for(int i = 0; i < (size + n % numprocs) * m; i++){
+        //    printf("%d ", result[i]);
+        //}
     }
     MPI_Finalize();
     return 0;
