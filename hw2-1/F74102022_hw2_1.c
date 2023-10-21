@@ -105,7 +105,8 @@ printf("%d ", local_A[i][j]);
     }
 printf("\n");
 }  
-} 
+}
+MPI_Barrier(MPI_COMM_WORLD); 
 
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
