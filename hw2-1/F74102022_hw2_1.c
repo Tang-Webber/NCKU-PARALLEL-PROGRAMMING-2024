@@ -53,7 +53,6 @@ int main( int argc, char *argv[]){
     //for(int i = 0; i < n;i++){
     //   MPI_Bcast(A[i], m, MPI_INT, 0, MPI_COMM_WORLD); 
     //}    
-printf("%d ?????\n", myid);
     if(myid == numprocs -1)
         rest = n % numprocs;
     int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
@@ -62,7 +61,6 @@ printf("%d ?????\n", myid);
         local_A[i] = (int*)malloc(m * sizeof(int));
         local_B[i] = (int*)malloc(m * sizeof(int));   
     }  
-printf("%d !!!!!\n", myid);
     if(myid != 0 && myid != numprocs - 1){
         for(int i = 0 ; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
@@ -93,8 +91,7 @@ printf("%d !!!!!\n", myid);
                 local_A[size + rest + k + i][j] = A[i][j];
             }
         }  
-    }
-printf("%d @@@@@\n", myid);   
+    }  
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
@@ -102,7 +99,7 @@ printf("%d @@@@@\n", myid);
     //calculate
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { //local_A -> local_B
-            for(int y = k; y <= size + rest + k; y++) {
+            for(int y = k; y < size + rest + k; y++) {
                 for(int z = 0; z < k; z++) {
                     local_B[y][z] = 0;
                     for(int i = -k; i <= k ; i++){
@@ -146,7 +143,7 @@ printf("id = %d | send to %d and %d \n", myid, front, back);
             }
         } 
         else {          //local_B -> local_A
-            for(int y = k; y <= size + rest + k; y++) {
+            for(int y = k; y < size + rest + k; y++) {
                 for(int z = 0; z < k; z++) {
                     local_A[y][z] = 0;
                     for(int i = -k; i <= k ; i++){
