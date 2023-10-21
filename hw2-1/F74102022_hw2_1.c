@@ -46,6 +46,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&D, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(K, 100, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
     k = D / 2;
