@@ -56,8 +56,12 @@ int main( int argc, char *argv[]){
 
     if(myid == numprocs -1)
         rest = n % numprocs;
-    int local_A[150][1000];
-    int local_B[150][1000] = {0};        
+    int** local_A = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
+    int** local_B = (int**)malloc((size + rest + 2 * k) * sizeof(int*));
+    for(int i = 0; i < size + rest + 2 * k; i++) {
+        local_A[i] = (int*)malloc(m * sizeof(int));
+        local_B[i] = (int*)malloc(m * sizeof(int));   
+    }  
     if(myid != 0 && myid != numprocs - 1){
         for(int i = 0 ; i < size + rest + 2 * k ; i++) {
             for(int j = 0; j < m; j++){
@@ -132,11 +136,11 @@ int main( int argc, char *argv[]){
             for(int i = 0; i < k; i++){
                 //send
 printf("id = %d | send to %d and %d \n", myid, front, back);
-                MPI_Send(&local_B[k + i][0], m, MPI_INT, back, 0, MPI_COMM_WORLD);
-                MPI_Send(&local_B[size + rest - i][0], m, MPI_INT, front, 0, MPI_COMM_WORLD);
+                MPI_Send(local_B[k + i], m, MPI_INT, back, 0, MPI_COMM_WORLD);
+                MPI_Send(local_B[size + rest - i], m, MPI_INT, front, 0, MPI_COMM_WORLD);
                 //receive
-                MPI_Recv(&local_B[i][0], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-                MPI_Recv(&local_B[size + rest + k + i][0], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
+                MPI_Recv(local_B[i], m, MPI_INT, back, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+                MPI_Recv(local_B[size + rest + k + i], m, MPI_INT, front, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);                 
             }
         } 
         else {          //local_B -> local_A
