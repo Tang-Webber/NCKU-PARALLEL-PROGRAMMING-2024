@@ -98,18 +98,15 @@ int main( int argc, char *argv[]){
             }
         }  
     }  
+if(myid == 2){
 for(int i=0;i<size + rest + k;i++){
     for(int j=0;j<m;j++){
 printf("%d ", local_A[i][j]);
     }
 printf("\n");
-}   
-for(int i=0;i<size + rest + k;i++){
-    for(int j=0;j<m;j++){
-printf("%d ", local_B[i][j]);
-    }
-printf("\n");
-}   
+}  
+} 
+
     int front = (myid + 1) % numprocs;
     int back = myid - 1;
     if(back < 0)
