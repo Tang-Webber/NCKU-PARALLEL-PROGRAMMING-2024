@@ -121,7 +121,6 @@ int main( int argc, char *argv[]){
                         min[0] = local_min[i][0];
                     }
                 }       
-printf("choose index %d : %d\n", min[0], min[1]);         
             }
             MPI_Bcast(min, 2, MPI_INT, 0, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
