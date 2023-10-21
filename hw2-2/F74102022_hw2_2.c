@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-int Adj[50000][100][2];            //adjacency matrix
+int Adj[50000][2][100];            //adjacency matrix
 short count[50000];
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
@@ -51,8 +51,8 @@ int main( int argc, char *argv[]){
         int x, y, temp;
         while (!feof(input_file)) {
             fscanf(input_file, "%d %d %d", &x, &y, &temp);
-            Adj[x][count[x]][0] = y;
-            Adj[x][count[x]][1] = temp;
+            Adj[x][0][count[x]] = y;
+            Adj[x][1][count[x]] = temp;
             count[x]++;
         }
         fclose(input_file);
@@ -60,7 +60,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     size = n / numprocs;
     
-    if(size >=0){                      //6, 1000
+    if(size < 70){                      //6, 1000
         if(myid == 0){
             //initialize
             selected[0] = true;
@@ -70,7 +70,7 @@ int main( int argc, char *argv[]){
                 selected[i] = false;
             }
             for(int i = 0; i < count[0]; i++){           
-                dist[Adj[0][i][0]] = Adj[0][i][1];
+                dist[Adj[0][0][i]] = Adj[0][1][i];
             }
             for(int i = 1; i < n; i++){
                 min[1] = 99999;
@@ -82,8 +82,8 @@ int main( int argc, char *argv[]){
                 }             
                 selected[min[0]] = true;
                 for(int j = 0; j < count[min[0]]; j++){
-                    if(!selected[Adj[min[0]][j][0]] && dist[Adj[min[0]][j][0]] > min[1] + Adj[min[0]][j][1]){
-                        dist[Adj[min[0]][j][0]] = min[1] + Adj[min[0]][j][1];
+                    if(!selected[Adj[min[0]][0][j]] && dist[Adj[min[0]][0][j]] > min[1] + Adj[min[0]][1][j]){
+                        dist[Adj[min[0]][0][j]] = min[1] + Adj[min[0]][1][j];
                     }
                 }
             }
@@ -92,43 +92,45 @@ int main( int argc, char *argv[]){
             }
         }
     }
-/*
+
     if(size > 70){                      //1000 50000
         //each process calculate size = n / numprocs  
-        for(int i=0;i<n;i++){
+        MPI_Bcast(Adj, 10000000, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(count, 50000, MPI_SHORT, 0, MPI_COMM_WORLD);
+        /*for(int i=0;i<n;i++){
             if(myid == 0){
-                for(int j=1;j<numprocs;j++){
-                    MPI_Send(&Adj[i][j*size], size, MPI_SHORT, j, 0, MPI_COMM_WORLD);
+                for(int j=1;j<count[i];j++){
+                    MPI_Send(&Adj[i][count[i]], 2, MPI_INT, j, 0, MPI_COMM_WORLD);
                 }
             }
             else{
                 MPI_Recv(Adj[i], size, MPI_SHORT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }
+            
             //MPI_Scatter(Adj[i], size, MPI_SHORT, local_adj[i], size, MPI_SHORT, 0, MPI_COMM_WORLD);    
-        }        
+        }    
+        */    
         //short *temp = (short *)malloc(size * sizeof(short));
         int start = myid * size;
+        int end = start + size;
         //initialize
-        for(int i = 0; i < size; i++){
+        for(int i = start; i < end; i++){
             dist[i] = 99999;
             selected[i] = false;
         }
         if(myid == 0){
             selected[0] = true;
             dist[0] = 0;            
-        }        
-        //MPI_Scatter(Adj[0], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
-        for(int j = 0; j < size; j++){ 
-            if(Adj[0][j] != -1){
-                dist[j] = Adj[0][j];
-            }
+        }                 
+        for(int j = 0; j < count[0]; j++){ 
+            dist[Adj[0][0][j]] = Adj[0][1][j];
         }
         //loop 49999 times
         for(int i = 1; i < n; i++){
             min[1] = global_min[1] = 99999;
-            for(int j = 0; j < size; j++){
+            for(int j = start; j < end; j++){
                 if(!selected[j] && dist[j] < min[1]){
-                    min[0] = start + j;
+                    min[0] = j;
                     min[1] = dist[j];
                 }
             }        
@@ -136,22 +138,22 @@ int main( int argc, char *argv[]){
             MPI_Allreduce(min, global_min, 2, MPI_INT, custom_op, MPI_COMM_WORLD);
             //MPI_Scatter(Adj[global_min[0]], size, MPI_SHORT, temp, size, MPI_SHORT, 0, MPI_COMM_WORLD);              
             if(global_min[0] == min[0])
-                selected[min[0] - start] = true;
+                selected[min[0]] = true;
             
-            for(int j = 0; j < size; j++){
-                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
-                    dist[j] = global_min[1] + Adj[global_min[0]][j];
+            for(int j = 0; j < count[global_min[0]]; j++){
+                if(!selected[Adj[global_min[0]][0][j]] && dist[Adj[global_min[0]][0][j]] > global_min[1] + Adj[global_min[0]][1][j]){
+                    dist[Adj[global_min[0]][0][j]] = min[1] + Adj[global_min[0]][1][j];
                 }
             }
         }
-        MPI_Gather(dist, size, MPI_INT, final, size, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Gather(&dist[start], size, MPI_INT, final, size, MPI_INT, 0, MPI_COMM_WORLD);
         if(myid == 0){
             for(int i=0;i<n;i++){
                 printf("%d ", final[i]);
             }
         }
     }
-*/
+
     MPI_Op_free(&custom_op);
     MPI_Finalize();
     return 0;
