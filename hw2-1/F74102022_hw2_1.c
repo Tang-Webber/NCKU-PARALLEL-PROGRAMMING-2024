@@ -135,7 +135,7 @@ int main( int argc, char *argv[]){
             }
 for(int i=0;i<size + rest + k;i++){
     for(int j=0;j<m;j++){
-printf("%d ", local_A[i][j]);
+printf("%d ", local_B[i][j]);
     }
 printf("\n");
 }            
@@ -179,7 +179,7 @@ printf("\n");
                 }
 for(int i=0;i<size + rest + k;i++){
     for(int j=0;j<m;j++){
-printf("%d ", local_B[i][j]);
+printf("%d ", local_A[i][j]);
     }
 printf("\n");
 }   
