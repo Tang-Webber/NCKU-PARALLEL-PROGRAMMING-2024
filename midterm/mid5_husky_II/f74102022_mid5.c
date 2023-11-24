@@ -109,7 +109,9 @@ int main( int argc, char *argv[])
                 temp = E[myid * local_count + j];
             }
         }
+printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+printf("ID = %d; final: %f\n", myid, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0)
