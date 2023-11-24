@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <math.h>
+#include "math.h"
 
 struct Point {
     int x, y;
