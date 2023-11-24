@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include "math.h"
+#include <math.h>
 
 struct Point {
     int x, y;
@@ -80,7 +80,7 @@ int main( int argc, char *argv[])
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
-                E[count].w = sqrt(pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2));
+                E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
                 count++;
             }
         }
