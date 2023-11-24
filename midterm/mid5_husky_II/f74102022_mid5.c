@@ -13,12 +13,14 @@ struct Edge {
     int x, y;
     double w;
 }E[400];
+/*
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
     struct Edge* old = (struct Edge*)inout;
     if (new->w < old->w)
         *old = *new;
 }
+*/
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
@@ -37,8 +39,8 @@ int main( int argc, char *argv[])
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
-    MPI_Op custom_op;
-    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
+    //MPI_Op custom_op;
+    //MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     //scan the input
     if (myid == 0) {
         scanf("%s", input);
@@ -88,7 +90,7 @@ int main( int argc, char *argv[])
     }
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
     /*
     bool pick[20];
     for(int i = 0; i < num; i++){
