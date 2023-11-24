@@ -8,11 +8,11 @@
 
 struct Point {
     int x, y;
-} P[400];
+}P[400];
 struct Edge {
     int x, y;
     double w;
-} E[400];
+}E[400];
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
     struct Edge* old = (struct Edge*)inout;
@@ -88,6 +88,7 @@ int main( int argc, char *argv[])
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
+    /*
     bool pick[20];
     for(int i = 0; i < num; i++){
         pick[i] = false;
@@ -112,6 +113,7 @@ int main( int argc, char *argv[])
         if(myid == 0)
             sum += result.w;
     }
+    */
     if(myid == 0){
         printf("%.4f", sum);
     }
