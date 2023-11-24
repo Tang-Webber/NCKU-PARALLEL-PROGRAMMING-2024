@@ -123,9 +123,11 @@ printf("ID = %d; final: %f\n", myid, result.w);
 printf("sum = %f, plus: %f\n", sum, result.w);
         } 
     }
-printf("===========\n");
+
     if(myid == 0){
+printf("===========\n");        
         printf("%.4f", sum);
+printf("===========\n"); 
     }
 
     MPI_Finalize();
