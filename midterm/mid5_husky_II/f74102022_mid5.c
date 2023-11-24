@@ -78,7 +78,7 @@ int main( int argc, char *argv[])
         }
         num = up + down - 2;
 printf("num:%d\n", num);
-for(int i=0;i<num;i++)
+for(int i=0;i<num;i++){
     printf("(%d, %d) = %.4f\n", vertex[i].x, vertex[i].y, vertex[i].w);
 }
         //edge_matrix
