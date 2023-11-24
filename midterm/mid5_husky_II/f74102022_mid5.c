@@ -109,7 +109,7 @@ int main( int argc, char *argv[])
                 temp = E[myid * local_count + j];
             }
         }
-        //MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+        MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0)
