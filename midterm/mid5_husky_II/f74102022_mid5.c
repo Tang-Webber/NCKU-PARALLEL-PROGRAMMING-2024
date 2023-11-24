@@ -72,15 +72,17 @@ int main( int argc, char *argv[])
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
+printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
         }
         for(int j = down - 1; j > 0; j--){
             vertex[up + j] = lower[j];
+printf("(%d, %d)\n", vertex[j].x, vertex[j].y);
         }
         num = up + down - 2;
-printf("num:%d\n", num);
-for(int i=0;i<num;i++){
-    printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
-}
+//printf("num:%d\n", num);
+//for(int i=0;i<num;i++){
+//    printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
+//}
         //edge_matrix
         for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
