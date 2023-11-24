@@ -16,8 +16,8 @@ struct Edge {
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
     struct Edge* old = (struct Edge*)inout;
-    if (new.w < old.w)
-        old = new;
+    if (new->w < old->w)
+        *old = *new;
 }
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
@@ -72,7 +72,7 @@ int main( int argc, char *argv[])
             vertex[i] = upper[i];
         }
         for(int j = down - 1; down > 0; down--){
-            vertex[up + i] = lower[i];
+            vertex[up + j] = lower[j];
         }
         num = up + down - 2;
         //edge_matrix
@@ -89,8 +89,8 @@ int main( int argc, char *argv[])
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
     bool pick[20];
-    for(int i=0;i<num;i++){
-        pick = false;
+    for(int i = 0; i < num; i++){
+        pick[i] = false;
     }
     int local_count = count / numprocs;
     int rest = 0;
@@ -106,7 +106,7 @@ int main( int argc, char *argv[])
                 temp = E[myid * local_count + j];
             }
         }
-        MPI_Allreduce(temp, result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+        MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
         pick[result.x] = true;
         pick[result.y] = true;
         sum += result.w;
@@ -114,9 +114,7 @@ int main( int argc, char *argv[])
     if(myid == 0){
         printf("%.4f", sum);
     }
-    free(vertex);
-    free(upper);
-    free(lower);
+
     MPI_Finalize();
     return 0;
 }
