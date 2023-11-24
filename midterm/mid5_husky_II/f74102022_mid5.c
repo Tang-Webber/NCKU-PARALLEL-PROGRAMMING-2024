@@ -56,10 +56,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
-for(int i=0;i<n;i++){
-    printf("(%d, %d)\n", P[i].x, P[i].y);
-}
-printf("-------------------\n");
+//sort correctly
         int up = 0;
         int down = 0;
         struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
@@ -71,7 +68,7 @@ printf("-------------------\n");
 printf("lower:(%d, %d); down = %d\n", lower[down-1].x, lower[down-1].y, down);
             while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
             upper[up++] = P[i];
-printf("upper:(%d, %d); up = %d\n", upper[down-1].x, upper[down-1].y, up);
+printf("upper:(%d, %d); up = %d\n", upper[up-1].x, upper[up-1].y, up);
 printf("P[%d]:(%d, %d);\n", i, P[i].x, P[i].y);
         }    
         //Combine
