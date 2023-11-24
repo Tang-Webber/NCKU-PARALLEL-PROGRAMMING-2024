@@ -65,21 +65,21 @@ int main( int argc, char *argv[])
         for (int i = 0; i < n; i++){
             while (down >= 2 && cross(lower[down-2], lower[down-1], P[i]) <= 0) down--;
             lower[down++] = P[i];
-printf("lower:(%d, %d); down = %d\n", lower[down-1].x, lower[down-1].y, down);
+//printf("lower:(%d, %d); down = %d\n", lower[down-1].x, lower[down-1].y, down);
             while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
             upper[up++] = P[i];
-printf("upper:(%d, %d); up = %d\n", upper[up-1].x, upper[up-1].y, up);
-printf("P[%d]:(%d, %d);\n", i, P[i].x, P[i].y);
+//printf("upper:(%d, %d); up = %d\n", upper[up-1].x, upper[up-1].y, up);
+//printf("P[%d]:(%d, %d);\n", i, P[i].x, P[i].y);
         }    
         //Combine
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
-//printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
+printf("i = %d, (%d, %d)\n",i, vertex[i].x, vertex[i].y);
         }
         for(int j = down - 1; j > 0; j--){
             vertex[up + j] = lower[j];
-//printf("(%d, %d)\n", vertex[j].x, vertex[j].y);
+printf("j = %d, (%d, %d)\n",j, vertex[up + j].x, vertex[up + j].y);
         }
         num = up + down - 2;
 //printf("num:%d\n", num);
