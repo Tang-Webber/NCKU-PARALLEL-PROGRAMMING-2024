@@ -42,6 +42,7 @@ int main( int argc, char *argv[])
     //MPI_Op custom_op;
     //MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
     //scan the input
+    /*
     if (myid == 0) {
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -57,7 +58,7 @@ int main( int argc, char *argv[])
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
     }
-    /*
+    
     if(myid == 0){   
         int up = 0;
         int down = 0;
