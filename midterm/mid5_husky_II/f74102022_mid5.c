@@ -79,7 +79,7 @@ int main( int argc, char *argv[])
         num = up + down - 2;
 printf("num:%d\n", num);
 for(int i=0;i<num;i++){
-    printf("(%d, %d) = %.4f\n", vertex[i].x, vertex[i].y, vertex[i].w);
+    printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
 }
         //edge_matrix
         for(int i = 1; i < num; i++){
