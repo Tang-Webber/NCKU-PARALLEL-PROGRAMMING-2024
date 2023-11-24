@@ -122,6 +122,7 @@ printf("ID = %d; final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);
             sum += result.w;  
 printf("sum = %f, plus: %f\n", sum, result.w);
         } 
+MPI_Barrier(MPI_COMM_WORLD);
     }
 
     if(myid == 0){
