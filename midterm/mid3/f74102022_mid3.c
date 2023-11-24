@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     MPI_Scatter(pass, local_count, MPI_INT, local, local_count,MPI_INT, 0, MPI_COMM_WORLD);
     qsort(local, n, sizeof(int), compare);         //sort
     int passs[70002] = {0};
-    MPI_Gather(local, local_count, MPI_INT, passs, local_count, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Gather(local, local_count, MPI_INT, passs, local_count, MPI_INT, 0, MPI_COMM_WORLD);
 
     if(myid == 0){
         for(int i=0; i<n; i++){
