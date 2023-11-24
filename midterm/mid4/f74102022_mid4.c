@@ -307,8 +307,8 @@ int main( int argc, char *argv[]){
                     }       
                     for(int i = 0; i < k; i++){
                         for(int j = 0; j < m; j++){
-                            local_B[i][j] = local_A[size+i][j];
-                            local_B[size + k + i] = local_A[k+i];
+                            local_B[i][j] = local_B[size+i][j];
+                            local_B[size + k + i] = local_B[k+i];
                         }
                     }                                            
                 } 
@@ -354,9 +354,9 @@ int main( int argc, char *argv[]){
                 }
             }
             
-            int *result = (int*)malloc((size + n / numprocs) * m * sizeof(int));
+            int *result = (int*)malloc(size  * m * sizeof(int));
             if(t % 2 == 0){         //A->B->A
-                for(int i=0;i<size+rest;i++){
+                for(int i=0;i<size;i++){
                     for(int j=0;j<m;j++){
                         //result[i*m + j] = local_A[i+k][j];
                         printf("%d ", local_A[i+k][j]);
@@ -364,7 +364,7 @@ int main( int argc, char *argv[]){
                 }
             }
             else{
-                for(int i=0;i<size+rest;i++){
+                for(int i=0;i<size;i++){
                     for(int j=0;j<m;j++){
                         //result[i*m + j] = local_B[i+k][j];
                         printf("%d ", local_B[i+k][j]);
