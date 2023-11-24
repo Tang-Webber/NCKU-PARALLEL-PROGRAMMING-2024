@@ -56,7 +56,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
-//sort correctly
+
         int up = 0;
         int down = 0;
         struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
@@ -75,24 +75,20 @@ int main( int argc, char *argv[])
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
-printf("i = %d, (%d, %d)\n",i, vertex[i].x, vertex[i].y);
+//printf("i = %d, (%d, %d)\n",i, vertex[i].x, vertex[i].y);
         }
         for(int j = 0; j < down - 2; j++){
             vertex[up + j] = lower[down - 2 - j];
-printf("up + j = %d, (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
+//printf("up + j = %d, (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
         }
         num = up + down - 2;
-//printf("num:%d\n", num);
-//for(int i=0;i<num;i++){
-//    printf("(%d, %d)\n", vertex[i].x, vertex[i].y);
-//}
         //edge_matrix
         for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
+//printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
                 count++;
             }
         }
@@ -110,7 +106,7 @@ printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
     struct Edge result;
     if(myid == numprocs - 1)
         rest = count % numprocs; 
-//printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num, count, local_count, rest);
+printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num, count, local_count, rest);
     for(int i=0; i < num-1; i++){
         for(int j=0;j<local_count + rest;j++){
             temp.w = 100;
@@ -118,13 +114,16 @@ printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
                 temp = E[myid * local_count + j];
             }
         }
-//printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
+printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-//printf("ID = %d; final: %f\n", myid, result.w);        
+printf("ID = %d; final: %f\n", myid, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
-        if(myid == 0)
-            sum += result.w;
+        if(myid == 0){
+            sum += result.w;  
+printf("sum = %f, plus: %f", sum, result.w);
+        }
+            
     }
     if(myid == 0){
         printf("%.4f", sum);
