@@ -80,7 +80,7 @@ int main( int argc, char *argv[])
         }
         num = up + down - 2;
         //edge_matrix
-        for(int i = 0; i < num; i++){
+        for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
