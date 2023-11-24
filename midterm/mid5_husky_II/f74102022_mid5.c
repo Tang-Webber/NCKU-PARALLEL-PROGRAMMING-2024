@@ -112,17 +112,19 @@ int main( int argc, char *argv[])
             if(!(pick[E[myid * local_count + j].x] && !pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
                 temp = E[myid * local_count + j];
             }
-        }
-printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
+if(myid == 3){
+ printf("pick[2] = %d, pick[3] = %d, pick[new] = %d & %d, \n",pick[2], pick[3], pick[E[myid * local_count + j].x],pick[E[myid * local_count + j].x]);
+ printf("%d %d\n", E[myid * local_count + j].x, E[myid * local_count + j].y);
+}        }
+//printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-printf("ID = %d; final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
+//printf("ID = %d; final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
 printf("sum = %f, plus: %f\n", sum, result.w);
         } 
-MPI_Barrier(MPI_COMM_WORLD);
     }
 
     if(myid == 0){
