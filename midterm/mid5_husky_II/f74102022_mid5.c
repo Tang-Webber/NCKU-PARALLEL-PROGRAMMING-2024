@@ -74,7 +74,7 @@ printf("up:%d, down:%d\n", up, down);
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
         }
-        for(int j = down - 1; down > 0; down--){
+        for(int j = down - 1; j > 0; j--){
             vertex[up + j] = lower[j];
         }
         num = up + down - 2;
