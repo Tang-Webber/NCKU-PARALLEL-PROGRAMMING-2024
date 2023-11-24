@@ -56,7 +56,9 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
-
+for(int i=0;i<n;i++){
+    printf("(%d, %d)\n", P[i].x, P[i].y);
+}
         int up = 0;
         int down = 0;
         struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
@@ -107,7 +109,7 @@ printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
     struct Edge result;
     if(myid == numprocs - 1)
         rest = count % numprocs; 
-printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num, count, local_count, rest);
+//printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num, count, local_count, rest);
     for(int i=0; i < num-1; i++){
         for(int j=0;j<local_count + rest;j++){
             temp.w = 100;
@@ -115,9 +117,9 @@ printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num,
                 temp = E[myid * local_count + j];
             }
         }
-printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
+//printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-printf("ID = %d; final: %f\n", myid, result.w);        
+//printf("ID = %d; final: %f\n", myid, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0)
