@@ -109,12 +109,13 @@ int main( int argc, char *argv[])
     for(int i=0; i < num-1; i++){
         for(int j=0;j<local_count + rest;j++){
             temp.w = 100;
-            if(!pick[E[myid * local_count + j].x] && !pick[E[myid * local_count + j].y] && E[myid * local_count + j].w < temp.w){
+            if(!(pick[E[myid * local_count + j].x] && !pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
                 temp = E[myid * local_count + j];
             }
         }
+printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-if(myid == 0)printf("round: %d; final: %f\n", i, result.w);        
+printf("ID = %d; final: %f\n", myid, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
