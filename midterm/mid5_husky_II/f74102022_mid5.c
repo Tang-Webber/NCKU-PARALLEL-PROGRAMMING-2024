@@ -92,6 +92,7 @@ int main( int argc, char *argv[])
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
+printf("test1\n");
     bool pick[20];
     for(int i = 0; i < num; i++){
         pick[i] = false;
@@ -102,6 +103,7 @@ int main( int argc, char *argv[])
     struct Edge result;
     if(myid == numprocs - 1)
         rest = count % numprocs; 
+printf("ID = %d, num = %d, count = %d, local_count = %d, rest = %d\n",myid, num, count, local_count, rest);
     for(int i=0; i < num-1; i++){
         for(int j=0;j<local_count + rest;j++){
             temp.w = 100;
