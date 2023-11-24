@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-int Adj[50000][2][100];            //adjacency matrix
+int Adj[50000][2][1000];            //adjacency matrix
 short count[50000];
 
 int main( int argc, char *argv[]){
