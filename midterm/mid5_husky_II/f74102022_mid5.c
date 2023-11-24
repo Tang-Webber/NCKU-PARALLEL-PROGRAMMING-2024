@@ -120,10 +120,10 @@ printf("ID = %d; final: %f\n", myid, result.w);
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
-printf("sum = %f, plus: %f", sum, result.w);
-        }
-            
+printf("sum = %f, plus: %f\n", sum, result.w);
+        } 
     }
+printf("===========\n");
     if(myid == 0){
         printf("%.4f", sum);
     }
