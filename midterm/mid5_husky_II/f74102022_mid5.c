@@ -56,9 +56,7 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
-    }
-    
-    if(myid == 0){   
+
         int up = 0;
         int down = 0;
         struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
@@ -70,6 +68,7 @@ int main( int argc, char *argv[])
             while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
             upper[up++] = P[i];
         }    
+printf("up:%d, down:%d\n", up, down);
         //Combine
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
@@ -79,12 +78,14 @@ int main( int argc, char *argv[])
             vertex[up + j] = lower[j];
         }
         num = up + down - 2;
+printf("num:%d\n", num);
         //edge_matrix
         for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
+printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
                 count++;
             }
         }
@@ -92,7 +93,6 @@ int main( int argc, char *argv[])
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
-printf("test1\n");
     bool pick[20];
     for(int i = 0; i < num; i++){
         pick[i] = false;
