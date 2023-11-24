@@ -77,9 +77,9 @@ int main( int argc, char *argv[])
             vertex[i] = upper[i];
 printf("i = %d, (%d, %d)\n",i, vertex[i].x, vertex[i].y);
         }
-        for(int j = down - 1; j > 0; j--){
-            vertex[up + j] = lower[j];
-printf("j = %d, (%d, %d)\n",j, vertex[up + j].x, vertex[up + j].y);
+        for(int j = 1; j < down - 1; j++){
+            vertex[up + j] = lower[down - 1 - j];
+printf("up + j = %d, (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
         }
         num = up + down - 2;
 //printf("num:%d\n", num);
