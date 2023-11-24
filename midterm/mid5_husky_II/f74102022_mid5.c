@@ -68,7 +68,6 @@ int main( int argc, char *argv[])
             while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
             upper[up++] = P[i];
         }    
-printf("up:%d, down:%d\n", up, down);
         //Combine
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
@@ -79,6 +78,9 @@ printf("up:%d, down:%d\n", up, down);
         }
         num = up + down - 2;
 printf("num:%d\n", num);
+for(int i=0;i<num;i++)
+    printf("(%d, %d) = %.4f\n", vertex[i].x, vertex[i].y, vertex[i].w);
+}
         //edge_matrix
         for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
