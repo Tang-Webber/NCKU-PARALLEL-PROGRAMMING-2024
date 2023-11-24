@@ -32,6 +32,7 @@ int main( int argc, char *argv[])
     int n, myid, numprocs;
     int count = 0;
     int num;
+    double sum = 0;
     char input[50];
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -95,7 +96,6 @@ int main( int argc, char *argv[])
     }
     int local_count = count / numprocs;
     int rest = 0;
-    double sum = 0;
     struct Edge temp;
     struct Edge result;
     if(myid == numprocs - 1)
