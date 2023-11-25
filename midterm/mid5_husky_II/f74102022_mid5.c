@@ -98,38 +98,14 @@ int main( int argc, char *argv[])
                 }
             }
         }
-for(int i=0;i<n;i++){
-    printf("[%d] : (%d, %d)\n",i, vertex[i].x, vertex[i].y);
-}
-        //edge_matrix
-        for(int i = 0; i < num; i++){
-            point[i] = false;
-        }   
-        for(int i = 1; i < num; i++){
-            for(int j = 0; j < i; j++){
-                E[count].x = i;
-                E[count].y = j;
-                E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-                count++;
-            }
-            for(int k=0;k<n;k++){
-                if(P[k].x == vertex[i].x && P[k].y == vertex[i].y){
-                    point[k] = true;
-                }
-            }
-        }
     }
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(vertex, num * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    
-    bool pick[20];      //vertex
-    for(int i = 0; i < num; i++){
-        pick[i] = false;
-    }
+
     int local_count = count / numprocs;
     int rest = 0;
     if(myid == numprocs - 1)
@@ -137,13 +113,12 @@ for(int i=0;i<n;i++){
     struct Edge temp;
     struct Edge result;
     int index;
+    bool pick[20];      //vertex
 
-
-
-
-
-
-
+    /*
+    for(int i = 0; i < num; i++){
+        pick[i] = false;
+    }
     pick[0] = true;     //pick start vertex
     for(int i=0; i < num-1; i++){
         temp.w = 100;
@@ -161,48 +136,58 @@ for(int i=0;i<n;i++){
         } 
     }
     final = sum;
+
+    */
+
     //consider inside point
-
-/*
-
-    for(int x=0; x < n;x++){
-        if(!point[x]){
-            for(int j = 0; j < num; j++){
-                E[count].x = num;
+    int inner = n - num;
+    for (int x = 0; x < (1 << inner); x++) {
+        int qIndex = 0;
+        for (int i = 0; i < num; i++) {
+            Q[qIndex++] = P[i];
+        }       
+        for (int i = 0; i < inner; i++) {
+            if ((x & (1 << i)) != 0) {
+                Q[qIndex++] = vertex[num + i];
+            }
+        }   
+        //Cauculate Edges
+        count = 0;
+        for(int i = 1; i < qIndex; i++){
+            for(int j = 0; j < i; j++){
+                E[count].x = i;
                 E[count].y = j;
-                E[count].w = sqrt((pow((double)(P[x].x - vertex[j].x), 2) + pow((double)(P[x].y - vertex[j].y), 2)));
+                E[count].w = sqrt((pow((double)(Q[i].x - Q[j].x), 2) + pow((double)(Q[i].y - Q[j].y), 2)));
                 count++;
             }
-            for(int i = 0; i < num; i++){
-                pick[i] = false;
-            }
-            local_count = count / numprocs;
-            if(myid == numprocs - 1)
-                rest = count % numprocs;  
-            pick[0] = true;     //pick start vertex
-            sum = 0;
-            for(int i=0; i < num; i++){
-                temp.w = 100;
-                for(int j=0;j<local_count + rest;j++){
-                    index = myid * local_count + j;
-                    if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
-                        temp = E[index];
-                    }
-                }
-                MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-                pick[result.x] = true;
-                pick[result.y] = true;
-                if(myid == 0){
-                    sum += result.w;  
-                } 
-            }
-            if(final > sum)
-                final = sum;
         }
+        for(int i = 1; i < qIndex; i++){
+            pick[i] = false;
+        }
+        pick[0] = true;     //pick start vertex
+        local_count = count / numprocs;
+        if(myid == numprocs - 1)
+            rest = count % numprocs;  
+        sum = 0;
+        for(int i=0; i < num; i++){
+            temp.w = 100;
+            for(int j=0;j<local_count + rest;j++){
+                index = myid * local_count + j;
+                if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                    temp = E[index];
+                }
+            }
+            MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+            pick[result.x] = true;
+            pick[result.y] = true;
+            if(myid == 0){
+                sum += result.w;  
+            } 
+        }
+        if(final > sum)
+            final = sum;
     }
 
-
-*/
     if(myid == 0){      
         printf("%.4f", final);
     }
