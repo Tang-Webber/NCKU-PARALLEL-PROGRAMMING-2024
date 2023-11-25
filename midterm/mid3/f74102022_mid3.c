@@ -67,20 +67,18 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                 }
                 if(front == (myid + 1) * x * local_count){
 printf("stuck front!!! id = %d\n", myid);
-                    while(back != (myid + 2) * x * local_count){
+                    while(z != local_count * y){
                         local[z++] = passs[back++];
                     }
                     break;
                 }
                 if(back == (myid + 2) * x * local_count){
 printf("stuck back!!! id = %d\n", myid);
-                    while(front != (myid + 1) * x * local_count){
+                    while(z != local_count * y){
                         local[z++] = passs[front++];
                     }                    
                     break;
-                }    
-                if(z == local_count * y)
-                    break;            
+                }             
             }      
             if(myid % (2*y) != 0){
                 MPI_Send(local, z, MPI_INT, myid - (myid % (2*y)), 0, MPI_COMM_WORLD);
