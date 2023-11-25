@@ -87,7 +87,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
+printf("[%d] : (%d, %d) to (%d, %d) = %f\n",count, vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
                 count++;
             }
         }
@@ -105,7 +105,7 @@ printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, ver
         rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
-//printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
+printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, rest);
     for(int i=0; i < num-1; i++){
         temp.w = 100;
         for(int j=0;j<local_count + rest;j++){
@@ -114,9 +114,11 @@ printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, ver
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-if(myid == numprocs - 1){
+
 printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
 printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
+if(result.w == temp.w){
+    printf("\n! myid=%d !\n", myid);
 }
    
         pick[result.x] = true;
