@@ -69,21 +69,23 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
                     while(z != local_count * y){
                         local[z++] = passs[back++];
                     }
-printf("x=%d break\n", x);
                     break;
                 }
                 if(back == (myid + 2 * x) * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[front++];
-                    }      
-printf("x=%d break\n", x);         
+                    }              
                     break;
                 }  
             }              
 if(myid == 0){
-    for(int i=0;i< z;i++){
+    for(int i=0;i< z / 2;i++){
         printf("%d ",local[i]);
     }
+    printf("\n斷\n");
+    for(int i=z / 2;i< z;i++){
+        printf("%d ",local[i]);
+    }    
     printf("\n============================================================================\n");
 }         
             if(y == numprocs){
@@ -99,6 +101,7 @@ printf("x=%d break\n", x);
 printf("receive from %d!! myid = %d || size = %d \n", myid + y, myid, (myid + y) * x * local_count);
             }    
         }
+        MPI_Barrier(MPI_COMM_WORLD);
     }
     if(myid == 0){
         for(int i=0; i < n; i++){
