@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
             }
 
             for(int i=0;i<z;i++){
-                pass[i] = local[i];
+                pass[myid * local_count + i] = local[i];
             }
             if(y != numprocs){
                 if(myid % (2*y) != 0){
