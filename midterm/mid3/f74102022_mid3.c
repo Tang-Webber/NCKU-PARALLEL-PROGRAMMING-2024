@@ -40,7 +40,12 @@ int main(int argc, char *argv[]){
     //MPI_Scatter(pass, local_count, MPI_INT, local, local_count,MPI_INT, 0, MPI_COMM_WORLD);
     //qsort(local, n, sizeof(int), compare);         //sort
     qsort(&passs[myid * local_count], local_count, sizeof(int), compare);
-    
+if(myid==0){
+for(int i=0; i<n; i++){
+    printf("%d ", passs[i]);
+} 
+printf("\n==================================\n");   
+}
     int temp;
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
     for(int x = 1, y = 2; y == numprocs; x *= 2, y *= 2){
