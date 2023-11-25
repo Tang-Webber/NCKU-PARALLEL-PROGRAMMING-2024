@@ -144,7 +144,6 @@ int main( int argc, char *argv[])
                 Q[qIndex++] = vertex[num + i];
             }
         }   
-
         //Cauculate Edges
         count = 0;
         for(int i = 1; i < qIndex; i++){
@@ -155,7 +154,6 @@ int main( int argc, char *argv[])
                 count++;
             }
         }
-//if(myid==0) printf("count=%d\n", count);       
         for(int i = 1; i < qIndex; i++){
             pick[i] = false;
         }
