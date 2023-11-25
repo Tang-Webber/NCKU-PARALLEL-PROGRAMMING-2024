@@ -39,6 +39,8 @@ int main( int argc, char *argv[])
     int count = 0;
     int num;
     double sum = 0;
+    double final = 1000;
+    bool point[20];     //vertex
     char input[50];
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -82,19 +84,29 @@ int main( int argc, char *argv[])
         }
         num = up + down - 2;
         //edge_matrix
+        for(int i = 0; i < num; i++){
+            point[i] = false;
+        }   
         for(int i = 1; i < num; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("[%d] : %d:(%d, %d) to %d:(%d, %d) = %f\n",count, i, vertex[i].x, vertex[i].y, j, vertex[j].x, vertex[j].y, E[count].w);
                 count++;
+            }
+            for(int k=0;k<n;k++){
+                if(P[k].x == vertex[i].x && P[k].y == vertex[i].y){
+                    point[k] = true;
+                }
             }
         }
     }
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&point, n, MPI_BOOL, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     bool pick[20];      //vertex
     for(int i = 0; i < num; i++){
         pick[i] = false;
@@ -106,7 +118,6 @@ printf("[%d] : %d:(%d, %d) to %d:(%d, %d) = %f\n",count, i, vertex[i].x, vertex[
     struct Edge temp;
     struct Edge result;
     int index;
-//printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, rest);
     pick[0] = true;     //pick start vertex
     for(int i=0; i < num-1; i++){
         temp.w = 100;
@@ -117,22 +128,54 @@ printf("[%d] : %d:(%d, %d) to %d:(%d, %d) = %f\n",count, i, vertex[i].x, vertex[
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-if(i==2){
-//printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
-//printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
-}
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
-printf("pick : [0]%d [1]%d [2]%d [3]%d [4]%d \n",pick[0],pick[1],pick[2],pick[3],pick[4]);
         } 
     }
+    final = sum;
+    //consider inside point
+    for(int x=0; x < n;x++){
+        if(!point[x]){
+            for(int j = 0; j < num; j++){
+                E[count].x = num;
+                E[count].y = j;
+                E[count].w = sqrt((pow((double)(P[x].x - vertex[j].x), 2) + pow((double)(P[x].y - vertex[j].y), 2)));
+                count++;
+            }
+            for(int i = 0; i < num; i++){
+                pick[i] = false;
+            }
+            local_count = count / numprocs;
+            if(myid == numprocs - 1)
+                rest = count % numprocs;  
+            pick[0] = true;     //pick start vertex
+            sum = 0;
+            for(int i=0; i < num; i++){
+                temp.w = 100;
+                for(int j=0;j<local_count + rest;j++){
+                    index = myid * local_count + j;
+                    if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                        temp = E[index];
+                    }
+                }
+                MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+                pick[result.x] = true;
+                pick[result.y] = true;
+                if(myid == 0){
+                    sum += result.w;  
+                } 
+            }
+            if(final > sum)
+                final = sum;
+        }
+    }
 
-    if(myid == 0){
-printf("===========\n");        
-        printf("%.4f", sum);
-printf("===========\n"); 
+
+
+    if(myid == 0){      
+        printf("%.4f", final);
     }
 
     MPI_Finalize();
