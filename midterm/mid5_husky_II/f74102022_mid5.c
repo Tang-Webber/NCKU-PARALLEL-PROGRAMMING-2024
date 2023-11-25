@@ -103,7 +103,7 @@ int main( int argc, char *argv[])
     //MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
     //MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(vertex, num * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 
     int local_count = count / numprocs;
@@ -144,7 +144,7 @@ int main( int argc, char *argv[])
     for (int x = 0; x < (1 << inner); x++) {
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
-            Q[qIndex++] = P[i];
+            Q[qIndex++] = vertex[i];
         }       
         for (int i = 0; i < inner; i++) {
             if ((x & (1 << i)) != 0) {
