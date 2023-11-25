@@ -42,7 +42,6 @@ int main( int argc, char *argv[])
     double final = 1000;
     bool point[20];     //vertex
     char input[50];
-    struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -65,7 +64,10 @@ int main( int argc, char *argv[])
         }
         fclose(input_file);
         qsort(P, n, sizeof(struct Point), compare);         //sort
-
+    }
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
+    if(myid == 0){
         int up = 0;
         int down = 0;
         struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
@@ -103,13 +105,12 @@ int main( int argc, char *argv[])
             }
         }
     }
-    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vertex, num * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     
     bool pick[20];      //vertex
     for(int i = 0; i < num; i++){
