@@ -141,7 +141,9 @@ int main( int argc, char *argv[])
 
     //consider inside point
     int inner = n - num;
+if(myid == 0) printf("inner=%d\n", inner);
     for (int x = 0; x < (1 << inner); x++) {
+printf("x=%d\n", x);
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
@@ -169,7 +171,7 @@ int main( int argc, char *argv[])
         if(myid == numprocs - 1)
             rest = count % numprocs;  
         sum = 0;
-        for(int i=0; i < num; i++){
+        for(int i=0; i < qIndex; i++){
             temp.w = 100;
             for(int j=0;j<local_count + rest;j++){
                 index = myid * local_count + j;
