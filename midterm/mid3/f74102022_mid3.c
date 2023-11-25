@@ -45,11 +45,38 @@ int main(int argc, char *argv[]){
     }
     else{
         MPI_Recv(&passs[(myid + 1) * local_count], local_count, MPI_INT, myid + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, local_count);
+printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1) * local_count);
     }   
 
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
-    
+if(myid==0){
+for(int i=0; i<local_count * 2; i++){
+    printf("%d ", passs[i]);
+} 
+printf("\n==================================\n");  
+}
+MPI_Barrier(MPI_COMM_WORLD); 
+if(myid==2){
+for(int i=0; i<local_count * 2; i++){
+    printf("%d ", passs[i]);
+} 
+printf("\n==================================\n");  
+}
+MPI_Barrier(MPI_COMM_WORLD); 
+if(myid==4){
+for(int i=0; i<local_count * 2; i++){
+    printf("%d ", passs[i]);
+} 
+printf("\n==================================\n");  
+}
+MPI_Barrier(MPI_COMM_WORLD);
+if(myid==6){
+for(int i=0; i<local_count * 2; i++){
+    printf("%d ", passs[i]);
+} 
+printf("\n==================================\n");  
+}
+MPI_Barrier(MPI_COMM_WORLD); 
     //Merge sort
     int temp;    
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
