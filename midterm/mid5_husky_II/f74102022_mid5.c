@@ -65,21 +65,16 @@ int main( int argc, char *argv[])
         for (int i = 0; i < n; i++){
             while (down >= 2 && cross(lower[down-2], lower[down-1], P[i]) <= 0) down--;
             lower[down++] = P[i];
-//printf("lower:(%d, %d); down = %d\n", lower[down-1].x, lower[down-1].y, down);
             while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
             upper[up++] = P[i];
-//printf("upper:(%d, %d); up = %d\n", upper[up-1].x, upper[up-1].y, up);
-//printf("P[%d]:(%d, %d);\n", i, P[i].x, P[i].y);
         }    
         //Combine
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
-printf("%d: (%d, %d)\n",i, vertex[i].x, vertex[i].y);
         }
         for(int j = 0; j < down - 2; j++){
             vertex[up + j] = lower[down - 2 - j];
-printf("%d: (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
         }
         num = up + down - 2;
         //edge_matrix
@@ -88,7 +83,7 @@ printf("%d: (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-//printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
+printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y E[count].w);
                 count++;
             }
         }
