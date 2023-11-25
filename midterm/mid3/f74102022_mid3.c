@@ -79,7 +79,7 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
                 }          
 if(myid == 0){
     for(int i=0;i< z;i++){
-        printf("%d ",local[i]);
+        //printf("%d ",local[i]);
     }
     printf("\n============================================================================\n");
 }   
