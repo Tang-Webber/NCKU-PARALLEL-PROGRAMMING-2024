@@ -82,6 +82,9 @@ MPI_Barrier(MPI_COMM_WORLD);
             int back =  (myid + x) * local_count;
             int z = 0;
 //printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
+if(myid == 0 && y == 4){
+    printf("front:%d %d; back: %d %d\n", pass[front], pass[front+1], pass[back], pass[back+1]);
+}
             while (front < (myid + x) * local_count && back < (myid + 2 * x) * local_count) {
                 if(pass[front] <= pass[back]){
                     local[z++] = pass[front++];
