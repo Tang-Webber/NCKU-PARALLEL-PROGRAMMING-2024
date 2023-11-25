@@ -70,17 +70,17 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                     while(z != local_count * y){
                         local[z++] = passs[back++];
                     }
-if(myid == 0) printf("test : z = %d\n", z);
                     break;
                 }
                 if(back == (myid + 2) * x * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[front++];
                     }     
-if(myid == 0) printf("test : z = %d\n", z);               
+printf("test : z = %d\n", z);               
                     break;
                 }             
             }     
+if(x == 2)printf("Id = %d, ready\n", myid);
             if(y == numprocs)
                 break;
             if(myid % (2*y) != 0){
