@@ -96,7 +96,7 @@ MPI_Barrier(MPI_COMM_WORLD);
             while (back < (myid + 2 * x) * local_count) {
                 local[z++] = pass[back++];
             }
-            
+/*       
 if(myid == 0){
 printf("z = %d\n", z);
     for(int i=0;i< z / 2;i++){
@@ -108,7 +108,7 @@ printf("z = %d\n", z);
     }    
     printf("\n============================================================================\n");
 }    
-      
+*/
             if(y != numprocs){
                 if(myid % (2*y) != 0){
                     MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
@@ -125,7 +125,7 @@ printf("z = %d\n", z);
     }
     printf("\n斷\n");
     for(int i=z;i<2* z;i++){
-        printf("%d ",local[i]);
+        printf("%d ",pass[myid * local_count + z + i]);
     }    
     printf("\n============================================================================\n");
 }   
