@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
     int local_count = n / numprocs;
     //MPI_Scatter(pass, local_count, MPI_INT, local, local_count,MPI_INT, 0, MPI_COMM_WORLD);
     //qsort(local, n, sizeof(int), compare);         //sort
-    qsort(&pass[myid * local_count], local_count * 2, sizeof(int), compare);
+    qsort(&pass[myid * local_count], local_count, sizeof(int), compare);
     if(myid % 2 != 0){
         MPI_Send(&pass[myid * local_count], local_count, MPI_INT, myid - 1, 0, MPI_COMM_WORLD);
     }
