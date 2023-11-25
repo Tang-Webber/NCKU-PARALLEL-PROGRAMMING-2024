@@ -75,11 +75,11 @@ int main( int argc, char *argv[])
         struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
-//printf("i = %d, (%d, %d)\n",i, vertex[i].x, vertex[i].y);
+printf("%d: (%d, %d)\n",i, vertex[i].x, vertex[i].y);
         }
         for(int j = 0; j < down - 2; j++){
             vertex[up + j] = lower[down - 2 - j];
-//printf("up + j = %d, (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
+printf("%d: (%d, %d)\n",up + j, vertex[up + j].x, vertex[up + j].y);
         }
         num = up + down - 2;
         //edge_matrix
@@ -88,7 +88,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
+//printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
                 count++;
             }
         }
