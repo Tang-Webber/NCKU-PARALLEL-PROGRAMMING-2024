@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
                     MPI_Recv(&pass[myid * local_count + z], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 }                    
             }
-/*
+
 if(myid == 0){
 printf("z = %d\n", z);
     for(int i=0;i< z;i++){
@@ -90,13 +90,13 @@ printf("z = %d\n", z);
     }    
     printf("\n============================================================================\n");
 }   
-*/
+
         }
         MPI_Barrier(MPI_COMM_WORLD);
     }
     if(myid == 0){
         for(int i=0; i < n; i++){
-            printf("%d ", local[i]);
+            //printf("%d ", pass[i]);
         }
     }
 
