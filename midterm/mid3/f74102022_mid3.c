@@ -125,7 +125,7 @@ printf("z = %d\n", z);
     }
     printf("\n斷\n");
     for(int i=z;i<2* z;i++){
-        printf("%d ",pass[myid * local_count + z + i]);
+        printf("%d ",pass[myid * local_count+ i]);
     }    
     printf("\n============================================================================\n");
 }   
