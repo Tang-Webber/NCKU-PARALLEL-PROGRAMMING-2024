@@ -83,7 +83,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y E[count].w);
+printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
                 count++;
             }
         }
