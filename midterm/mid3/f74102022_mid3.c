@@ -87,8 +87,8 @@ if(myid == 0) printf("test : z = %d\n", z);
                 MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
             }
             else{
-                MPI_Recv(&passs[(myid + 2 * y) * x * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("receive from %d!! myid = %d || size = %d \n", myid + y, myid, (myid + 2 * y) * x * local_count);
+                MPI_Recv(&passs[(myid + y) * x * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+printf("receive from %d!! myid = %d || size = %d \n", myid + y, myid, (myid + y) * x * local_count);
             }    
         }
     }
