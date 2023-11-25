@@ -24,8 +24,7 @@ void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
-int compare(const void* a, const void* b)
-{
+int compare(const void* a, const void* b){
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
 }
 
@@ -100,12 +99,7 @@ int main( int argc, char *argv[])
     //MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
     //MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
     //MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
-
-    //int local_count = count / numprocs;
-    //int rest = 0;
-    //if(myid == numprocs - 1)
-    //    rest = count % numprocs;     
+    MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD); 
 
     int local_count;
     int rest = 0;
@@ -169,8 +163,7 @@ int main( int argc, char *argv[])
         local_count = count / numprocs;
         if(myid == numprocs - 1)
             rest = count % numprocs;  
-        sum = 0;
-//printf("id = %d : local_c=%d ; rest = %d\n",myid, local_count, rest);       
+        sum = 0;    
         for(int i=0; i < qIndex - 1; i++){
             temp.w = 100;
             for(int j=0;j<local_count + rest;j++){
@@ -182,6 +175,7 @@ int main( int argc, char *argv[])
             MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
             pick[result.x] = true;
             pick[result.y] = true;
+            result.w = floor(result.w * 10000) / 10000;
             if(myid == 0){
                 sum += result.w;  
             } 
