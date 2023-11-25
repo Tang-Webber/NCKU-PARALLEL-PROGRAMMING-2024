@@ -82,6 +82,7 @@ int main( int argc, char *argv[])
             vertex[up + j] = lower[down - 2 - j];
         }
         num = up + down - 2;
+        //reorder P to vertex
         int s = num;
         for(int i=0;i<n;i++){
             for(int j=0;j<num;j++){
@@ -95,10 +96,6 @@ int main( int argc, char *argv[])
         }
     }
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
-    //MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD); 
 
     int local_count;
@@ -106,32 +103,7 @@ int main( int argc, char *argv[])
     struct Edge temp;
     struct Edge result;
     int index;
-    bool pick[20];      //vertex
-
-    /*
-    for(int i = 0; i < num; i++){
-        pick[i] = false;
-    }
-    pick[0] = true;     //pick start vertex
-    for(int i=0; i < num-1; i++){
-        temp.w = 100;
-        for(int j=0;j<local_count + rest;j++){
-            index = myid * local_count + j;
-            if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
-                temp = E[index];
-            }
-        }
-        MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-        pick[result.x] = true;
-        pick[result.y] = true;
-        if(myid == 0){
-            sum += result.w;  
-        } 
-    }
-    final = sum;
-
-    */
-
+    bool pick[20];
     //consider inside point
     int inner = n - num;
     for (int x = 0; x < (1 << inner); x++) {

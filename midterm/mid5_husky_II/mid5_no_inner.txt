@@ -1,0 +1,24 @@
+
+    /*
+    for(int i = 0; i < num; i++){
+        pick[i] = false;
+    }
+    pick[0] = true;     //pick start vertex
+    for(int i=0; i < num-1; i++){
+        temp.w = 100;
+        for(int j=0;j<local_count + rest;j++){
+            index = myid * local_count + j;
+            if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                temp = E[index];
+            }
+        }
+        MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+        pick[result.x] = true;
+        pick[result.y] = true;
+        if(myid == 0){
+            sum += result.w;  
+        } 
+    }
+    final = sum;
+
+    */
