@@ -54,7 +54,7 @@ printf("\n==================================\n");
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
         if(myid % y == 0){
             int front = myid * local_count;
-            int back = front + x *local_count;
+            int back = front + x * local_count;
             int z = 0;
 printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
@@ -69,12 +69,14 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                     while(z != local_count * y){
                         local[z++] = passs[back++];
                     }
+if(myid == 0) printf("test : z = %d\n", z);
                     break;
                 }
                 if(back == (myid + 2) * x * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[front++];
-                    }                    
+                    }     
+if(myid == 0) printf("test : z = %d\n", z);               
                     break;
                 }             
             }     
@@ -85,6 +87,7 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             }
             else{
                 MPI_Recv(&passs[(myid + 2 * y) * x * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+printf("receive from %d!! myid = %d || size = %d \n", myid + y, myid, (myid + 2 * y) * x * local_count);
             }    
         }
     }
