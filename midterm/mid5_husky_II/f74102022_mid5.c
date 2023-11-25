@@ -93,13 +93,13 @@ int main( int argc, char *argv[])
                 if(P[i].x == vertex[j].x && P[i].y == vertex[j].y)
                     break;
                 if(j==num - 1){
-                    vertex[s] = P[i]
+                    vertex[s] = P[i];
                     s++;
                 }
             }
         }
 for(int i=0;i<n;i++){
-    printf("[%d] : (%d, %d)\n",i, vertex[i].x, vertex.y);
+    printf("[%d] : (%d, %d)\n",i, vertex[i].x, vertex[i].y);
 }
         //edge_matrix
         for(int i = 0; i < num; i++){
