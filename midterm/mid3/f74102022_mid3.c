@@ -58,7 +58,7 @@ printf("\n==================================\n");
             int z = 0;
 printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
-if(myid == 0) printf("test : z = %d", z);
+if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
                     local[z++] = passs[front++];
                 }
