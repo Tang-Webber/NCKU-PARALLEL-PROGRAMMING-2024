@@ -68,6 +68,7 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                 if(front == (myid + 1) * x * local_count){
 printf("stuck front!!! id = %d\n", myid);
                     while(z != local_count * y){
+if(myid == 0) printf("test : z = %d\n", z);
                         local[z++] = passs[back++];
                     }
                     break;
