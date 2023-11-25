@@ -79,6 +79,8 @@ printf("z = %d\n", z);
     }    
     printf("\n============================================================================\n");
 }               
+            if(y == numprocs)
+                break;
             if(myid % (2*y) != 0){
                 MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
             }
