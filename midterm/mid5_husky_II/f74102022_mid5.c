@@ -138,7 +138,10 @@ int main( int argc, char *argv[])
     final = sum;
 
     */
-
+for(int z=0;z<n;z++){
+    printf("(%d, %d)  ", vertex[z].x, vertex[z].y);
+}
+printf("\n");
     //consider inside point
     int inner = n - num;
     for (int x = 0; x < (1 << inner); x++) {
@@ -166,7 +169,7 @@ printf("\n");
                 count++;
             }
         }
-if(myid==0) printf("count=%d\n", count);       
+//if(myid==0) printf("count=%d\n", count);       
         for(int i = 1; i < qIndex; i++){
             pick[i] = false;
         }
@@ -175,7 +178,7 @@ if(myid==0) printf("count=%d\n", count);
         if(myid == numprocs - 1)
             rest = count % numprocs;  
         sum = 0;
-printf("id = %d : local_c=%d ; rest = %d\n",myid, local_count, rest);       
+//printf("id = %d : local_c=%d ; rest = %d\n",myid, local_count, rest);       
         for(int i=0; i < qIndex; i++){
             temp.w = 100;
             for(int j=0;j<local_count + rest;j++){
