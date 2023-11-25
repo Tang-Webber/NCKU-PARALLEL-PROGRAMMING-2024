@@ -76,7 +76,7 @@ MPI_Barrier(MPI_COMM_WORLD);
 
     //Merge sort
     int temp;    
-    for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
+    for(int x = 1, y = 2; y <= numprocs; x = x * 2, y = y * 2){
         if(myid % y == 0){
             int front = myid * local_count;
             int back =  (myid + x) * local_count;
@@ -97,7 +97,7 @@ MPI_Barrier(MPI_COMM_WORLD);
                 local[z++] = pass[back++];
             }
             
-if(myid == 0){
+if(myid == 2){
 printf("z = %d\n", z);
     for(int i=0;i< z / 2;i++){
         printf("%d ",local[i]);
