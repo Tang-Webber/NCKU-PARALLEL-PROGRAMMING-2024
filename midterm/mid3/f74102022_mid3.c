@@ -97,7 +97,7 @@ MPI_Barrier(MPI_COMM_WORLD);
                 local[z++] = pass[back++];
             }
             
-if(myid == 2){
+if(myid == 0){
 printf("z = %d\n", z);
     for(int i=0;i< z / 2;i++){
         printf("%d ",local[i]);
@@ -114,10 +114,21 @@ printf("z = %d\n", z);
                     MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
                 }
                 else{
-                    MPI_Recv(&pass[(myid + y) * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                    MPI_Recv(&pass[myid * local_count + z], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 }                    
             }
         }
+if(myid == 0){
+printf("z = %d\n", z);
+    for(int i=0;i< z;i++){
+        printf("%d ",local[i]);
+    }
+    printf("\n斷\n");
+    for(int i=z;i<2* z;i++){
+        printf("%d ",local[i]);
+    }    
+    printf("\n============================================================================\n");
+}   
 
         MPI_Barrier(MPI_COMM_WORLD);
     }
