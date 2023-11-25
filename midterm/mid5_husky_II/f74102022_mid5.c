@@ -83,7 +83,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y E[count].w);
+printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
                 count++;
             }
         }
@@ -111,12 +111,12 @@ printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
 printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
-printf("Final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
+printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
-printf("iteration: %d, plus: %f => sum = %f\n", result.w, sum);
+printf("iteration: %d, plus: %f => sum = %f\n",i,  result.w, sum);
         } 
     }
 
