@@ -66,13 +66,13 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                 else{
                     local[z++] = passs[back++];
                 }
-                if(front == (myid + 1) * x * local_count){
+                if(front == (myid + x) * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[back++];
                     }
                     break;
                 }
-                if(back == (myid + 2) * x * local_count){
+                if(back == (myid + 2 * x) * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[front++];
                     }     
