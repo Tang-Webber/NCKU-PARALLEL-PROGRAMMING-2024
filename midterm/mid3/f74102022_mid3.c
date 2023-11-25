@@ -58,7 +58,7 @@ printf("\n==================================\n");
             int z = 0;
 printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
-if(myid == 0) printf("test : z = %d\n", z);
+//if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
                     local[z++] = passs[front++];
                 }
@@ -66,12 +66,14 @@ if(myid == 0) printf("test : z = %d\n", z);
                     local[z++] = passs[back++];
                 }
                 if(front == (myid + 1) * x * local_count){
+printf("stuck front!!! id = %d\n", myid);
                     while(back != (myid + 2) * x * local_count){
                         local[z++] = passs[back++];
                     }
                     break;
                 }
                 if(back == (myid + 2) * x * local_count){
+printf("stuck back!!! id = %d\n", myid);
                     while(front != (myid + 1) * x * local_count){
                         local[z++] = passs[front++];
                     }                    
