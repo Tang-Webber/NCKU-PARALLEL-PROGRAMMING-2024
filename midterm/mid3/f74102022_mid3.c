@@ -49,34 +49,6 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
     }   
 
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
-if(myid==0){
-for(int i=0; i<local_count * 2; i++){
-    printf("%d ", passs[i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD); 
-if(myid==2){
-for(int i=0; i<local_count * 2; i++){
-    printf("%d ", passs[myid * local_count+i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD); 
-if(myid==4){
-for(int i=0; i<local_count * 2; i++){
-    printf("%d ", passs[myid * local_count+i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid==6){
-for(int i=0; i<local_count * 2; i++){
-    printf("%d ", passs[myid * local_count+i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD); 
     //Merge sort
     int temp;    
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
@@ -104,7 +76,13 @@ MPI_Barrier(MPI_COMM_WORLD);
                         local[z++] = passs[front++];
                     }                  
                     break;
-                }             
+                }          
+if(myid == 0){
+    for(int i=0;i< z;i++){
+        printf("%d ",local[i]);
+    }
+    printf("\n============================================================================\n");
+}   
             }     
             if(y == numprocs)
                 break;
