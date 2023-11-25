@@ -42,26 +42,27 @@ int main(int argc, char *argv[]){
     qsort(&passs[myid * local_count], local_count, sizeof(int), compare);
 
 if(myid==0){
-for(int i=0; i<n; i++){
-    printf("%d ", passs[i]);
+for(int i=0; i<local_count; i++){
+    printf("%d ", passs[myid * local_count + i]);
 } 
 printf("\n==================================\n");  
 }
 MPI_Barrier(MPI_COMM_WORLD);
-if(myid==1){
-for(int i=0; i<n; i++){
-    printf("%d ", passs[i]);
+if(myid==2){
+for(int i=0; i<local_count; i++){
+    printf("%d ", passs[myid * local_count + i]);
 } 
 printf("\n==================================\n");  
 }
 MPI_Barrier(MPI_COMM_WORLD);
 if(myid==7){
-for(int i=0; i<n; i++){
-    printf("%d ", passs[i]);
+for(int i=0; i<local_count; i++){
+    printf("%d ", passs[myid * local_count + i]);
 } 
 printf("\n==================================\n");  
 }
 MPI_Barrier(MPI_COMM_WORLD);
+
 
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
     
