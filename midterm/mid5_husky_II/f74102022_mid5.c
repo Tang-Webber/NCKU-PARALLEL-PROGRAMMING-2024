@@ -114,7 +114,7 @@ printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, res
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-if(i==3){
+if(i==2){
 printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
 printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
 }
@@ -122,7 +122,7 @@ printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
-printf("iteration: %d, plus: %f => sum = %f\n",i,  result.w, sum);
+printf("pick : [0]%d [1]%d [2]%d [3]%d [4]%d \n",pick[0],pick[1],pick[2],pick[3],pick[4]);
         } 
     }
 
