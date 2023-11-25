@@ -83,8 +83,9 @@ printf("stuck!? id = %d\n", myid);
                 MPI_Send(local, z, MPI_INT, myid - (myid % (2*y)), 0, MPI_COMM_WORLD);
             }
             else{
-                MPI_Recv(&passs[(myid + 2) * x * local_count], z, MPI_INT, myid + (myid % (2*y)), 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            }     
+                MPI_Recv(&passs[(myid + 2 * y) * x * local_count], z, MPI_INT, myid + (myid % (2*y)), 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            }    
+printf("@@@stuck!? id = %d\n", myid);  
         }
     }
     if(myid == 0){
