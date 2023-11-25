@@ -101,10 +101,10 @@ printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, ver
         rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
-
+printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
     for(int i=0; i < num-1; i++){
+        temp.w = 100;
         for(int j=0;j<local_count + rest;j++){
-            temp.w = 100;
             if((!pick[E[myid * local_count + j].x] || !pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
                 temp = E[myid * local_count + j];
             }
