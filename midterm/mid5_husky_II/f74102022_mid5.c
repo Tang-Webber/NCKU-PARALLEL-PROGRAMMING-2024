@@ -87,7 +87,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("[%d] : (%d, %d) to (%d, %d) = %f\n",count, vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
+printf("[%d] : %d:(%d, %d) to %d:(%d, %d) = %f\n",count, i, vertex[i].x, vertex[i].y, j, vertex[j].x, vertex[j].y, E[count].w);
                 count++;
             }
         }
@@ -95,7 +95,7 @@ printf("[%d] : (%d, %d) to (%d, %d) = %f\n",count, vertex[i].x, vertex[i].y, ver
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
-    bool pick[20];
+    bool pick[20];      //vertex
     for(int i = 0; i < num; i++){
         pick[i] = false;
     }
@@ -114,13 +114,10 @@ printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, res
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-
+if(i==3){
 printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
 printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
-if(result.w == temp.w){
-    printf("\n! myid=%d !\n", myid);
 }
-   
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
