@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
             while (front < (myid + x) * local_count && back < (myid + 2 * x) * local_count) {
                 if(pass[front] <= pass[back])
                     local[z++] = pass[front++];
-                else{
+                else
                     local[z++] = pass[back++];
             }
             while (front < (myid + x) * local_count)    local[z++] = pass[front++];
