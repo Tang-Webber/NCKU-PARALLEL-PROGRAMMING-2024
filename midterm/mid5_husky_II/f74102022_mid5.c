@@ -141,9 +141,7 @@ int main( int argc, char *argv[])
 
     //consider inside point
     int inner = n - num;
-if(myid == 0) printf("inner=%d\n", inner);
     for (int x = 0; x < (1 << inner); x++) {
-printf("x=%d\n", x);
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
@@ -153,6 +151,11 @@ printf("x=%d\n", x);
                 Q[qIndex++] = vertex[num + i];
             }
         }   
+if(myid==0) printf("index=%d\n", qIndex);       
+for(int z=0;z<qIndex;z++){
+    printf("(%d, %d)  ", Q[z].x, Q[z].y);
+}
+printf("\n");
         //Cauculate Edges
         count = 0;
         for(int i = 1; i < qIndex; i++){
@@ -163,6 +166,7 @@ printf("x=%d\n", x);
                 count++;
             }
         }
+if(myid==0) printf("count=%d\n", count);       
         for(int i = 1; i < qIndex; i++){
             pick[i] = false;
         }
@@ -171,6 +175,7 @@ printf("x=%d\n", x);
         if(myid == numprocs - 1)
             rest = count % numprocs;  
         sum = 0;
+printf("id = %d : local_c=%d ; rest = %d\n",myid, local_count, rest);       
         for(int i=0; i < qIndex; i++){
             temp.w = 100;
             for(int j=0;j<local_count + rest;j++){
