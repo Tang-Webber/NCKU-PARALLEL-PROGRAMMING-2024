@@ -89,10 +89,7 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
         }
     }
     if(myid == 0){
-        for(int i=0; i < n / 2; i++){
-            printf("%d ", passs[i]);
-        }
-        for(int i=0; i < n / 2; i++){
+        for(int i=0; i < n; i++){
             printf("%d ", local[i]);
         }
 printf("\n==================================\n");
