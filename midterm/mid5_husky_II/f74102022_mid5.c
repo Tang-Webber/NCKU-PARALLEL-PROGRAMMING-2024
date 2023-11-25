@@ -105,18 +105,21 @@ printf("[%d] : %d:(%d, %d) to %d:(%d, %d) = %f\n",count, i, vertex[i].x, vertex[
         rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
-printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, rest);
+    int index;
+//printf("ID:%d, num:%d, local_count:%d, rest = %d\n", myid, num, local_count, rest);
+    pick[0] = true;     //pick start vertex
     for(int i=0; i < num-1; i++){
         temp.w = 100;
         for(int j=0;j<local_count + rest;j++){
-            if((!pick[E[myid * local_count + j].x] || !pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
-                temp = E[myid * local_count + j];
+            index = myid * local_count + j;
+            if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                temp = E[index];
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
 if(i==2){
-printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
-printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
+//printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
+//printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
 }
         pick[result.x] = true;
         pick[result.y] = true;
