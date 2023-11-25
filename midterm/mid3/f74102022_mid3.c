@@ -40,29 +40,13 @@ int main(int argc, char *argv[]){
     //MPI_Scatter(pass, local_count, MPI_INT, local, local_count,MPI_INT, 0, MPI_COMM_WORLD);
     //qsort(local, n, sizeof(int), compare);         //sort
     qsort(&passs[myid * local_count], local_count, sizeof(int), compare);
-
-if(myid==0){
-for(int i=0; i<local_count; i++){
-    printf("%d ", passs[myid * local_count + i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid==2){
-for(int i=0; i<local_count; i++){
-    printf("%d ", passs[myid * local_count + i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid==7){
-for(int i=0; i<local_count; i++){
-    printf("%d ", passs[myid * local_count + i]);
-} 
-printf("\n==================================\n");  
-}
-MPI_Barrier(MPI_COMM_WORLD);
-
+    if(myid % 2 != 0){
+        MPI_Send(&passs[myid * local_count], local_count, MPI_INT, myid - 1, 0, MPI_COMM_WORLD);
+    }
+    else{
+        MPI_Recv(&passs[(myid + 1) * local_count], local_count, MPI_INT, myid + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, local_count);
+    }   
 
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
     
@@ -73,7 +57,7 @@ MPI_Barrier(MPI_COMM_WORLD);
             int front = myid * local_count;
             int back = front + x * local_count;
             int z = 0;
-printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
+//printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
 //if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
@@ -91,12 +75,10 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
                 if(back == (myid + 2 * x) * local_count){
                     while(z != local_count * y){
                         local[z++] = passs[front++];
-                    }     
-printf("test : z = %d\n", z);               
+                    }                  
                     break;
                 }             
             }     
-if(x == 2)printf("Id = %d, ready\n", myid);
             if(y == numprocs)
                 break;
             if(myid % (2*y) != 0){
