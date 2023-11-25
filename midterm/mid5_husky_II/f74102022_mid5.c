@@ -14,6 +14,10 @@ struct Edge {
     double w;
 }E[400];
 
+double Distance(struct Point p1, struct Point p2) {
+    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+}
+
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
     struct Edge* old = (struct Edge*)inout;
@@ -101,7 +105,7 @@ printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, ver
         rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
-printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
+//printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
     for(int i=0; i < num-1; i++){
         temp.w = 100;
         for(int j=0;j<local_count + rest;j++){
@@ -110,8 +114,11 @@ printf("ID:%d, num:%d, local_count:%d\n", myid, num, local_count);
             }
         }
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+if(myid == numprocs - 1){
 printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
-printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);        
+printf("Final: w(%d, %d) = %f\n", result.x, result.y, result.w);         
+}
+   
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
