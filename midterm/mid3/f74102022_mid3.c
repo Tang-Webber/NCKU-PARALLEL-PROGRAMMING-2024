@@ -79,8 +79,7 @@ int main(int argc, char *argv[]){
                 }                    
             }
 
-if(myid == 0){
-printf("z = %d\n", z);
+if(z == 5000 && myid == 0){
     for(int i=0;i< z;i++){
         printf("%d ",local[i]);
     }
@@ -90,6 +89,17 @@ printf("z = %d\n", z);
     }    
     printf("\n============================================================================\n");
 }   
+MPI_Barrier(MPI_COMM_WORLD);
+if(z == 5000 && myid == 4){
+    for(int i=0;i< z;i++){
+        printf("%d ",local[i]);
+    }
+    printf("\n斷\n");
+    for(int i=z;i<2* z;i++){
+        printf("%d ",pass[myid * local_count+ i]);
+    }    
+    printf("\n============================================================================\n");
+}  
 
         }
         MPI_Barrier(MPI_COMM_WORLD);
