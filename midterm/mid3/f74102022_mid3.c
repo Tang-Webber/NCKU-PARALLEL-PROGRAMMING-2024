@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
     }
     if(myid == 0){
         for(int i=0; i < n; i++){
-            //printf("%d ", pass[i]);
+            printf("%d ", pass[i]);
         }
     }
 
