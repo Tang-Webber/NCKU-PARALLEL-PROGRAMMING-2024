@@ -49,12 +49,14 @@ printf("\n==================================\n");
 }
 */
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
+    //Merge sort
     int temp;    
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
         if(myid % y == 0){
             int front = myid * x * local_count;
             int back = (myid + 1) * x *local_count;
             int z = 0;
+printf("test, ID = %d; front = %d; back = %d", myid, front, back);
             while(1){
                 if(passs[front] <= passs[back])
                     local[z++] = passs[front++];
@@ -71,7 +73,9 @@ printf("\n==================================\n");
                         local[z++] = passs[front++];
                     }                    
                     break;
-                }                
+                }    
+                if(z == local_count * y)
+                    break;            
             }      
             if(myid % (2*y) != 0){
                 MPI_Send(local, z, MPI_INT, myid - (myid % (2*y)), 0, MPI_COMM_WORLD);
