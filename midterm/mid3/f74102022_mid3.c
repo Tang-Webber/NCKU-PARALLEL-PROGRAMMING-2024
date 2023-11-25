@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
     qsort(local, n, sizeof(int), compare);         //sort
     int passs[70002] = {0};
     int temp;
-    MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
     for(int x = 1, y = 2; y == numprocs; x *= 2, y *= 2){
         if(myid % y == 0){
             int front = myid * x * local_count;
