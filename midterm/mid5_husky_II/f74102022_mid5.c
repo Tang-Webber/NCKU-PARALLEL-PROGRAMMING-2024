@@ -88,7 +88,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-//printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
+printf("(%d, %d) = %f\n", E[count].x, E[count].y, E[count].w);
                 count++;
             }
         }
@@ -113,8 +113,6 @@ int main( int argc, char *argv[])
                 temp = E[myid * local_count + j];
             }
         }
-        if(local_count == 0 && rest == 0)
-            temp.w = 100;
 //printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
 //printf("ID = %d; final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
