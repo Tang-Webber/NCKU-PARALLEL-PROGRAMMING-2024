@@ -42,11 +42,14 @@ int main( int argc, char *argv[])
     double final = 1000;
     bool point[20];     //vertex
     char input[50];
+    struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
+
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
     MPI_Op custom_op;
     MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
+
     //scan the input
     if (myid == 0) {
         scanf("%s", input);
@@ -75,7 +78,6 @@ int main( int argc, char *argv[])
             upper[up++] = P[i];
         }    
         //Combine
-        struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
         for(int i = 0; i < up;i++){
             vertex[i] = upper[i];
         }
@@ -104,9 +106,11 @@ int main( int argc, char *argv[])
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&point, n, MPI_BOOL, 0, MPI_COMM_WORLD);
+    MPI_Bcast(point, n * sizeof(bool), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(E, count * sizeof(struct Edge), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
+    
     bool pick[20];      //vertex
     for(int i = 0; i < num; i++){
         pick[i] = false;
