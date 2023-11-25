@@ -125,7 +125,7 @@ printf("z = %d\n", z);
     }
     if(myid == 0){
         for(int i=0; i < n; i++){
-            printf("%d ", local[i]);
+            //printf("%d ", local[i]);
         }
 //printf("\n==================================\n");
 //qsort(pass, n, sizeof(int), compare);
