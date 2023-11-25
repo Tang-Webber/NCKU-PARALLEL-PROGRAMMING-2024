@@ -61,9 +61,11 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
 //if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
                     local[z++] = passs[front++];
+                    continue;
                 }
                 else{
                     local[z++] = passs[back++];
+                    continue;
                 }
                 if(front == (myid + x) * local_count){
                     while(z != local_count * y){
@@ -90,15 +92,13 @@ if(myid == 0){
 }         
             if(y == numprocs){
                 break;
-printf("x=%d break\n", x);
             }
                 
             if(myid % (2*y) != 0){
                 MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
             }
             else{
-                MPI_Recv(&passs[(myid + y) * x * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("receive from %d!! myid = %d || size = %d \n", myid + y, myid, (myid + y) * x * local_count);
+                MPI_Recv(&passs[(myid + y) * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }    
         }
         MPI_Barrier(MPI_COMM_WORLD);
