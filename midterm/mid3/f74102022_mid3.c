@@ -99,19 +99,10 @@ if(myid == 0 && y == 4){
             while (back < (myid + 2 * x) * local_count) {
                 local[z++] = pass[back++];
             }
-/*       
-if(myid == 0){
-printf("z = %d\n", z);
-    for(int i=0;i< z / 2;i++){
-        printf("%d ",local[i]);
-    }
-    printf("\n斷\n");
-    for(int i=z / 2;i< z;i++){
-        printf("%d ",local[i]);
-    }    
-    printf("\n============================================================================\n");
-}    
-*/
+
+            for(int i=0;i<z;i++){
+                pass[i] = local[i];
+            }
             if(y != numprocs){
                 if(myid % (2*y) != 0){
                     MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
@@ -120,7 +111,7 @@ printf("z = %d\n", z);
                     MPI_Recv(&pass[myid * local_count + z], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 }                    
             }
-        
+/*
 if(myid == 0){
 printf("z = %d\n", z);
     for(int i=0;i< z;i++){
@@ -132,12 +123,13 @@ printf("z = %d\n", z);
     }    
     printf("\n============================================================================\n");
 }   
+*/
         }
         MPI_Barrier(MPI_COMM_WORLD);
     }
     if(myid == 0){
         for(int i=0; i < n; i++){
-            //printf("%d ", local[i]);
+            printf("%d ", local[i]);
         }
 //printf("\n==================================\n");
 //qsort(pass, n, sizeof(int), compare);
