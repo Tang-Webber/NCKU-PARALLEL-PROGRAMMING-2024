@@ -14,9 +14,9 @@ struct Edge {
     double w;
 }E[400];
 
-double Distance(struct Point p1, struct Point p2) {
-    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-}
+//double Distance(struct Point p1, struct Point p2) {
+//    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
+//}
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
@@ -39,8 +39,8 @@ int main( int argc, char *argv[])
     int count = 0;
     int num;
     double sum = 0;
-    double final = 1000;
-    bool point[20];     //vertex
+    double final = 99999;
+    //bool point[20];     //vertex
     char input[50];
 
     MPI_Init(&argc,&argv);
@@ -106,10 +106,13 @@ int main( int argc, char *argv[])
     MPI_Bcast(P, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
     MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD);
 
-    int local_count = count / numprocs;
+    //int local_count = count / numprocs;
+    //int rest = 0;
+    //if(myid == numprocs - 1)
+    //    rest = count % numprocs;     
+
+    int local_count;
     int rest = 0;
-    if(myid == numprocs - 1)
-        rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
     int index;
@@ -138,10 +141,7 @@ int main( int argc, char *argv[])
     final = sum;
 
     */
-for(int z=0;z<n;z++){
-    printf("(%d, %d)  ", vertex[z].x, vertex[z].y);
-}
-printf("\n");
+
     //consider inside point
     int inner = n - num;
     for (int x = 0; x < (1 << inner); x++) {
@@ -155,10 +155,10 @@ printf("\n");
             }
         }   
 if(myid==0) printf("index=%d\n", qIndex);       
-for(int z=0;z<qIndex;z++){
-    printf("(%d, %d)  ", Q[z].x, Q[z].y);
-}
-printf("\n");
+//for(int z=0;z<qIndex;z++){
+//    printf("(%d, %d)  ", Q[z].x, Q[z].y);
+//}
+//printf("\n");
         //Cauculate Edges
         count = 0;
         for(int i = 1; i < qIndex; i++){
@@ -179,7 +179,7 @@ printf("\n");
             rest = count % numprocs;  
         sum = 0;
 //printf("id = %d : local_c=%d ; rest = %d\n",myid, local_count, rest);       
-        for(int i=0; i < qIndex; i++){
+        for(int i=0; i < qIndex - 1; i++){
             temp.w = 100;
             for(int j=0;j<local_count + rest;j++){
                 index = myid * local_count + j;
