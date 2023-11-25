@@ -15,9 +15,9 @@ int main(int argc, char *argv[]){
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-    int pass[70010] = {0};
-    int passs[70002] = {0};   
-    int local[70010] = {0};
+    int pass[100000] = {0};
+    int passs[100000] = {0};   
+    int local[100000] = {0};
     if(myid == 0){
         scanf("%s", input);
         FILE *input_file = fopen(input, "r");
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
         //qsort(pass, n, sizeof(int), compare);
     }
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(pass, n, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(pass, n, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(passs, n, MPI_INT, 0, MPI_COMM_WORLD);
     int local_count = n / numprocs;
     //MPI_Scatter(pass, local_count, MPI_INT, local, local_count,MPI_INT, 0, MPI_COMM_WORLD);
@@ -49,6 +49,7 @@ printf("\n==================================\n");
 }
 */
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
+    
     //Merge sort
     int temp;    
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
@@ -83,7 +84,7 @@ if(myid == 0) printf("test : z = %d\n", z);
             if(y == numprocs)
                 break;
             if(myid % (2*y) != 0){
-                MPI_Send(local, z, MPI_INT, myid - (myid % (2*y)), 0, MPI_COMM_WORLD);
+                MPI_Send(local, z, MPI_INT, myid - y, 0, MPI_COMM_WORLD);
             }
             else{
                 MPI_Recv(&passs[(myid + 2 * y) * x * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
