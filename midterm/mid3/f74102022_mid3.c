@@ -43,36 +43,6 @@ int main(int argc, char *argv[]){
     else{
         MPI_Recv(&pass[(myid + 1) * local_count], local_count, MPI_INT, myid + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }   
-/*
-if(myid == 0){
-    for(int i=0;i< local_count * 2;i++){
-        printf("%d ",pass[myid * local_count + i]);
-    }
-    printf("\n============================================================================\n");
-}  
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid == 2){
-    for(int i=0;i< local_count * 2;i++){
-        printf("%d ",pass[myid * local_count + i]);
-    }
-    printf("\n============================================================================\n");
-}  
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid == 4){
-    for(int i=0;i< local_count * 2;i++){
-        printf("%d ",pass[myid * local_count + i]);
-    }
-    printf("\n============================================================================\n");
-}  
-MPI_Barrier(MPI_COMM_WORLD);
-if(myid == 6){
-    for(int i=0;i< local_count * 2;i++){
-        printf("%d ",pass[myid * local_count + i]);
-    }
-    printf("\n============================================================================\n");
-}  
-MPI_Barrier(MPI_COMM_WORLD);
-*/
 
     //Merge sort
     int temp;    
@@ -81,10 +51,7 @@ MPI_Barrier(MPI_COMM_WORLD);
             int front = myid * local_count;
             int back =  (myid + x) * local_count;
             int z = 0;
-//printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
-if(myid == 0 && y == 4){
-    printf("front:%d %d; back: %d %d\n", pass[front], pass[front+1], pass[back], pass[back+1]);
-}
+
             while (front < (myid + x) * local_count && back < (myid + 2 * x) * local_count) {
                 if(pass[front] <= pass[back]){
                     local[z++] = pass[front++];
@@ -131,11 +98,6 @@ printf("z = %d\n", z);
         for(int i=0; i < n; i++){
             printf("%d ", local[i]);
         }
-//printf("\n==================================\n");
-//qsort(pass, n, sizeof(int), compare);
-//for(int i=0; i<n; i++){
-//    printf("%d ", pass[i]);
-//}
     }
 
     
