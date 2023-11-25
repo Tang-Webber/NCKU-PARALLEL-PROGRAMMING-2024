@@ -61,11 +61,9 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
 //if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
                     local[z++] = passs[front++];
-                    continue;
                 }
                 else{
                     local[z++] = passs[back++];
-                    continue;
                 }
                 if(front == (myid + x) * local_count){
                     while(z != local_count * y){
