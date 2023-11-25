@@ -8,7 +8,7 @@
 
 struct Point {
     int x, y;
-}P[400];
+}P[20], Q[20];
 struct Edge {
     int x, y;
     double w;
@@ -87,6 +87,20 @@ int main( int argc, char *argv[])
             vertex[up + j] = lower[down - 2 - j];
         }
         num = up + down - 2;
+        int s = num;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<num;j++){
+                if(P[i].x == vertex[j].x && P[i].y == vertex[j].y)
+                    break;
+                if(j==num - 1){
+                    vertex[s] = P[i]
+                    s++;
+                }
+            }
+        }
+for(int i=0;i<n;i++){
+    printf("[%d] : (%d, %d)\n",i, vertex[i].x, vertex.y);
+}
         //edge_matrix
         for(int i = 0; i < num; i++){
             point[i] = false;
@@ -123,6 +137,13 @@ int main( int argc, char *argv[])
     struct Edge temp;
     struct Edge result;
     int index;
+
+
+
+
+
+
+
     pick[0] = true;     //pick start vertex
     for(int i=0; i < num-1; i++){
         temp.w = 100;
@@ -141,6 +162,9 @@ int main( int argc, char *argv[])
     }
     final = sum;
     //consider inside point
+
+/*
+
     for(int x=0; x < n;x++){
         if(!point[x]){
             for(int j = 0; j < num; j++){
@@ -178,7 +202,7 @@ int main( int argc, char *argv[])
     }
 
 
-
+*/
     if(myid == 0){      
         printf("%.4f", final);
     }
