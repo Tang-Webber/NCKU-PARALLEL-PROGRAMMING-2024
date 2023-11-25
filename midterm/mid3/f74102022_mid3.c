@@ -45,7 +45,6 @@ int main(int argc, char *argv[]){
     }
     else{
         MPI_Recv(&passs[(myid + 1) * local_count], local_count, MPI_INT, myid + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1) * local_count);
     }   
 
     //MPI_Allgather(local, local_count, MPI_INT, passs, local_count, MPI_INT, MPI_COMM_WORLD);
@@ -54,31 +53,38 @@ printf("receive from %d!! myid = %d || size = %d \n", myid + 1, myid, (myid + 1)
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
         if(myid % y == 0){
             int front = myid * local_count;
-            int back = front + x * local_count;
+            int back =  (myid + x) * local_count;
             int z = 0;
-//printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
+printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
-//if(myid == 0) printf("test : z = %d\n", z);
                 if(passs[front] <= passs[back]){
-                    local[z++] = passs[front++];
+                    local[z] = passs[front];
+                    front++;
                 }
                 else{
-                    local[z++] = passs[back++];
+                    local[z] = passs[back];
+                    back++;
                 }
+                z++;
                 if(front == (myid + x) * local_count){
                     while(z != local_count * y){
-                        local[z++] = passs[back++];
+                        local[z] = passs[back];
+                        z++;
+                        back++;
                     }
                     break;
                 }
                 if(back == (myid + 2 * x) * local_count){
                     while(z != local_count * y){
-                        local[z++] = passs[front++];
+                        local[z] = passs[front];
+                        z++;
+                        front++;
                     }              
                     break;
                 }  
             }              
 if(myid == 0){
+printf("z = %d\n", z);
     for(int i=0;i< z / 2;i++){
         printf("%d ",local[i]);
     }
@@ -99,6 +105,7 @@ if(myid == 0){
                 MPI_Recv(&passs[(myid + y) * local_count], z, MPI_INT, myid + y, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             }    
         }
+
         MPI_Barrier(MPI_COMM_WORLD);
     }
     if(myid == 0){
