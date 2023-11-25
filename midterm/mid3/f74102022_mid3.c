@@ -53,8 +53,8 @@ printf("\n==================================\n");
     int temp;    
     for(int x = 1, y = 2; y <= numprocs; x *= 2, y *= 2){
         if(myid % y == 0){
-            int front = myid * x * local_count;
-            int back = (myid + 1) * x *local_count;
+            int front = myid * local_count;
+            int back = front + x *local_count;
             int z = 0;
 printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
             while(1){
@@ -92,11 +92,11 @@ printf("test, ID = %d; front = %d; back = %d\n", myid, front, back);
         for(int i=0; i < n; i++){
             printf("%d ", local[i]);
         }
-printf("\n==================================\n");
-qsort(pass, n, sizeof(int), compare);
-for(int i=0; i<n; i++){
-    printf("%d ", pass[i]);
-}
+//printf("\n==================================\n");
+//qsort(pass, n, sizeof(int), compare);
+//for(int i=0; i<n; i++){
+//    printf("%d ", pass[i]);
+//}
     }
 
     
