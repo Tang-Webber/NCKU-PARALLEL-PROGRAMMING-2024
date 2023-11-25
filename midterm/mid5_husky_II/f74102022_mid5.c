@@ -83,7 +83,7 @@ int main( int argc, char *argv[])
                 E[count].x = i;
                 E[count].y = j;
                 E[count].w = sqrt((pow((double)(vertex[i].x - vertex[j].x), 2) + pow((double)(vertex[i].y - vertex[j].y), 2)));
-printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y, E[count].w);
+printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, vertex[j].y E[count].w);
                 count++;
             }
         }
@@ -97,25 +97,26 @@ printf("(%d, %d) to (%d, %d) = %f\n", vertex[i].x, vertex[i].y, vertex[j].x, ver
     }
     int local_count = count / numprocs;
     int rest = 0;
+    if(myid == numprocs - 1)
+        rest = count % numprocs;     
     struct Edge temp;
     struct Edge result;
-    if(myid == numprocs - 1)
-        rest = count % numprocs; 
+
     for(int i=0; i < num-1; i++){
         for(int j=0;j<local_count + rest;j++){
             temp.w = 100;
-            if(!(pick[E[myid * local_count + j].x] && pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
+            if((!pick[E[myid * local_count + j].x] || !pick[E[myid * local_count + j].y]) && E[myid * local_count + j].w < temp.w){
                 temp = E[myid * local_count + j];
             }
         }
-//printf("ID = %d; choose w(%d, %d) = %f\n", myid, temp.x, temp.y, temp.w);
         MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
-//printf("ID = %d; final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
+printf("ID = %d; choose w(%d, %d) = %f ||| ", myid, temp.x, temp.y, temp.w);
+printf("Final: w(%d, %d) = %f\n", myid, result.x, result.y, result.w);        
         pick[result.x] = true;
         pick[result.y] = true;
         if(myid == 0){
             sum += result.w;  
-printf("sum = %f, plus: %f\n", sum, result.w);
+printf("iteration: %d, plus: %f => sum = %f\n", result.w, sum);
         } 
     }
 
