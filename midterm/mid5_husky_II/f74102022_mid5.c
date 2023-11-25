@@ -11,12 +11,8 @@ struct Point {
 }P[20], Q[20];
 struct Edge {
     int x, y;
-    double w;
+    float w;
 }E[400];
-
-//double Distance(struct Point p1, struct Point p2) {
-//    return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
-//}
 
 void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
     struct Edge* new = (struct Edge*)in;
@@ -38,8 +34,8 @@ int main( int argc, char *argv[])
     int n, myid, numprocs;
     int count = 0;
     int num;
-    double sum = 0;
-    double final = 99999;
+    float sum = 0;
+    float final = 99999;
     //bool point[20];     //vertex
     char input[50];
 
@@ -154,18 +150,14 @@ int main( int argc, char *argv[])
                 Q[qIndex++] = vertex[num + i];
             }
         }   
-if(myid==0) printf("index=%d\n", qIndex);       
-//for(int z=0;z<qIndex;z++){
-//    printf("(%d, %d)  ", Q[z].x, Q[z].y);
-//}
-//printf("\n");
+
         //Cauculate Edges
         count = 0;
         for(int i = 1; i < qIndex; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
                 E[count].y = j;
-                E[count].w = sqrt((pow((double)(Q[i].x - Q[j].x), 2) + pow((double)(Q[i].y - Q[j].y), 2)));
+                E[count].w = sqrt((pow((float)(Q[i].x - Q[j].x), 2) + pow((float)(Q[i].y - Q[j].y), 2)));
                 count++;
             }
         }
