@@ -8,7 +8,7 @@
 
 struct Point {
     int x, y;
-}P[20], Q[20];
+}P[40], Q[40];
 struct Edge {
     int x, y;
     float w;
