@@ -12,6 +12,11 @@ int dp[40][40];
 void *minMultiMatrix(void* rank);
 
 int main(int argc, char *argv[]){
+    long thread;
+    pthread_t* thread_handles;
+
+    thread_count = strtol(argv[1], NULL, 10);
+    thread_handles = malloc(thread_count * sizeof(pthread_t));
     //input
     char input[50];
     scanf("%s", input);
