@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
     for(int i=1; i<=n; i++){
         fscanf(input_file, "%d", &neural[i]);
     }
-    neural[++n] = 1;
+    neural[n+1] = 0;
     fclose(input_file);
 
     for(int i = 0;i<n;i++){
