@@ -15,9 +15,11 @@ int main(int argc, char *argv[]){
         return 1;
     }
     fscanf(input_file, "%d", &n);
-    for(int i=0; i<n; i++){
+    neural[0] = 1;
+    for(int i=1; i<=n; i++){
         fscanf(input_file, "%d", &neural[i]);
     }
+    neural[n+1] = 0;
     fclose(input_file);
 
     for(int i = 0;i<n;i++){
