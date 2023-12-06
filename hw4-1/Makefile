@@ -5,7 +5,7 @@ v := 1
 
 all: $(TARGET)
 
-$(TARGET):hw4_1.c
+$(TARGET):f74102022_hw4_1.c
 	$(CC) -o $@ $^ -lpthread
 
 judge: all
