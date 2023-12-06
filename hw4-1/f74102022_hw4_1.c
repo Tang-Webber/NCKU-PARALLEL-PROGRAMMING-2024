@@ -10,7 +10,7 @@ void *CNN(void* rank);
 int thread_count;
 pthread_barrier_t barrier;
 
-int t, n, m, myid, numprocs;
+int t, n, m, myid;
 int count = 0;
 char input[50];
 int A[1000][1000];
@@ -52,7 +52,7 @@ int main( int argc, char *argv[]){
     }
     fclose(input_file);
 
-    size = n / numprocs;
+    size = n / thread_count;
     k = D1 / 2;             //5*3 -> k = 2, l = 1
     l = D2 / 2;
     D1D2 = D1 * D2 ;
@@ -220,10 +220,10 @@ void* CNN(void* rank){
     int first = my_rank * size;
     int rest = 0;
     if(my_rank == thread_count - 1){
-        rest = (n - 1) % thread_count;
+        rest = n % thread_count;
     } 
     //calculate
-    
+    int index;    
     for(int x = 0; x < t; x++) {
         if(x % 2 == 0) { // A -> B
             for(int y = first; y < first + size + rest; y++) {
@@ -231,11 +231,14 @@ void* CNN(void* rank){
                 for(int z = 0; z < l; z++) {
                     B[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j < -z ; j++) {
-                            B[y][z] += A[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j + m] * K[i+k][j+l];
+                            B[y][z] += A[index][z + j + m] * K[i+k][j+l];
                         }
                         for(int j = -z; j <= l; j++) {
-                            B[y][z] += A[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j] * K[i+k][j+l];
+                            B[y][z] += A[index][z + j] * K[i+k][j+l];
                         }
                     }
                     B[y][z] /= D1D2;
@@ -243,8 +246,11 @@ void* CNN(void* rank){
                 for(int z = l; z < m - l; z++) {
                     B[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j <= l; j++) {
-                            B[y][z] += A[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j] * K[i+k][j+l];
+                            B[y][z] += A[index][z + j] * K[i+k][j+l];
                         }
                     }
                     B[y][z] /= D1D2;
@@ -252,8 +258,11 @@ void* CNN(void* rank){
                 for(int z = m - l; z < m; z++) {
                     B[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j <= l; j++) {
-                            B[y][z] += A[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][(z + j) % m] * K[i+k][j+l];
+                            B[y][z] += A[index][(z + j) % m] * K[i+k][j+l];
                         }                  
                     }
                     B[y][z] /= D1D2;
@@ -265,11 +274,14 @@ void* CNN(void* rank){
                 for(int z = 0; z < l; z++) {
                     A[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j < -z ; j++) {
-                            A[y][z] += B[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j + m] * K[i+k][j+l];
+                            A[y][z] += B[index][z + j + m] * K[i+k][j+l];
                         }
                         for(int j = -z; j <= l; j++) {
-                            A[y][z] += B[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j] * K[i+k][j+l];
+                            A[y][z] += B[index][z + j] * K[i+k][j+l];
                         }
                     }
                     A[y][z] /= D1D2;
@@ -277,8 +289,11 @@ void* CNN(void* rank){
                 for(int z = l; z < m - l; z++) {
                     A[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j <= l; j++) {
-                            A[y][z] += B[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][z + j] * K[i+k][j+l];
+                            A[y][z] += B[index][z + j] * K[i+k][j+l];
                         }
                     }
                     A[y][z] /= D1D2;
@@ -286,8 +301,11 @@ void* CNN(void* rank){
                 for(int z = m - l; z < m; z++) {
                     A[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
+                        if(y+i < 0)         index = y + i + n;
+                        else if (y + i > n) index = (y +i) % n;
+                        else                index = y + i;
                         for(int j = -l; j <= l; j++) {
-                            A[y][z] += B[(y + i) < 0 ? (y + i + n) : ((y + i) % n)][(z + j) % m] * K[i+k][j+l];
+                            A[y][z] += B[index][(z + j) % m] * K[i+k][j+l];
                         }
                     }
                     A[y][z] /= D1D2;
