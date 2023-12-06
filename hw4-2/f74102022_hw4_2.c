@@ -35,8 +35,8 @@ int main(int argc, char *argv[]){
     fclose(input_file);
 
     for(int i = 0; i < n; i++){
-        for(int j = 0; j< n;j++){
-            if(i = j)   
+        for(int j = 0; j < n;j++){
+            if(i == j)   
                 dp[i][i] = 0;
             else        
                 dp[i][j] = 99999;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
     for(thread = 0; thread < thread_count; thread++){
         pthread_join(thread_handles[thread], NULL);
     }    
-    
+
 for(int i=0;i<n;i++){
     printf("------------------\n");
     for(int j = 0; j<n;j++){
