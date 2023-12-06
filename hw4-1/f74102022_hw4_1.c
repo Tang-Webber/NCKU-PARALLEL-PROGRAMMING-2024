@@ -7,6 +7,9 @@
 
 void *CNN(void* rank);
 
+int thread_count;
+pthread_barrier_t barrier;
+
 int t, n, m, myid, numprocs;
 int count = 0;
 char input[50];
@@ -15,10 +18,8 @@ int B[1000][1000];
 int K[15][15];
 int temp[15][15];
 int size;
-//int rest = 0;
 int k, l;
 int D1D2, D1, D2;
-pthread_barrier_t barrier;
 
 int main( int argc, char *argv[]){
     long thread;
@@ -111,7 +112,7 @@ int main( int argc, char *argv[]){
             }                
             for(int x = 0; x < t; x++) {
                 if(x % 2 == 0) { //local_A -> local_B
-                    for(int y = k; y < size + rest + k; y++) {
+                    for(int y = k; y < size + k; y++) {
                         //-l m l 
                         for(int z = 0; z < l; z++) {
                             local_B[y][z] = 0;
@@ -152,7 +153,7 @@ int main( int argc, char *argv[]){
                     }                                            
                 } 
                 else {          //local_B -> local_A
-                    for(int y = k; y < size + rest + k; y++) {
+                    for(int y = k; y < size + k; y++) {
                         for(int z = 0; z < l; z++) {
                             local_A[y][z] = 0;
                             for(int i = -k; i <= k ; i++){
