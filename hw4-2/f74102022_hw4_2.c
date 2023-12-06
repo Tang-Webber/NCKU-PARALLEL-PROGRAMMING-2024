@@ -67,7 +67,7 @@ void* minMultiMatrix(void* rank){
         int start = my_rank * count;
         int rest = 0;
         if(my_rank == thread_count - 1)
-            rest = (len - 1) % thread_count;        
+        //    rest = (len - 1) % thread_count;        
         for (int i = 1; i < n - len + 1; i++) {
             int j = i + len - 1;
             for (int k = start; k < start + (count + rest); k++) {
