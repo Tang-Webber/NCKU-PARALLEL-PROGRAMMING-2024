@@ -53,14 +53,6 @@ int main(int argc, char *argv[]){
         pthread_join(thread_handles[thread], NULL);
     }    
 
-for(int i=0;i<n;i++){
-    printf("------------------\n");
-    for(int j = 0; j<n;j++){
-        printf("%d ", dp[i][j]);
-    }
-    printf("\n------------------\n");
-}
-
     //output
     printf("%d", dp[1][n - 1]);
     pthread_mutex_destroy(&mutex);
@@ -92,22 +84,3 @@ void* minMultiMatrix(void* rank){
 
     return NULL;
 }
-
-/*
-void* minMultiMatrix(void* rank){
-    long my_rank = (long)rank;
-    for (int len = 2; len < n; len++) {
-        for (int i = 1; i < n - len + 1; i++) {
-            int j = i + len - 1;
-            for (int k = 0; k < len - 1; k++) {
-                int cost = dp[i][i+k] + dp[i+k + 1][j] + neural[i - 1] * neural[i+k] * neural[j];
-                if (cost < dp[i][j]) {
-                    dp[i][j] = cost;
-                }
-            }
-        }
-    }
-
-    return NULL;
-}
-*/
