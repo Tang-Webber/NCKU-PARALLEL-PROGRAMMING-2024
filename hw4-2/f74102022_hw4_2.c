@@ -7,7 +7,7 @@ pthread_mutex_t mutex;
 pthread_barrier_t barrier;
 int n;
 int neural[50];
-int dp[40][40];
+int dp[50][50];
 
 void *minMultiMatrix(void* rank);
 
@@ -70,8 +70,8 @@ void* minMultiMatrix(void* rank){
             rest = (len - 1) % thread_count;        
         for (int i = 1; i < n - len + 1; i++) {
             int j = i + len - 1;
-            for (int k = i + start; k < i + start + count + rest; k++) {
-                int cost = dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j];
+            for (int k = start; k < start + (count + rest); k++) {
+                int cost = dp[i][i+k] + dp[i+k + 1][j] + neural[i - 1] * neural[i+k] * neural[j];
                 pthread_mutex_lock(&mutex);
                 if (cost < dp[i][j]) {
                     dp[i][j] = cost;
@@ -80,7 +80,6 @@ void* minMultiMatrix(void* rank){
             }
             pthread_barrier_wait(&barrier);             
         }
-
     }
 
     return NULL;
