@@ -20,6 +20,7 @@ int main(int argc, char *argv[]){
         fscanf(input_file, "%d", &neural[i]);
     }
     neural[n+1] = 0;
+    n++;
     fclose(input_file);
 
     for(int i = 0;i<n;i++){
