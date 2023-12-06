@@ -13,8 +13,8 @@ pthread_barrier_t barrier;
 int t, n, m;
 int count = 0;
 char input[50];
-int A[1000][1000];
-int B[1000][1000];
+int A[1050][1050];
+int B[1050][1050];
 int K[15][15];
 int size;
 int k, l;
@@ -256,7 +256,7 @@ void* CNN(void* rank){
             }     
         } 
         else { // B -> A
-            for(int y = k; y < size + rest + k; y++) {
+            for(int y = first; y < first + size + rest; y++) {
                 for(int z = 0; z < l; z++) {
                     A[y][z] = 0;
                     for(int i = -k; i <= k ; i++) {
