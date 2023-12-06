@@ -27,7 +27,7 @@ int main( int argc, char *argv[]){
 
     thread_count = strtol(argv[1], NULL, 10);
     thread_handles = malloc(thread_count * sizeof(pthread_t));
-    pthread_barrier_init(&barrier, NULL, NUM_THREADS);
+    pthread_barrier_init(&barrier, NULL, thread_count);
 
     scanf("%s", input);
     FILE *input_file = fopen(input, "r");
