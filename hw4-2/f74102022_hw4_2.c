@@ -3,20 +3,15 @@
 #include <pthread.h>
 
 int thread_count;
-int flag, sum;
+pthread_mutex_t mutex;
+pthread_barrier_t barrier;
 int n;
 int neural[50];
 int dp[40][40];
-pthread_mutex_t mutex;
 
-void *multiply(void* rank);
+void *minMultiMatrix(void* rank);
 
 int main(int argc, char *argv[]){
-    long thread;
-    pthread_t* thread_handles;
-
-    thread_count = strtol(argv[1], NULL, 10);
-    thread_handles = malloc(thread_count * sizeof(pthread_t));
     //input
     char input[50];
     scanf("%s", input);
@@ -30,12 +25,21 @@ int main(int argc, char *argv[]){
     for(int i=1; i<=n; i++){
         fscanf(input_file, "%d", &neural[i]);
     }
+    neural[n+1] = 0;
+    n++;
     fclose(input_file);
 
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j< n;j++){
+            if(i = j)   
+                dp[i][i] = 0;
+            else        
+                dp[i][j] = 99999;
+        }
+    }
+
+    pthread_barrier_init(&barrier, NULL, thread_count);
     pthread_mutex_init(&mutex, NULL);
-    //cauculate
-    //sum = 0;
-    flag = 0;
     for(thread = 0; thread < thread_count; thread++){
         pthread_create(&thread_handles[thread], NULL, minMultiMatrix, (void*) thread);
     }
@@ -45,47 +49,34 @@ int main(int argc, char *argv[]){
     }    
 
     //output
-    printf("%d", sum);
+    printf("%d", dp[1][n - 1]);
     pthread_mutex_destroy(&mutex);
+    pthread_barrier_destroy(&barrier);
     return 0;
 }
 
 void* minMultiMatrix(void* rank){
     long my_rank = (long)rank;
-    int local_count = (n - 1) / thread_count;
-    int first = my_rank * local_count;
-    int rest = 0;
-    if(my_rank == thread_count - 1){
-        rest = (n - 1) % thread_count;
-    }
-    int local_sum = 0;
-    for(int i = first; i < first + local_count + rest; i++){
-        local_sum += neural[i] * neural[i+1];
-    }
+    for (int len = 2; len < n; len++) {
+        int count = (len - 1) / thread_count ;
+        int start = my_rank * count;
+        int rest = 0;
+        if(my_rank == thread_count - 1)
+            rest = (len - 1) % thread_count;        
+        for (int i = 1; i < n - len + 1; i++) {
+            int j = i + len - 1;
+            for (int k = i + start; k < i + start + count + rest; k++) {
+                int cost = dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j];
+                pthread_mutex_lock(&mutex);
+                if (cost < dp[i][j]) {
+                    dp[i][j] = cost;
+                }
+                pthread_mutex_unlock(&mutex);
+            }
+            pthread_barrier_wait(&barrier);             
+        }
 
-    //mutex
-    pthread_mutex_lock(&mutex);
-    sum += local_sum;
-    pthread_mutex_unlock(&mutex);
+    }
 
     return NULL;
 }
-
-
-
-
-// Length (layer)
-for (int L = 2; L < n; ++L) {
-    for (int i = 1; i < n - L + 1; ++i) {
-        int j = i + L - 1;
-
-        dp[i][j] = 99999;
-        for (int k = i; k < j; ++k){
-            if((dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j]) < dp[i][j]){
-                 dp[i][j]  = dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j];
-            }
-        }
-    }
-}
-
-return dp[1][n - 1];
