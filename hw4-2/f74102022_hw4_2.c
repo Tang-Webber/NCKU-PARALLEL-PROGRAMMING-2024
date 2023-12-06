@@ -6,6 +6,7 @@ int thread_count;
 int flag, sum;
 int n;
 int neural[50];
+int dp[40][40];
 pthread_mutex_t mutex;
 
 void *multiply(void* rank);
@@ -25,7 +26,8 @@ int main(int argc, char *argv[]){
         return 1;
     }
     fscanf(input_file, "%d", &n);
-    for(int i=0; i<n; i++){
+    neural[0] = 1;
+    for(int i=1; i<=n; i++){
         fscanf(input_file, "%d", &neural[i]);
     }
     fclose(input_file);
@@ -35,7 +37,7 @@ int main(int argc, char *argv[]){
     //sum = 0;
     flag = 0;
     for(thread = 0; thread < thread_count; thread++){
-        pthread_create(&thread_handles[thread], NULL, multiply, (void*) thread);
+        pthread_create(&thread_handles[thread], NULL, minMultiMatrix, (void*) thread);
     }
 
     for(thread = 0; thread < thread_count; thread++){
@@ -48,7 +50,7 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-void* multiply(void* rank){
+void* minMultiMatrix(void* rank){
     long my_rank = (long)rank;
     int local_count = (n - 1) / thread_count;
     int first = my_rank * local_count;
@@ -60,10 +62,6 @@ void* multiply(void* rank){
     for(int i = first; i < first + local_count + rest; i++){
         local_sum += neural[i] * neural[i+1];
     }
-    //busy waiting
-    //while(my_rank != flag);
-    //sum += local_sum;
-    //flag++;
 
     //mutex
     pthread_mutex_lock(&mutex);
@@ -72,3 +70,22 @@ void* multiply(void* rank){
 
     return NULL;
 }
+
+
+
+
+// Length (layer)
+for (int L = 2; L < n; ++L) {
+    for (int i = 1; i < n - L + 1; ++i) {
+        int j = i + L - 1;
+
+        dp[i][j] = 99999;
+        for (int k = i; k < j; ++k){
+            if((dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j]) < dp[i][j]){
+                 dp[i][j]  = dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j];
+            }
+        }
+    }
+}
+
+return dp[1][n - 1];
