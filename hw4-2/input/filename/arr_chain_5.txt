@@ -1,1 +1,0 @@
-./input/data/arr_chain_5.txt
