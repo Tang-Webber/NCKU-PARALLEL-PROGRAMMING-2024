@@ -56,7 +56,7 @@ int main( int argc, char *argv[]){
     l = D2 / 2;
     D1D2 = D1 * D2 ;
 
-    if(n > 16){
+    if(n > 1){
         for(thread = 0; thread < thread_count; thread++){
             pthread_create(&thread_handles[thread], NULL, CNN, (void*) thread);
         }
@@ -215,7 +215,7 @@ void* CNN(void* rank){
     int first = my_rank * size;
     int rest = 0;
     if(my_rank == thread_count - 1){
-        rest = (n - 1) % thread_count;
+        rest = n % thread_count;
     } 
     //calculate
     
