@@ -67,7 +67,7 @@ for(int i=0;i<n;i++){
     pthread_barrier_destroy(&barrier);
     return 0;
 }
-/*
+
 void* minMultiMatrix(void* rank){
     long my_rank = (long)rank;
     for (int len = 2; len < n; len++) {
@@ -92,14 +92,13 @@ void* minMultiMatrix(void* rank){
 
     return NULL;
 }
-*/
 
+/*
 void* minMultiMatrix(void* rank){
     long my_rank = (long)rank;
     for (int len = 2; len < n; len++) {
         for (int i = 1; i < n - len + 1; i++) {
             int j = i + len - 1;
-            dp[i][j] = 99999;
             for (int k = 0; k < len - 1; k++) {
                 int cost = dp[i][i+k] + dp[i+k + 1][j] + neural[i - 1] * neural[i+k] * neural[j];
                 if (cost < dp[i][j]) {
@@ -111,3 +110,4 @@ void* minMultiMatrix(void* rank){
 
     return NULL;
 }
+*/
