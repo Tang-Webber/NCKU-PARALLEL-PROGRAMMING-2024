@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
     neural[n+1] = 0;
     n++;
     fclose(input_file);
-
+    //initialize
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n;j++){
             if(i == j)   
@@ -42,13 +42,12 @@ int main(int argc, char *argv[]){
                 dp[i][j] = 99999;
         }
     }
-
+    //calculate
     pthread_barrier_init(&barrier, NULL, thread_count);
     pthread_mutex_init(&mutex, NULL);
     for(thread = 0; thread < thread_count; thread++){
         pthread_create(&thread_handles[thread], NULL, minMultiMatrix, (void*) thread);
     }
-
     for(thread = 0; thread < thread_count; thread++){
         pthread_join(thread_handles[thread], NULL);
     }    
@@ -81,6 +80,5 @@ void* minMultiMatrix(void* rank){
             pthread_barrier_wait(&barrier);             
         }
     }
-
     return NULL;
 }
