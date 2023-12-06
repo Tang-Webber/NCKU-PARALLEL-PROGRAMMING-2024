@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
 
 int n;
 int neural[50];
+int dp[40][40];
 
 int main(int argc, char *argv[]){
     //input
