@@ -22,9 +22,9 @@ int compare(const void* a, const void* b){
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
 }
 
-void min(float a, float b){
-    if(a > b)
-        a = b;
+void min(float* a, float* b){
+    if(*a > *b)
+        *a = *b;
 }
 
 float final;
@@ -131,7 +131,7 @@ int main( int argc, char *argv[])
             sum += floor(temp.w * 10000) / 10000;  
         }
         //#pragma omp critical
-        min(final, sum);
+        min(&final, &sum);
     }
    
     printf("%.4f", final);
