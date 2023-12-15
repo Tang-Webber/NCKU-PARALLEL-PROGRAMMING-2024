@@ -92,7 +92,7 @@ int main( int argc, char *argv[])
     bool pick[50];
     //consider inside point
     int inner = n - num;
-    //#pragma omp parallel for private(E, Q, pick, qIndex, temp, sum)
+    #pragma omp parallel for private(E, Q, pick, qIndex, temp, sum)
     for (int x = 0; x < (1 << inner); x++) {
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
@@ -130,7 +130,7 @@ int main( int argc, char *argv[])
             pick[temp.y] = true;
             sum += floor(temp.w * 10000) / 10000;  
         }
-        //#pragma omp critical
+        #pragma omp critical
         min(&final, &sum);
     }
    
