@@ -93,7 +93,7 @@ int main( int argc, char *argv[])
     //consider inside point
     int inner = n - num;
     int qIndex = 0;
-    #pragma omp parallel for private(E, Q, pick, qIndex, temp, sum)
+    #pragma omp parallel for //private(E, Q, pick, qIndex, temp, sum)
     for (int x = 0; x < (1 << inner); x++) {
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
