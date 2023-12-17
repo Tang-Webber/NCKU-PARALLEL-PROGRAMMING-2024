@@ -130,9 +130,7 @@ int main()
             if(global_min_weighted_cost > cur_total_weighted_cost)
                 global_min_weighted_cost = cur_total_weighted_cost;            
         }
-
-
     }
-    cout << "global_min_weighted_cost is: "<< global_min_weighted_cost <<endl;
+    cout << global_min_weighted_cost;
     return 0; 
 }
