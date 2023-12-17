@@ -123,7 +123,8 @@ int main( int argc, char *argv[])
             #pragma omp parallel for 
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y]))){
-                    #pragma omp critical{
+                    #pragma omp critical
+                    {
                         if(E[j].w < temp.w){
                             temp = E[j];                      
                         }
