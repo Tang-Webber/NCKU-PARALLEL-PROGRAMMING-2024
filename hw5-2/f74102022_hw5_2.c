@@ -93,7 +93,7 @@ int main( int argc, char *argv[])
     //consider inside point
     int inner = n - num;
     int qIndex = 0;
-    #pragma omp parallel for //private(E, Q, pick, qIndex, temp, sum)
+    //#pragma omp parallel for //private(E, Q, pick, qIndex, temp, sum)
     for (int x = 0; x < (1 << inner); x++) {
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
@@ -120,9 +120,11 @@ int main( int argc, char *argv[])
         sum = 0;    
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
+            #pragma omp parallel for
             for(int j = 0; j < count; j++){
                 index = j;
                 if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                    #pragma omp critical
                     temp = E[index];
                 }
             }
@@ -130,7 +132,7 @@ int main( int argc, char *argv[])
             pick[temp.y] = true;
             sum += floor(temp.w * 10000) / 10000;  
         }
-        #pragma omp critical
+        //#pragma omp critical
         min(&final, &sum);
     }
    
