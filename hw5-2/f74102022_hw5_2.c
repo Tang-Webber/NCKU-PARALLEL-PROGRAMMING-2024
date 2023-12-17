@@ -26,11 +26,6 @@ void min(float* a, float* b){
     if(*a > *b) *a = *b;
 }
 
-float sum;
-float final;
-struct Edge temp;
-bool pick[50];
-
 int main( int argc, char *argv[])
 {
     int n, num;
@@ -38,6 +33,11 @@ int main( int argc, char *argv[])
     sum = 0;
     final = 99999;
     char input[50];
+
+    float sum;
+    float final;
+    struct Edge temp;
+    bool pick[50];   
 
     //scan the input
     scanf("%s", input);
