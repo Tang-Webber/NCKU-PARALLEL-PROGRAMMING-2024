@@ -1,11 +1,11 @@
-CC := g++
+CC := gcc
 CFLAGS := -Wall
 TARGET := hw5_2
 v := 1
 
 all: $(TARGET)
 
-$(TARGET):hw5_2.cpp
+$(TARGET):f74102022_hw5_2.c
 	$(CC) -o $@ $^ -fopenmp
 
 judge: all
