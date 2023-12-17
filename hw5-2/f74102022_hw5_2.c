@@ -30,15 +30,15 @@ int main( int argc, char *argv[])
 {
     int n, num;
     int count = 0;
-    sum = 0;
-    final = 99999;
     char input[50];
 
     float sum;
     float final;
     struct Edge temp;
     bool pick[50];   
-
+    sum = 0;
+    final = 99999;
+    
     //scan the input
     scanf("%s", input);
     FILE *input_file = fopen(input, "r");
