@@ -29,7 +29,6 @@ void min(float* a, float* b){
 float sum = 0;
 float final;
 struct Edge temp;
-int index;
 bool pick[50];
 
 int main( int argc, char *argv[])
@@ -122,10 +121,9 @@ int main( int argc, char *argv[])
             temp.w = 100;
             #pragma omp parallel for
             for(int j = 0; j < count; j++){
-                index = j;
-                if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
                     #pragma omp critical
-                    temp = E[index];
+                    temp = E[j];
                 }
             }
             pick[temp.x] = true;
