@@ -120,7 +120,7 @@ int main( int argc, char *argv[])
         sum = 0;    
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
-            #pragma omp parallel for private(temp)
+            #pragma omp parallel for
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
                     #pragma omp critical
