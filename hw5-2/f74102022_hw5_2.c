@@ -26,7 +26,7 @@ void min(float* a, float* b){
     if(*a > *b) *a = *b;
 }
 
-float sum = 0;
+float sum;
 float final;
 struct Edge temp;
 bool pick[50];
@@ -35,7 +35,7 @@ int main( int argc, char *argv[])
 {
     int n, num;
     int count = 0;
-
+    sum = 0;
     final = 99999;
     char input[50];
 
