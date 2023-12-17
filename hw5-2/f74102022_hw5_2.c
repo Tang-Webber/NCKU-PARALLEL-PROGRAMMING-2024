@@ -8,7 +8,7 @@
 
 struct Point {
     int x, y;
-}P[40], Q[40];
+}P[40], Q[40], vertex[40], upper[40], lower[40];
 
 struct Edge {
     int x, y;
@@ -55,12 +55,8 @@ int main( int argc, char *argv[])
 
     //sort
     qsort(P, n, sizeof(struct Point), compare); 
-
-    struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
     int up = 0;
     int down = 0;
-    struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
-    struct Point *lower = (struct Point*)malloc(n * sizeof(struct Point));
     //Andrew's Monotone Chain
     for (int i = 0; i < n; i++){
         while (down >= 2 && cross(lower[down-2], lower[down-1], P[i]) <= 0) down--;
@@ -135,9 +131,5 @@ int main( int argc, char *argv[])
     }
    
     printf("%.4f", final);
-    
-    free(vertex);
-    free(upper);
-    free(lower);
     return 0;
 }
