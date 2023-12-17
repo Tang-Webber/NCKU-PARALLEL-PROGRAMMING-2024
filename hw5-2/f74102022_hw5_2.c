@@ -122,9 +122,11 @@ int main( int argc, char *argv[])
             temp.w = 100;
             #pragma omp parallel for private(temp)
             for(int j = 0; j < count; j++){
-                index = j;
-                if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
-                    temp = E[index];
+                if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
+                    #pragma omp critical
+                    {
+                        temp = E[index];
+                    }
                 }
             }
             pick[temp.x] = true;
