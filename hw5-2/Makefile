@@ -6,7 +6,7 @@ v := 1
 all: $(TARGET)
 
 $(TARGET):f74102022_hw5_2.c
-	$(CC) -o $@ $^ -fopenmp
+	$(CC) -o $@ $^ -fopenmp -lm
 
 judge: all
 	@judge -v ${v} || printf "or \`make judge v=1\`"
