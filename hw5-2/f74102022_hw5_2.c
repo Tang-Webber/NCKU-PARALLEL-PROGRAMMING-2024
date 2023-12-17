@@ -122,13 +122,14 @@ int main( int argc, char *argv[])
             temp.w = 100;
             #pragma omp parallel for 
             for(int j = 0; j < count; j++){
-                if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
-                    #pragma omp critical
-                    {
+                #pragma omp atomic
+                {                
+                    if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
                         temp = E[j];
                     }
                 }
             }
+            
             pick[temp.x] = true;
             pick[temp.y] = true;
             sum += floor(temp.w * 10000) / 10000;  
