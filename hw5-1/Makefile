@@ -5,7 +5,7 @@ v := 1
 
 all: $(TARGET)
 
-$(TARGET):hw5_1.cpp
+$(TARGET):f74102022_hw5_1.cpp
 	$(CC) -o $@ $^ -fopenmp
 
 judge: all
