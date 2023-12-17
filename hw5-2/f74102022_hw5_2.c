@@ -113,7 +113,7 @@ int main( int argc, char *argv[])
         }
         pick[0] = true;     //pick start vertex
         sum = 0;    
-#pragma omp parallel for private(temp)
+//#pragma omp parallel for private(temp)
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
             for(int j = 0; j < count; j++){
@@ -129,7 +129,8 @@ int main( int argc, char *argv[])
         //#pragma omp critical
         min(&final, &sum);
     }
-   
+#pragma omp parallel{
     printf("%.4f", final);
+}
     return 0;
 }
