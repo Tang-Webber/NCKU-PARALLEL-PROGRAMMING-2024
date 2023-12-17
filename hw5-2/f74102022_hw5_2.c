@@ -113,9 +113,9 @@ int main( int argc, char *argv[])
         }
         pick[0] = true;     //pick start vertex
         sum = 0;    
+#pragma omp parallel for private(temp)
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
-            #pragma omp parallel
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
                     //#pragma omp critical
