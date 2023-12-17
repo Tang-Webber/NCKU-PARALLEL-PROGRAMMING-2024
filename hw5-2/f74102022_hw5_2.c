@@ -28,7 +28,8 @@ void min(float* a, float* b){
 
 float sum = 0;
 float final;
-struct Edge temp;
+//struct Edge temp;
+struct Edge temp[omp_get_max_threads()];
 bool pick[50];
 
 int main( int argc, char *argv[])
@@ -119,10 +120,10 @@ int main( int argc, char *argv[])
         sum = 0;    
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
-            #pragma omp parallel for
+            #pragma omp parallel for reduction(min: temp)
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
-                    #pragma omp critical
+                    //#pragma omp critical
                     temp = E[j];
                 }
             }
