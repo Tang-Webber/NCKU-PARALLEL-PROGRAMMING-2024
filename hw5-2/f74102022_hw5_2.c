@@ -92,7 +92,6 @@ int main( int argc, char *argv[])
     bool pick[50];
     //consider inside point
     int inner = n - num;
-    //#pragma omp parallel for private(E, Q, pick, qIndex, temp, sum)
     for (int x = 0; x < (1 << inner); x++) {
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
@@ -120,6 +119,7 @@ int main( int argc, char *argv[])
         sum = 0;    
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
+//Using OpenMP---------------------------------------------------------------------------------
             #pragma omp parallel for 
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y]))){
@@ -136,7 +136,6 @@ int main( int argc, char *argv[])
             pick[temp.y] = true;
             sum += floor(temp.w * 10000) / 10000;  
         }
-        //#pragma omp critical
         min(&final, &sum);
     }
    
