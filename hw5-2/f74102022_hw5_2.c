@@ -129,8 +129,9 @@ int main( int argc, char *argv[])
         //#pragma omp critical
         min(&final, &sum);
     }
-#pragma omp parallel{
+#pragma omp parallel
+    {
     printf("%.4f", final);
-}
+    }
     return 0;
 }
