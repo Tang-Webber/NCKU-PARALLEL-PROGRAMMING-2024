@@ -23,17 +23,20 @@ int compare(const void* a, const void* b){
 }
 
 void min(float* a, float* b){
-    if(*a > *b)
-        *a = *b;
+    if(*a > *b) *a = *b;
 }
 
+float sum = 0;
 float final;
+struct Edge temp;
+int index;
+bool pick[50];
 
 int main( int argc, char *argv[])
 {
     int n, num;
     int count = 0;
-    float sum = 0;
+
     final = 99999;
     char input[50];
 
@@ -87,9 +90,6 @@ int main( int argc, char *argv[])
         }
     }
 
-    struct Edge temp;
-    int index;
-    bool pick[50];
     //consider inside point
     int inner = n - num;
     int qIndex = 0;
