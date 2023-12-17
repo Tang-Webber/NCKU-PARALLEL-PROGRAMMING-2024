@@ -1,4 +1,4 @@
-#include <omp.h>
+#include "mpi.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
@@ -8,12 +8,18 @@
 
 struct Point {
     int x, y;
-}P[40], Q[40], vertex[40], upper[40], lower[40];
-
+}P[40], Q[40];
 struct Edge {
     int x, y;
     float w;
 }E[400];
+
+void custom_min(void *in, void *inout, int *len, MPI_Datatype *datatype) {
+    struct Edge* new = (struct Edge*)in;
+    struct Edge* old = (struct Edge*)inout;
+    if (new->w < old->w)
+        *old = *new;
+}
 
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
@@ -21,75 +27,90 @@ int cross(struct Point o, struct Point a, struct Point b) {
 int compare(const void* a, const void* b){
     return ((struct Point*)a)->x - ((struct Point*)b)->x;
 }
-
 void min(float* a, float* b){
     if(*a > *b) *a = *b;
 }
 
 int main( int argc, char *argv[])
 {
-    int n, num;
+    int n, myid, numprocs;
     int count = 0;
+    int num;
+    float sum = 0;
+    float final = 99999;
+    //bool point[20];     //vertex
     char input[50];
 
-    float sum;
-    float final;
-    struct Edge temp;
-    bool pick[50];   
-    sum = 0;
-    final = 99999;
-    
-    //scan the input
-    scanf("%s", input);
-    FILE *input_file = fopen(input, "r");
-    if(input_file == NULL){
-        printf("could not open file %s\n", input);
-        fclose(input_file);
-        return 1;
-    }
-    fscanf(input_file, "%d", &n);
-    for (int i = 0; i < n; i++) {
-        fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
-    }
-    fclose(input_file);
+    MPI_Init(&argc,&argv);
+    MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD,&myid);
+    MPI_Op custom_op;
+    MPI_Op_create((MPI_User_function *)custom_min, 1, &custom_op);
 
-    //sort
-    qsort(P, n, sizeof(struct Point), compare); 
-    int up = 0;
-    int down = 0;
-    //Andrew's Monotone Chain
-    for (int i = 0; i < n; i++){
-        while (down >= 2 && cross(lower[down-2], lower[down-1], P[i]) <= 0) down--;
-        lower[down++] = P[i];
-        while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
-        upper[up++] = P[i];
-    }    
-    //Combine
-    for(int i = 0; i < up;i++){
-        vertex[i] = upper[i];
+    //scan the input
+    if (myid == 0) {
+        scanf("%s", input);
+        FILE *input_file = fopen(input, "r");
+        if(input_file == NULL){
+            printf("could not open file %s\n", input);
+            fclose(input_file);
+            return 1;
+        }
+        fscanf(input_file, "%d", &n);
+        for (int i = 0; i < n; i++) {
+            fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
+        }
+        fclose(input_file);
+        qsort(P, n, sizeof(struct Point), compare);         //sort
     }
-    for(int j = 0; j < down - 2; j++){
-        vertex[up + j] = lower[down - 2 - j];
-    }
-    num = up + down - 2;
-    //reorder P to vertex
-    int s = num;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<num;j++){
-            if(P[i].x == vertex[j].x && P[i].y == vertex[j].y)
-                break;
-            if(j==num - 1){
-                vertex[s] = P[i];
-                s++;
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    struct Point *vertex = (struct Point*)malloc(n * sizeof(struct Point)); 
+    if(myid == 0){
+        int up = 0;
+        int down = 0;
+        struct Point *upper = (struct Point*)malloc(n * sizeof(struct Point));
+        struct Point *lower = (struct Point*)malloc(n * sizeof(struct Point));
+        //Andrew's Monotone Chain
+        for (int i = 0; i < n; i++){
+            while (down >= 2 && cross(lower[down-2], lower[down-1], P[i]) <= 0) down--;
+            lower[down++] = P[i];
+            while (up >= 2 && cross(upper[up-2], upper[up-1], P[i]) >= 0) up--;
+            upper[up++] = P[i];
+        }    
+        //Combine
+        for(int i = 0; i < up;i++){
+            vertex[i] = upper[i];
+        }
+        for(int j = 0; j < down - 2; j++){
+            vertex[up + j] = lower[down - 2 - j];
+        }
+        num = up + down - 2;
+        //reorder P to vertex
+        int s = num;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<num;j++){
+                if(P[i].x == vertex[j].x && P[i].y == vertex[j].y)
+                    break;
+                if(j==num - 1){
+                    vertex[s] = P[i];
+                    s++;
+                }
             }
         }
     }
+    MPI_Bcast(&num, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vertex, n * sizeof(struct Point), MPI_BYTE, 0, MPI_COMM_WORLD); 
 
+    int local_count;
+    int rest = 0;
+    struct Edge temp;
+    struct Edge result;
+    int index;
+    bool pick[20];
     //consider inside point
     int inner = n - num;
-    int qIndex = 0;
-    //#pragma omp parallel for //private(E, Q, pick, qIndex, temp, sum)
     for (int x = 0; x < (1 << inner); x++) {
+        int qIndex = 0;
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
         }       
@@ -112,26 +133,33 @@ int main( int argc, char *argv[])
             pick[i] = false;
         }
         pick[0] = true;     //pick start vertex
+        local_count = count / numprocs;
+        if(myid == numprocs - 1)
+            rest = count % numprocs;  
         sum = 0;    
-//#pragma omp parallel for private(temp)
-        for(int i = 0; i < qIndex - 1; i++){
+        for(int i=0; i < qIndex - 1; i++){
             temp.w = 100;
-            for(int j = 0; j < count; j++){
-                if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y])) && E[j].w < temp.w){
-                    //#pragma omp critical
-                    temp = E[j];
+            for(int j=0;j<local_count + rest;j++){
+                index = myid * local_count + j;
+                if( ((pick[E[index].x] && !pick[E[index].y]) || (!pick[E[index].x] && pick[E[index].y])) && E[index].w < temp.w){
+                    temp = E[index];
                 }
             }
-            pick[temp.x] = true;
-            pick[temp.y] = true;
-            sum += floor(temp.w * 10000) / 10000;  
+            MPI_Allreduce(&temp, &result, sizeof(struct Edge), MPI_BYTE, custom_op, MPI_COMM_WORLD);
+            pick[result.x] = true;
+            pick[result.y] = true;
+            result.w = floor(result.w * 10000) / 10000;
+            if(myid == 0){
+                sum += result.w;  
+            } 
         }
-        //#pragma omp critical
         min(&final, &sum);
     }
-//#pragma omp parallel
-    {
-    printf("%.4f", final);
+
+    if(myid == 0){      
+        printf("%.4f", final);
     }
+
+    MPI_Finalize();
     return 0;
 }
