@@ -86,6 +86,7 @@ int main( int argc, char *argv[])
     }
     //consider inside point
     int inner = n - num;
+//Using OpenMP------------------------------------------------------------------------------------------------
     #pragma omp parallel for 
     for (int x = 0; x < (1 << inner); x++) {
         struct Point Q[40];
@@ -137,9 +138,8 @@ int main( int argc, char *argv[])
             min(&final, &sum);
         }
     }
-   
+//------------------------------------------------------------------------------------------------------------
     printf("%.4f", final);
-    
     free(vertex);
     free(upper);
     free(lower);
