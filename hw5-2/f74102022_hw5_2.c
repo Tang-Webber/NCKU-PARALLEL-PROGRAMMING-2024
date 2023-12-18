@@ -8,12 +8,12 @@
 
 struct Point {
     int x, y;
-}P[40], Q[40];
+}P[40];
 
 struct Edge {
     int x, y;
     float w;
-}E[400];
+}F[400];
 
 int cross(struct Point o, struct Point a, struct Point b) {
     return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
@@ -32,8 +32,6 @@ float final;
 int main( int argc, char *argv[])
 {
     int n, num;
-    int count = 0;
-    float sum = 0;
     final = 99999;
     char input[50];
 
@@ -86,13 +84,12 @@ int main( int argc, char *argv[])
             }
         }
     }
-
-    struct Edge temp;
-    int index;
-    bool pick[50];
     //consider inside point
     int inner = n - num;
+    #pragma omp parallel for 
     for (int x = 0; x < (1 << inner); x++) {
+        struct Point Q[40];
+        struct Edge E[500]; 
         int qIndex = 0;
         for (int i = 0; i < num; i++) {
             Q[qIndex++] = vertex[i];
@@ -103,7 +100,7 @@ int main( int argc, char *argv[])
             }
         }   
         //Cauculate Edges
-        count = 0;
+        int count = 0;
         for(int i = 1; i < qIndex; i++){
             for(int j = 0; j < i; j++){
                 E[count].x = i;
@@ -112,22 +109,21 @@ int main( int argc, char *argv[])
                 count++;
             }
         }
+        //Initialize Pick[]
+        bool pick[50];
+        pick[0] = true;     //pick start vertex
         for(int i = 1; i < qIndex; i++){
             pick[i] = false;
         }
-        pick[0] = true;     //pick start vertex
-        sum = 0;    
+        //Pick k-1 times
+        float sum = 0; 
+        struct Edge temp;
         for(int i = 0; i < qIndex - 1; i++){
             temp.w = 100;
-//Using OpenMP---------------------------------------------------------------------------------
-            #pragma omp parallel for 
             for(int j = 0; j < count; j++){
                 if( ((pick[E[j].x] && !pick[E[j].y]) || (!pick[E[j].x] && pick[E[j].y]))){
-                    #pragma omp critical
-                    {
-                        if(E[j].w < temp.w){
-                            temp = E[j];                      
-                        }
+                    if(E[j].w < temp.w){
+                        temp = E[j];                      
                     }
                 }
             }
@@ -136,7 +132,10 @@ int main( int argc, char *argv[])
             pick[temp.y] = true;
             sum += floor(temp.w * 10000) / 10000;  
         }
-        min(&final, &sum);
+        #pragma omp critical
+        {
+            min(&final, &sum);
+        }
     }
    
     printf("%.4f", final);
