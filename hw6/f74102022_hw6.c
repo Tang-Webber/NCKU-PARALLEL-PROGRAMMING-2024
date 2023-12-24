@@ -86,6 +86,9 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
             }
             //pick start point randomly
             start = rand() % n;
+if(w == 0 && myid == 0){
+    printf("ant %d : y = %d, start = %f\n",x,  y, start);
+}   
             picked[start] = true;
             route[0] = start;
             //Go throuth all city => y = 0 ~ (n-1)
@@ -103,6 +106,9 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
                 }
                 //randomly choose next
                 double random = ((double)rand() / RAND_MAX) * pij_sum;
+if(w == 0 && myid == 0){
+    printf("ant %d : y = %d, random = %f\n", x, y, random);
+}    
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
                     cumulateP += pij[i];
@@ -111,9 +117,9 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
                         break;
                     }
                 }
-if(w == 0 && myid == 0){
-    printf("sum = %f, next = %d \n", sum, next);
-}
+//if(w == 0 && myid == 0){
+//    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
+//}
                 //go to next vertex
                 sum += weight[start][next];
                 route[y] = next;
