@@ -40,11 +40,13 @@ int main( int argc, char *argv[]){
         }      
         fclose(input_file);
     }
+if(myid == 0) printf("input completed!\n");
     //boardcast   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(weight, 10000, MPI_INT, 0, MPI_COMM_WORLD);
+if(myid == 0) printf("Bcast completed!\n");
     //Iniitialize
     double pheromone[100][100];
     for(int i = 0; i < n; i++){
@@ -61,8 +63,10 @@ int main( int argc, char *argv[]){
     int rest = 0;
     if(myid == numprocs - 1)
         rest = m % numprocs;
+printf("myid = %d, ant = %d \n", myid, ant_count + rest);
     //Iteration t
     for(int w = 0; w < t; w++){
+if(myid == 0) printf("iteration %d\n", w);
         //Initialize
         double temp_p[100][100];
         for(int i = 0; i < n; i++){
