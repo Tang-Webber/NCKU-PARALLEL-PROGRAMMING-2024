@@ -144,7 +144,7 @@ int main( int argc, char *argv[]){
             MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
-            #pragma omp parallel for
+            //#pragma omp parallel for
             for(int j = 0; j < n; j++){
                 //#pragma omp parallel for
                 for(int k = 0; k < n; k++){
@@ -154,7 +154,7 @@ int main( int argc, char *argv[]){
             }
             for(int i = 1; i < numprocs; i++){
                 MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-                #pragma omp parallel for
+                //#pragma omp parallel for
                 for(int j = 0; j < n; j++){
                     //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
