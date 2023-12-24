@@ -105,9 +105,11 @@ if(w == 0 && myid == 0){
                     pij_sum += pij[z];
                 }
                 //randomly choose next
-                double random = (double)((double)rand() * pij_sum / (double)RAND_MAX) ;
+                int random_integer = rand();
+                double random = (double)random_integer / RAND_MAX;
+                random *= pij_sum;
 if(w == 0 && myid == 0){
-    printf("ant %d : y = %d, random = %f\n", x, y, random);
+    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
 }    
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
