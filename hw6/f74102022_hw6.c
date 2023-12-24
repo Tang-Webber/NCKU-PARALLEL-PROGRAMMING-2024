@@ -33,7 +33,7 @@ int main( int argc, char *argv[]){
             return 1;
         }
 
-        fscanf(input_file, "%d", &n, &m, &t);
+        fscanf(input_file, "%d %d %d", &n, &m, &t);
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < n ; j++) {
                 fscanf(input_file, "%d", &weight[i][j]);
@@ -111,7 +111,7 @@ int main( int argc, char *argv[]){
                 }
 
                 //go to next vertex
-                sum += dist[start][next];
+                sum += weight[start][next];
                 route[y] = next;
                 picked[next] = true;
                 start = next;
@@ -127,7 +127,7 @@ int main( int argc, char *argv[]){
         } 
         //Update Phenomone Matrix Using MPI
         if(myid != 0){
-            MPI_Send(temp_p, 2500, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD)
+            MPI_Send(temp_p, 2500, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
             //#pragma omp parallel for
