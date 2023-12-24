@@ -12,7 +12,7 @@
 //α = , β = , ρ = , Q = 
 
 int main( int argc, char *argv[]){
-    srand(5);
+    srand(time(NULL));
     char input[50];
     int myid, numprocs;
     int n, m, t;    //n : cities m : ants t : iterations
@@ -113,9 +113,6 @@ int main( int argc, char *argv[]){
                         break;
                     }
                 }
-//if(w == 0 &&x==0&& myid == 0){
-//    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
-//}
                 //go to next vertex
                 sum += weight[start][next];
                 route[y] = next;
