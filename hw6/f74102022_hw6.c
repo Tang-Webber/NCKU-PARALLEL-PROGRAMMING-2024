@@ -146,7 +146,7 @@ int main( int argc, char *argv[]){
         else{
             #pragma omp parallel for
             for(int j = 0; j < n; j++){
-                #pragma omp parallel for
+                //#pragma omp parallel for
                 for(int k = 0; k < n; k++){
                     pheromone[j][k] *= 0.7;
                     pheromone[j][k] += temp_p[j][k];
@@ -156,12 +156,9 @@ int main( int argc, char *argv[]){
                 MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
                 #pragma omp parallel for
                 for(int j = 0; j < n; j++){
-                    #pragma omp parallel for
+                    //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
-//if(w == 0 && myid == 0 && temp_p[j][k] >= 0.0001){
-//    printf("pheromone = %f\n",pheromone[j][k]);
-//}
                     }
                 }
             }
