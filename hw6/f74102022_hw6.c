@@ -16,8 +16,8 @@ int main( int argc, char *argv[]){
     char input[50];
     int myid, numprocs;
     int n, m, t;    //n : cities m : ants t : iterations
-    int weight[50][50];
-    int global_route[50];
+    int weight[100][100];
+    //int global_route[100];
 
     MPI_Init(&argc,&argv);
     MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
@@ -44,9 +44,9 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(weight, 2500, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(weight, 10000, MPI_INT, 0, MPI_COMM_WORLD);
     //Iniitialize
-    double pheromone[50][50];
+    double pheromone[100][100];
     for(int i = 0; i < n; i++){
         for(int j = 0; j < n; j++){
             pheromone[i][j] = 0;
@@ -64,7 +64,7 @@ int main( int argc, char *argv[]){
     //Iteration t
     for(int w = 0; w < t; w++){
         //Initialize
-        double temp_p[50][50];
+        double temp_p[100][100];
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
                 temp_p[i][j] = 0;
@@ -73,9 +73,9 @@ int main( int argc, char *argv[]){
         //#pragma omp parallel for
         for(int x = 0; x < ant_count + rest; x++){
             //every ant has its own 
-            bool picked[50];
-            int route[50];
-            int pij[50];
+            bool picked[100];
+            int route[100];
+            int pij[100];
             int pij_sum;
             int start, next, pre;
             double sum = 0.0;
@@ -130,7 +130,7 @@ int main( int argc, char *argv[]){
         } 
         //Update Phenomone Matrix Using MPI
         if(myid != 0){
-            MPI_Send(temp_p, 2500, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+            MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
             //#pragma omp parallel for
@@ -142,7 +142,7 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 1; i < numprocs; i++){
-                MPI_Recv(temp_p, 2500, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+                MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
                 //#pragma omp parallel for
                 for(int j = 0; j < n; j++){
                     //#pragma omp parallel for
@@ -152,7 +152,7 @@ int main( int argc, char *argv[]){
                 }
             }
         }
-        MPI_Bcast(pheromone, 2500, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
+        MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
     MPI_Reduce(&local_min, &global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     if(myid == 0){
