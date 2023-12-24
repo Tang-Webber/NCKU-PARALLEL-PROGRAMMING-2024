@@ -53,7 +53,7 @@ int main( int argc, char *argv[]){
         }
     }
     double alpha = 1;
-    double beta = 0.5;
+    double beta = 0.2;
     int local_min = 999999;
     int global_min = 999999;
 
