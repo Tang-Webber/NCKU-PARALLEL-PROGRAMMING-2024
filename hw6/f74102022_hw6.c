@@ -76,8 +76,8 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
             //every ant has its own 
             bool picked[100];
             int route[100];
-            int pij[100];
-            int pij_sum;
+            double pij[100];
+            double pij_sum;
             int start, next, pre;
             double sum = 0.0;
             //Initialize
