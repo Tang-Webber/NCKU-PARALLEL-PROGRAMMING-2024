@@ -154,7 +154,7 @@ int main( int argc, char *argv[]){
         }
         MPI_Bcast(pheromone, 2500, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
-    MPI_Reduce(&local_min, global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&local_min, &global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     if(myid == 0){
         printf("%d", global_min);
     }
