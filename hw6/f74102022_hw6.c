@@ -70,7 +70,7 @@ int main( int argc, char *argv[]){
                 temp_p[i][j] = 0;
             }
         }
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for(int x = 0; x < ant_count + rest; x++){
             //every ant has its own 
             bool picked[100];
@@ -125,15 +125,15 @@ int main( int argc, char *argv[]){
             //critical
 
             if(sum <= local_min){
-                #pragma omp critical 
+                //#pragma omp critical 
                 {
                     local_min = sum;
                 }
             }
-            #pragma omp critical 
+            //#pragma omp critical 
             {
                 for(int i = 1; i < n; i++){
-                    //Q = 100
+                    //Q = 9000
                     temp_p[route[i-1]][route[i]] += 9000.0 / (double)sum;
                 }
             }
