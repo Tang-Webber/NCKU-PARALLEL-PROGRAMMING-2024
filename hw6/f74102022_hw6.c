@@ -87,7 +87,7 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
             //pick start point randomly
             start = rand() % n;
 if(w == 0 && myid == 0){
-    printf("ant %d : start = %f\n", x, start);
+    printf("ant %d : start = %d\n", x, start);
 }   
             picked[start] = true;
             route[0] = start;
