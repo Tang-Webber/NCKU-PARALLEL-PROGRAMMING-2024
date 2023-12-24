@@ -40,13 +40,11 @@ int main( int argc, char *argv[]){
         }      
         fclose(input_file);
     }
-if(myid == 0) printf("input completed!\n");
     //boardcast   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(weight, 10000, MPI_INT, 0, MPI_COMM_WORLD);
-if(myid == 0) printf("Bcast completed!\n");
     //Iniitialize
     double pheromone[100][100];
     for(int i = 0; i < n; i++){
@@ -113,7 +111,9 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
                         break;
                     }
                 }
-
+if(w == 0 && myid == 0){
+    printf("sum = %d, next = %d \n", sum, next);
+}
                 //go to next vertex
                 sum += weight[start][next];
                 route[y] = next;
@@ -157,10 +157,7 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
         }
         MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
-if(myid == 0) printf("iteration completed!\n");
-printf("myid = %d, local min = %d!\n", myid, local_min);
     MPI_Reduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
-if(myid == 0) printf("reduce completed!\n");
     if(myid == 0){
         printf("%d", global_min);
     }
