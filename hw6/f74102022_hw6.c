@@ -97,7 +97,7 @@ if(w == 0 && myid == 0){
                 pij_sum = 0;
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
-                        pij[z] = pow(pheromone[start][z], alpha) + pow(( 1.0 / weight[start][z]), beta);
+                        pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
 if(w == 0 && myid == 0){
     printf("ant %d : y = %d, pij[z] = %f \npheromone[start][z] = %f  weight[start][z] = %d\n", x, y, pij[z], pheromone[start][z], weight[start][z]);
 }                          
