@@ -17,7 +17,6 @@ int main( int argc, char *argv[]){
     int myid, numprocs;
     int n, m, t;    //n : cities m : ants t : iterations
     int weight[50][50];
-    int global_min = 999999;
     int global_route[50];
 
     MPI_Init(&argc,&argv);
@@ -55,6 +54,8 @@ int main( int argc, char *argv[]){
     }
     double alpha = 0.5;
     double beta = 1.0;
+    int local_min = 999999;
+    int global_min = 999999;
 
     int ant_count = n / numprocs;
     int rest = 0;
@@ -118,8 +119,10 @@ int main( int argc, char *argv[]){
             }
             //critical
             //#pragma omp critical {}
-            if(sum <= global_min)
-                global_min = sum;
+            if(sum <= local_min){
+                local_min = sum;
+            }
+                
             for(int i = 1; i < n; i++){
                 //Q = 100
                 temp_p[route[i-1]][route[i]] += 100 / sum;
@@ -151,7 +154,7 @@ int main( int argc, char *argv[]){
         }
         MPI_Bcast(pheromone, 2500, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
-
+    MPI_Reduce(&local_min, global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     if(myid == 0){
         printf("%d", global_min);
     }
