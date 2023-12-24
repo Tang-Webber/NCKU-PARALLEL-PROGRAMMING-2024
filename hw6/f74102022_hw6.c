@@ -98,9 +98,15 @@ if(w == 0 && myid == 0){
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow((1 / weight[start][z]), beta);
+if(w == 0 && myid == 0){
+    printf("ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
+}                          
                     }
                     else{
                         pij[z] = 0.0;
+if(w == 0 && myid == 0){
+    printf("0000000 ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
+}  
                     }
                     pij_sum += pij[z];
                 }
@@ -108,9 +114,9 @@ if(w == 0 && myid == 0){
                 int random_integer = rand();
                 double random = (double)random_integer / RAND_MAX;
                 random *= pij_sum;
-if(w == 0 && myid == 0){
-    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
-}    
+//if(w == 0 && myid == 0){
+//    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
+//}    
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
                     cumulateP += pij[i];
