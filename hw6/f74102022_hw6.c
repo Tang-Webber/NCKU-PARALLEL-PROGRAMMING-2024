@@ -135,7 +135,7 @@ if(w == t-3  && x == 0 && myid == 0){
                 
             for(int i = 1; i < n; i++){
                 //Q = 100
-                temp_p[route[i-1]][route[i]] += 10000.0 / (double)sum;
+                temp_p[route[i-1]][route[i]] += 1000.0 / (double)sum;
             }
         } 
         //Update Phenomone Matrix Using MPI
