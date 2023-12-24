@@ -158,7 +158,7 @@ if(w == 0 && x == 0 && myid == 0){
                     //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
-if(w == 0 && myid == 0 && temp_p >= 0.0001){
+if(w == 0 && myid == 0 && temp_p[j][k] >= 0.0001){
     printf("temp_p[j][k] = %f\n",temp_p[j][k]);
 }
                     }
