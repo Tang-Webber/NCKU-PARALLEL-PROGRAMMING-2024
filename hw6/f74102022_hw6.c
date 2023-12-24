@@ -53,7 +53,7 @@ int main( int argc, char *argv[]){
         }
     }
     double alpha = 1;
-    double beta = 0.3;
+    double beta = 0.1;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -94,7 +94,7 @@ int main( int argc, char *argv[]){
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
-if(w == 1 && x == 0 && myid == 0){
+if(w == 5  && x == 0 && myid == 0){
     printf("y = %d, pij[z] = %f = %f + %f \n", y, pij[z],pow(pheromone[start][z], alpha), pow(weight[start][z], (-1) * beta));
 }                          
                     }
