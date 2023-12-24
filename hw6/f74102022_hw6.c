@@ -53,7 +53,7 @@ int main( int argc, char *argv[]){
         }
     }
     double alpha = 1;
-    double beta = 1;
+    double beta = 0.5;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -158,9 +158,9 @@ if(w == t-3  && x == 0 && myid == 0){
                     //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
-if(w == 0 && myid == 0 && temp_p[j][k] >= 0.0001){
-    printf("pheromone = %f\n",pheromone[j][k]);
-}
+//if(w == 0 && myid == 0 && temp_p[j][k] >= 0.0001){
+//    printf("pheromone = %f\n",pheromone[j][k]);
+//}
                     }
                 }
             }
