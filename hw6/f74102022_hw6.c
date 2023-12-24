@@ -112,7 +112,7 @@ printf("myid = %d, ant = %d \n", myid, ant_count + rest);
                     }
                 }
 if(w == 0 && myid == 0){
-    printf("sum = %d, next = %d \n", sum, next);
+    printf("sum = %f, next = %d \n", sum, next);
 }
                 //go to next vertex
                 sum += weight[start][next];
