@@ -52,8 +52,8 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 2.0;
-    double beta = 0.05;
+    double alpha = 0.05;
+    double beta = 0.1;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -61,7 +61,6 @@ int main( int argc, char *argv[]){
     int rest = 0;
     if(myid == numprocs - 1)
         rest = m % numprocs;
-printf("myid = %d, a= %f, b=%f \n", myid, alpha, beta);
     //Iteration t
     for(int w = 0; w < t; w++){
         //Initialize
@@ -98,22 +97,25 @@ if(w == 0 && myid == 0){
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
-if(w == 0 && myid == 0){
-    printf("ant %d : y = %d, pij[z] = %f \npheromone[start][z] = %f  weight[start][z] = %d\n", x, y, pij[z], pheromone[start][z], weight[start][z]);
-}                          
+//if(w == 0 && x == 0 && myid == 0){
+//    printf("y = %d, pij[z] = %f pheromone[start][z] = %f \n", y, pij[z], pheromone[start][z]);
+//}                          
                     }
                     else{
                         pij[z] = 0.0;
                     }
                     pij_sum += pij[z];
                 }
+//if(w == 0 && x == 0 && myid == 0){
+//    printf("y = %d, pij_sum %f \n", y, pij_sum);
+//}  
                 //randomly choose next
                 int random_integer = rand();
                 double random = (double)random_integer / RAND_MAX;
                 random *= pij_sum;
-//if(w == 0 && myid == 0){
-//    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
-//}    
+if(w == 0 && x== 0&&myid == 0){
+    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
+}    
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
                     cumulateP += pij[i];
@@ -122,9 +124,9 @@ if(w == 0 && myid == 0){
                         break;
                     }
                 }
-//if(w == 0 && myid == 0){
-//    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
-//}
+if(w == 0 &&x==0&& myid == 0){
+    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
+}
                 //go to next vertex
                 sum += weight[start][next];
                 route[y] = next;
