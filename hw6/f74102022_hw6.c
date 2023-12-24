@@ -123,16 +123,21 @@ int main( int argc, char *argv[]){
                 start = next;
             }
             //critical
-            //#pragma omp critical 
-            //{
+
                 if(sum <= local_min){
-                    local_min = sum;
+                    #pragma omp critical 
+                    {
+                        local_min = sum;
+                    }
                 }
-                for(int i = 1; i < n; i++){
-                    //Q = 100
-                    temp_p[route[i-1]][route[i]] += 9000.0 / (double)sum;
+                #pragma omp critical 
+                {
+                    for(int i = 1; i < n; i++){
+                        //Q = 100
+                        temp_p[route[i-1]][route[i]] += 9000.0 / (double)sum;
+                    }
                 }
-            //} 
+            } 
         } 
         //Update Phenomone Matrix Using MPI
         if(myid != 0){
