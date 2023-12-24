@@ -105,7 +105,7 @@ if(w == 0 && myid == 0){
                     pij_sum += pij[z];
                 }
                 //randomly choose next
-                double random = ((double)rand() / RAND_MAX) * pij_sum;
+                double random = (double)((double)rand() * pij_sum / (double)RAND_MAX) ;
 if(w == 0 && myid == 0){
     printf("ant %d : y = %d, random = %f\n", x, y, random);
 }    
