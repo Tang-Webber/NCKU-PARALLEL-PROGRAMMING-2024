@@ -53,7 +53,7 @@ int main( int argc, char *argv[]){
         }
     }
     double alpha = 2.0;
-    double beta = 2.0;
+    double beta = 0.05;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -104,9 +104,6 @@ if(w == 0 && myid == 0){
                     }
                     else{
                         pij[z] = 0.0;
-if(w == 0 && myid == 0){
-    printf("0 ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
-}  
                     }
                     pij_sum += pij[z];
                 }
