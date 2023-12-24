@@ -44,7 +44,7 @@ int main( int argc, char *argv[]){
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
-//    MPI_Bcast(weight, 10000, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(weight, 10000, MPI_INT, 0, MPI_COMM_WORLD);
     //Iniitialize
     double pheromone[100][100];
     for(int i = 0; i < n; i++){
@@ -57,10 +57,10 @@ int main( int argc, char *argv[]){
     int local_min = 999999;
     int global_min = 999999;
 
-    int ant_count = n / numprocs;
+    int ant_count = m / numprocs;
     int rest = 0;
     if(myid == numprocs - 1)
-        rest = n % numprocs;
+        rest = m % numprocs;
     //Iteration t
     for(int w = 0; w < t; w++){
         //Initialize
@@ -130,7 +130,7 @@ int main( int argc, char *argv[]){
         } 
         //Update Phenomone Matrix Using MPI
         if(myid != 0){
-//            MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+            MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
             //#pragma omp parallel for
@@ -142,7 +142,7 @@ int main( int argc, char *argv[]){
                 }
             }
             for(int i = 1; i < numprocs; i++){
-//                MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
+                MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
                 //#pragma omp parallel for
                 for(int j = 0; j < n; j++){
                     //#pragma omp parallel for
@@ -152,7 +152,7 @@ int main( int argc, char *argv[]){
                 }
             }
         }
-//        MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
+        MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
     MPI_Reduce(&local_min, &global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
     if(myid == 0){
