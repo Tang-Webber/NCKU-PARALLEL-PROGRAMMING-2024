@@ -94,7 +94,7 @@ int main( int argc, char *argv[]){
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
-if(w == 0 && x == 0 && myid == 0){
+if(w == 1 && x == 0 && myid == 0){
     printf("y = %d, pij[z] = %f = %f + %f \n", y, pij[z],pow(pheromone[start][z], alpha), pow(weight[start][z], (-1) * beta));
 }                          
                     }
@@ -159,7 +159,7 @@ if(w == 0 && x == 0 && myid == 0){
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
 if(w == 0 && myid == 0 && temp_p[j][k] >= 0.0001){
-    printf("temp_p[j][k] = %f\n",temp_p[j][k]);
+    printf("pheromone = %f\n",pheromone[j][k]);
 }
                     }
                 }
