@@ -52,8 +52,8 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 0.5;
-    double beta = 1.0;
+    double alpha = 2.0;
+    double beta = 2.0;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -61,7 +61,7 @@ int main( int argc, char *argv[]){
     int rest = 0;
     if(myid == numprocs - 1)
         rest = m % numprocs;
-printf("myid = %d, ant = %d \n", myid, ant_count + rest);
+printf("myid = %d, a= %f, b=%f \n", myid, alpha, beta);
     //Iteration t
     for(int w = 0; w < t; w++){
         //Initialize
@@ -97,15 +97,15 @@ if(w == 0 && myid == 0){
                 pij_sum = 0;
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
-                        pij[z] = pow(pheromone[start][z], alpha) + pow((1 / weight[start][z]), beta);
+                        pij[z] = pow(pheromone[start][z], alpha) + pow(( 1.0 / weight[start][z]), beta);
 if(w == 0 && myid == 0){
-    printf("ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
+    printf("ant %d : y = %d, pij[z] = %f \npheromone[start][z] = %f  weight[start][z] = %d\n", x, y, pij[z], pheromone[start][z], weight[start][z]);
 }                          
                     }
                     else{
                         pij[z] = 0.0;
 if(w == 0 && myid == 0){
-    printf("0000000 ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
+    printf("0 ant %d : y = %d, pij[z] = %f\n", x, y, pij[z]);
 }  
                     }
                     pij_sum += pij[z];
