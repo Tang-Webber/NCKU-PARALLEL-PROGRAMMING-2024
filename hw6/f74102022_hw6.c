@@ -52,7 +52,7 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 1;
+    double alpha = 0.7;
     double beta = 0.1;
     int local_min = 999999;
     int global_min = 999999;
@@ -135,7 +135,7 @@ if(w == t-3  && x == 0 && myid == 0){
                 
             for(int i = 1; i < n; i++){
                 //Q = 100
-                temp_p[route[i-1]][route[i]] += 20000.0 / (double)sum;
+                temp_p[route[i-1]][route[i]] += 9000.0 / (double)sum;
             }
         } 
         //Update Phenomone Matrix Using MPI
