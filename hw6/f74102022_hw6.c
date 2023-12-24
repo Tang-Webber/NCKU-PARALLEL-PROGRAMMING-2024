@@ -95,7 +95,7 @@ int main( int argc, char *argv[]){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
 if(w == 0 && x == 0 && myid == 0){
-    printf("y = %d, pij[z] = %f pheromone[start][z] = %f \n", y, pij[z], pheromone[start][z]);
+    printf("y = %d, pij[z] = %f = %f + %f \n", y, pij[z],pow(pheromone[start][z], alpha), pow(weight[start][z], (-1) * beta));
 }                          
                     }
                     else{
@@ -158,7 +158,7 @@ if(w == 0 && x == 0 && myid == 0){
                     //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
-if(w == 0 && myid == 0){
+if(w == 0 && myid == 0 && temp_p >= 0.0001){
     printf("temp_p[j][k] = %f\n",temp_p[j][k]);
 }
                     }
