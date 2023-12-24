@@ -9,7 +9,7 @@
 #include <time.h>
 
 //Hyper_parameter : 
-//α = 1, β = 2, ρ = 0.7, Q = 100
+//α = , β = , ρ = , Q = 
 
 int main( int argc, char *argv[]){
     srand(5);
@@ -52,8 +52,8 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 0.05;
-    double beta = 0.1;
+    double alpha = 1;
+    double beta = 0.3;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -85,9 +85,6 @@ int main( int argc, char *argv[]){
             }
             //pick start point randomly
             start = rand() % n;
-if(w == 0 && myid == 0){
-    printf("ant %d : start = %d\n", x, start);
-}   
             picked[start] = true;
             route[0] = start;
             //Go throuth all city => y = 0 ~ (n-1)
@@ -97,25 +94,22 @@ if(w == 0 && myid == 0){
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
                         pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
-//if(w == 0 && x == 0 && myid == 0){
-//    printf("y = %d, pij[z] = %f pheromone[start][z] = %f \n", y, pij[z], pheromone[start][z]);
-//}                          
+if(w == 0 && x == 0 && myid == 0){
+    printf("y = %d, pij[z] = %f pheromone[start][z] = %f \n", y, pij[z], pheromone[start][z]);
+}                          
                     }
                     else{
                         pij[z] = 0.0;
                     }
                     pij_sum += pij[z];
                 }
-//if(w == 0 && x == 0 && myid == 0){
-//    printf("y = %d, pij_sum %f \n", y, pij_sum);
-//}  
                 //randomly choose next
                 int random_integer = rand();
                 double random = (double)random_integer / RAND_MAX;
                 random *= pij_sum;
-if(w == 0 && x== 0&&myid == 0){
-    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
-}    
+//if(w == 0 && x== 0&&myid == 0){
+//    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
+//}    
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
                     cumulateP += pij[i];
@@ -124,9 +118,9 @@ if(w == 0 && x== 0&&myid == 0){
                         break;
                     }
                 }
-if(w == 0 &&x==0&& myid == 0){
-    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
-}
+//if(w == 0 &&x==0&& myid == 0){
+//    printf("y = %d, sum = %f, next = %d \n", y,  sum, next);
+//}
                 //go to next vertex
                 sum += weight[start][next];
                 route[y] = next;
@@ -141,7 +135,7 @@ if(w == 0 &&x==0&& myid == 0){
                 
             for(int i = 1; i < n; i++){
                 //Q = 100
-                temp_p[route[i-1]][route[i]] += 100 / sum;
+                temp_p[route[i-1]][route[i]] += 10000.0 / (double)sum;
             }
         } 
         //Update Phenomone Matrix Using MPI
@@ -164,6 +158,9 @@ if(w == 0 &&x==0&& myid == 0){
                     //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
+if(w == 0 && myid == 0){
+    printf("temp_p[j][k] = %f\n",temp_p[j][k]);
+}
                     }
                 }
             }
