@@ -70,7 +70,7 @@ int main( int argc, char *argv[]){
                 temp_p[i][j] = 0;
             }
         }
-        //#pragma omp parallel for
+        #pragma omp parallel for
         for(int x = 0; x < ant_count + rest; x++){
             //every ant has its own 
             bool picked[100];
@@ -93,10 +93,7 @@ int main( int argc, char *argv[]){
                 pij_sum = 0;
                 for(int z = 0; z < n; z++){
                     if(!picked[z]){
-                        pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);
-//if(w == t-3  && x == 0 && myid == 0){
-//    printf("y = %d, pij[z] = %f = %f + %f \n", y, pij[z],pow(pheromone[start][z], alpha), pow(weight[start][z], (-1) * beta));
-//}                          
+                        pij[z] = pow(pheromone[start][z], alpha) + pow(weight[start][z], (-1) * beta);                      
                     }
                     else{
                         pij[z] = 0.0;
@@ -107,9 +104,7 @@ int main( int argc, char *argv[]){
                 int random_integer = rand();
                 double random = (double)random_integer / RAND_MAX;
                 random *= pij_sum;
-//if(w == 0 && x== 0&&myid == 0){
-//    printf("ant %d : y = %d, random = %f, pij_sum = %f\n", x, y, random, pij_sum);
-//}    
+ 
                 float cumulateP = 0.0;
                 for (int i = 0; i < n; i++) {
                     cumulateP += pij[i];
