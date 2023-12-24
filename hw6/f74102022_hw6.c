@@ -66,7 +66,6 @@ if(myid == 0) printf("Bcast completed!\n");
 printf("myid = %d, ant = %d \n", myid, ant_count + rest);
     //Iteration t
     for(int w = 0; w < t; w++){
-if(myid == 0) printf("iteration %d\n", w);
         //Initialize
         double temp_p[100][100];
         for(int i = 0; i < n; i++){
@@ -158,7 +157,10 @@ if(myid == 0) printf("iteration %d\n", w);
         }
         MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
-    MPI_Reduce(&local_min, &global_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+if(myid == 0) printf("iteration completed!\n");
+printf("myid = %d, local min = %d!\n", myid, local_min);
+    MPI_Reduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+if(myid == 0) printf("reduce completed!\n");
     if(myid == 0){
         printf("%d", global_min);
     }
