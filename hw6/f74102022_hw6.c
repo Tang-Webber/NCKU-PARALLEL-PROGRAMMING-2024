@@ -128,7 +128,8 @@ int main( int argc, char *argv[]){
                 start = next;
             }
             //critical
-            #pragma omp critical {
+            #pragma omp critical 
+            {
                 if(sum <= local_min){
                     local_min = sum;
                 }
