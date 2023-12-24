@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
         for (int i = 1; i < n - len + 1; i++) {
             int j = i + len - 1;
             dp[i][j] = 99999;
-            for (int k = i; k < j; k++) {
+            for (int k = i; k < i + len - 1; k++) {
                 int cost = dp[i][k] + dp[k + 1][j] + neural[i - 1] * neural[k] * neural[j];
                 if (cost < dp[i][j]) {
                     dp[i][j] = cost;
@@ -43,3 +43,18 @@ int main(int argc, char *argv[]){
     printf("%d", dp[1][n - 1]);
     return 0;
 }
+
+
+
+    for (int len = 2; len < n; len++) {
+        for (int i = 1; i < n - len + 1; i++) {
+            int j = i + len - 1;
+            dp[i][j] = 99999;
+            for (int k = 0; k < len - 1; k++) {
+                int cost = dp[i][i+k] + dp[i+k + 1][j] + neural[i - 1] * neural[i+k] * neural[j];
+                if (cost < dp[i][j]) {
+                    dp[i][j] = cost;
+                }
+            }
+        }
+    }
