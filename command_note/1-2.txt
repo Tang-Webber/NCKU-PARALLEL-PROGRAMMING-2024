@@ -1,0 +1,346 @@
+1. sort 平行化
+2. down 在process0的時候 up可以給process 1做
+3. 
+
+
+
+ssh F74102022@140.116.154.66 -p 22
+mpicc F74102022_hw1_2.c -o ./F74102022_hw1_2
+mpiexec -f hosts -n 8 ./F74102022_hw1_2
+mpiexec -f hosts -n 8 ./F74102022_hw1_2 < /home/F74102022/hw1-2/input/filename/coor100name.txt
+
+sort success!
+id = 15, (-29312, -23323)
+id = 51, (-29153, 16842)
+id = 27, (-29013, -15313)
+id = 81, (-28532, 4734)
+id = 96, (-27598, -24491)
+id = 57, (-27341, -26549)
+id = 75, (-27196, 20606)
+id = 80, (-26958, 2162)
+id = 34, (-26791, 24620)
+id = 13, (-26529, 19131)
+id = 18, (-26270, -1186)
+id = 76, (-25254, 24843)
+id = 50, (-24966, -6165)
+id = 55, (-24959, 28708)
+id = 37, (-24956, -25335)
+id = 8, (-23416, 29125)
+id = 68, (-22160, -130)
+id = 43, (-21473, -2138)
+id = 95, (-21269, 29369)
+id = 17, (-21193, -27406)
+id = 63, (-20632, -21510)
+id = 59, (-19959, -6603)
+id = 3, (-19888, 21406)
+id = 2, (-18578, -25552)
+id = 60, (-18082, 17479)
+id = 70, (-17548, 20332)
+id = 94, (-16551, -23171)
+id = 86, (-15674, -13842)
+id = 11, (-15264, -15603)
+id = 7, (-14949, -9989)
+id = 61, (-14548, 25768)
+id = 85, (-14434, -20342)
+id = 72, (-14237, -17294)
+id = 12, (-14154, 14637)
+id = 21, (-13682, -11377)
+id = 89, (-13345, 785)
+id = 31, (-13262, -23476)
+id = 29, (-12417, -20048)
+id = 41, (-12054, -15621)
+id = 88, (-10871, -8664)
+id = 97, (-10517, 23678)
+id = 42, (-10296, 15871)
+id = 14, (-10252, 9993)
+id = 93, (-10212, 17304)
+id = 53, (-9157, -23264)
+id = 33, (-6191, -14271)
+id = 9, (-5888, 3626)
+id = 69, (-4937, 550)
+id = 25, (-4636, 28946)
+id = 77, (-3992, 3835)
+id = 79, (-3610, -29893)
+id = 54, (-1706, 11295)
+id = 23, (-1568, 17313)
+id = 65, (-512, 15179)
+id = 64, (-74, 14939)
+id = 40, (1969, -23948)
+id = 1, (2590, -21076)
+id = 56, (2837, -5287)
+id = 82, (2848, 20731)
+id = 46, (3695, 11973)
+id = 62, (4673, -29631)
+id = 38, (5974, -24339)
+id = 58, (6062, -2368)
+id = 26, (7252, -22194)
+id = 99, (7481, 8775)
+id = 10, (8799, -2776)
+id = 84, (9159, -20462)
+id = 87, (9595, -5718)
+id = 30, (9643, -16604)
+id = 83, (9914, 7009)
+id = 52, (11282, -7744)
+id = 98, (12384, 17855)
+id = 32, (12507, 1322)
+id = 47, (13129, 28464)
+id = 16, (13541, -19416)
+id = 5, (13556, -26811)
+id = 92, (13696, -21560)
+id = 6, (13810, 22065)
+id = 19, (14688, 14509)
+id = 90, (14831, 22786)
+id = 35, (17191, 453)
+id = 100, (17646, 3656)
+id = 39, (17824, -25335)
+id = 66, (18076, 7687)
+id = 44, (18223, 19546)
+id = 45, (19728, 5276)
+id = 28, (20669, 27632)
+id = 91, (20806, -6236)
+id = 78, (22600, 6201)
+id = 4, (23914, 12550)
+id = 48, (24249, 17222)
+id = 71, (24604, 3530)
+id = 24, (25047, -5426)
+id = 67, (25089, 7178)
+id = 73, (25151, -17915)
+id = 36, (25473, 5570)
+id = 49, (26832, 29119)
+id = 22, (27572, 29960)
+id = 20, (27653, 21266)
+id = 74, (28611, -2866)
+
+BuildCommand = make clean && make
+正解: 15 51 34 55 8 95 22 74 73 39 5 62 79 57
+
+
+
+#include "mpi.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+struct Point {
+    int id, x, y;
+} P[12000];
+
+int cross(struct Point o, struct Point a, struct Point b) {
+    return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+}
+
+int compare(const void* a, const void* b)
+{
+    if (((struct Point*)a)->x != ((struct Point*)b)->x)
+        return ((struct Point*)a)->x - ((struct Point*)b)->x;
+    else
+        return ((struct Point*)a)->y - ((struct Point*)b)->y;
+}
+
+int main( int argc, char *argv[])
+{
+    int n, myid, numprocs;
+    int left, right;
+    int u, d;
+    char input[50];
+    int rest = 0;
+
+    MPI_Init(&argc,&argv);
+    MPI_Comm_size(MPI_COMM_WORLD,&numprocs);
+    MPI_Comm_rank(MPI_COMM_WORLD,&myid);
+
+    MPI_Datatype PointType;
+    MPI_Aint offsets[3];
+    MPI_Datatype types[3] = {MPI_INT, MPI_INT, MPI_INT};
+    offsets[0] = offsetof(struct Point, id);
+    offsets[1] = offsetof(struct Point, x);
+    offsets[2] = offsetof(struct Point, y);
+    int block_lengths[3] = {1, 1, 1};    
+    MPI_Type_create_struct(3, block_lengths, offsets, types, &PointType);
+    MPI_Type_commit(&PointType);
+
+    //scan the input
+    if (myid == 0) {
+        scanf("%s", input);
+        FILE *input_file = fopen(input, "r");
+        if(input_file == NULL){
+            printf("could not open file %s\n", input);
+            fclose(input_file);
+            return 1;
+        }
+        fscanf(input_file, "%d", &n);
+        for (int i = 0; i < n; i++) {
+            fscanf(input_file, "%d %d", &P[i].x, &P[i].y);
+            P[i].id = i + 1;
+        }
+        fclose(input_file);
+        qsort(P, n, sizeof(struct Point), compare);  
+    }
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    int *recv_counts = (int*)malloc(numprocs * sizeof(int));
+    int *displacements = (int*)malloc(numprocs * sizeof(int));
+    int base_count = n / numprocs;
+    rest = n % numprocs;
+    for (int i = 0; i < numprocs; i++) {
+        recv_counts[i] = base_count;
+        if (i == numprocs - 1) {
+            recv_counts[i] += rest;
+        }
+        displacements[i] = i * base_count;
+    }
+
+    int local_count = recv_counts[myid];
+    struct Point* local_P = (struct Point*)malloc(local_count * sizeof(struct Point));    
+    //Data Boardcast
+    struct Point* local_upper_ch = (struct Point*)malloc(local_count * sizeof(struct Point));
+    struct Point* local_lower_ch = (struct Point*)malloc(local_count * sizeof(struct Point));
+    MPI_Bcast(P, n, PointType, 0, MPI_COMM_WORLD);
+    //MPI_Scatter(P, local_count, PointType, local_P, local_count, PointType, 0, MPI_COMM_WORLD);
+    MPI_Scatterv(P, recv_counts, displacements, PointType, local_P, recv_counts[myid], PointType, 0, MPI_COMM_WORLD);
+
+    //Local Calculation
+    //Set Variable
+    int up = 0;
+    int down = 0;
+    int* ups = NULL;
+    int* downs = NULL;
+    struct Point *final_up= NULL;
+    struct Point *final_down= NULL;
+    struct Point **gathered_up = NULL;
+    struct Point **gathered_down = NULL;
+    //malloc
+    ups = (int*)malloc(numprocs * sizeof(int));
+    downs = (int*)malloc(numprocs * sizeof(int));
+    final_up = (struct Point*)malloc(n * sizeof(struct Point));
+    final_down = (struct Point*)malloc(n * sizeof(struct Point));    
+    gathered_up = (struct Point**)malloc(numprocs * sizeof(struct Point*));
+    gathered_down = (struct Point**)malloc(numprocs * sizeof(struct Point*));  
+    for(int i = 0; i < numprocs ;i++){
+        gathered_up[i] = (struct Point*)malloc(n * sizeof(struct Point));
+        gathered_down[i] = (struct Point*)malloc(n * sizeof(struct Point));
+    }
+    //Andrew's Monotone Chain
+    if(myid == 0){       
+        for (int i = 0; i < local_count; i++){
+            while (down >= 2 && cross(final_down[down-2], final_down[down-1], local_P[i]) <= 0) down--;
+            final_down[down++] = local_P[i];
+        }
+        for (int i = 0; i < local_count; i++){
+            while (up >= 2 && cross(final_up[up-2], final_up[up-1], local_P[i]) >= 0) up--;
+            final_up[up++] = local_P[i];
+        }    
+    }
+    else{
+        for (int i = 0; i < local_count; i++){
+            while (down >= 2 && cross(local_lower_ch[down-2], local_lower_ch[down-1], local_P[i]) <= 0) down--;
+            local_lower_ch[down++] = local_P[i];
+        }
+        for (int i = 0; i < local_count; i++){
+            while (up >= 2 && cross(local_upper_ch[up-2], local_upper_ch[up-1], local_P[i]) >= 0) up--;
+            local_upper_ch[up++] = local_P[i];
+        }        
+    }
+
+    MPI_Gather(&up, 1, MPI_INT, ups, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(&down, 1, MPI_INT, downs, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    if (myid != 0) {
+        MPI_Send(local_upper_ch, up * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(local_lower_ch, down * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+    } 
+    else {
+        for (int i = 1; i < numprocs; i++) {
+            MPI_Recv(gathered_up[i], ups[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(gathered_down[i], downs[i] * sizeof(struct Point), MPI_BYTE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        }
+    }
+
+    //Combine small convex hulls
+    if (myid == 0){
+        //Iteratvely add id = i to final
+        //Lower
+        left = downs[0] - 1;
+        right = 0;
+        for(int i = 1; i < numprocs; i++){
+            //Gathered_[i] leftmost and final_[i]rightmost
+            while(1){
+                if(left == 0 || right == downs[i] - 1){
+                    break;
+                }                
+                if(cross(final_down[left - 1], gathered_down[i][right], final_down[left]) <= 0 && cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) <= 0){
+                    break;
+                }                
+                if(cross(gathered_down[i][right], final_down[left - 1], final_down[left]) < 0)
+                    left--;
+                if(cross(final_down[left], gathered_down[i][right + 1], gathered_down[i][right]) > 0)
+                    right++;
+            }
+            //Combine the results to final_ch
+            for(int j = 0; j < downs[i] - right; j++){
+                final_down[left + j + 1] = gathered_down[i][j + right];
+            }
+            left += downs[i] - right;
+            right = 0;
+        }
+        d = left;
+    }
+    if(myid == 0){
+        //Upper
+        left = ups[0] - 1;
+        right = 0;
+        for(int i = 1; i < numprocs; i++){
+            //Gathered_[i] leftmost and final_[i]rightmost
+            while(1){
+                if(cross(gathered_up[i][right], final_up[left - 1], final_up[left]) > 0)
+                    left--;
+                if(cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) < 0)
+                    right++;
+                if((cross(final_up[left - 1], gathered_up[i][right], final_up[left]) >= 0 && cross(final_up[left], gathered_up[i][right + 1], gathered_up[i][right]) >= 0) || left == 0 || right == ups[i]){
+                    break;
+                }
+            }
+            //Combine the results to final_ch
+            for(int j = 0; j < ups[i] - right; j++){
+                final_up[left + j + 1] = gathered_up[i][j + right];
+            }
+            left += ups[i] - right;
+            right = 0;
+        }
+        u = left;
+        //MPI_Send(final_up, u * sizeof(struct Point), MPI_BYTE, 0, 0, MPI_COMM_WORLD); 
+        //MPI_Send(&u, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+    }
+
+    //output
+    if(myid == 0){
+        //MPI_Recv(final_up, u * sizeof(struct Point), MPI_BYTE, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //MPI_Recv(&u, 1, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        //output
+        for(int i = 0;i < u; i++){
+            printf("%d ", final_up[i].id);
+        }
+        for(int i = d;i > 0; i--){
+            printf("%d ", final_down[i].id);
+        }
+    }
+    //Free memory
+    for (int i = 0; i < numprocs; i++) {
+        free(gathered_up[i]);
+        free(gathered_down[i]);
+    }       
+    free(final_up);
+    free(final_down);
+    free(gathered_up);
+    free(gathered_down);
+    free(ups);
+    free(downs);        
+    free(local_P);
+    free(local_upper_ch);
+    free(local_lower_ch);
+    MPI_Type_free(&PointType);
+    MPI_Finalize();
+    return 0;
+}

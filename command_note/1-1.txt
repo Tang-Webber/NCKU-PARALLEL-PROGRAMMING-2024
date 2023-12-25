@@ -1,0 +1,7 @@
+ssh F74102022@140.116.154.66 -p 22
+mpicc F74102022_hw1_1.c -o ./F74102022_hw1_1
+mpiexec -f hosts -n 32 ./F74102022_hw1_1
+mpiexec -f hosts -n 8 ./F74102022_hw1_1 < /home/F74102022/hw1-1/input/filename/b.txt > ./output/blocal_1696118776.out
+/home/F74102022/hw1-1/input/data/b.txt
+/home/F74102022/hw1-1/input/data/a.txt
+/home/F74102022/hw1-1/input/filename/a.txt

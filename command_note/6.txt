@@ -1,0 +1,13 @@
+https://github.com/Tang-Webber/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR.git
+
+ssh F74102022@140.116.154.66 -p 22
+mpicc f74102022_hw6.c -o ./f74102022_hw6 -fopenmp -lm
+mpiexec -f hosts -n 8 ./f74102022_hw6
+mpiexec -f hosts -n 8 ./f74102022_hw6 < /home/F74102022/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR/hw6/att48_dname.txt
+mpiexec -f hosts -n 3 ./f74102022_hw6 < /home/F74102022/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR/hw6/att48_dname.txt
+
+
+GR17 is a set of 17 cities, from TSPLIB. The minimal tour has length 2085. 
+FRI26 is a set of 26 cities, from TSPLIB. The minimal tour has length 937. 
+DANTZIG42 is a set of 42 cities, from TSPLIB. The minimal tour has length 699. 
+ATT48 is a set of 48 cities (US state capitals) from TSPLIB. The minimal tour has length 33523. 

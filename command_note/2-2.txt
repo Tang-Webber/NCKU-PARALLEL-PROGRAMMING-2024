@@ -1,0 +1,26 @@
+https://github.com/Tang-Webber/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR.git
+
+ssh F74102022@140.116.154.66 -p 22
+mpicc F74102022_hw2_2.c -o ./F74102022_hw2_2
+mpiexec -f hosts -n 8 ./F74102022_hw2_2
+mpiexec -f hosts -n 8 ./F74102022_hw2_2 < /home/F74102022/hw2-2/input/filename/neib6name.txt
+
+$$$Bcast 有問題
+
+______________________________________________________
+        Adj = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            Adj[i] = (short*)malloc(n * sizeof(short));
+        }   
+______________________________________________________
+    if(myid!=0){
+        Adj = (short**)malloc(n  * sizeof(short*));
+        for (int i = 0; i < n; i++) {
+            Adj[i] = (short*)malloc(n * sizeof(short));
+        }  
+
+\for(int j = 0; j < size; j++){
+                if(!selected[j] && Adj[global_min[0]][j] != -1 && dist[j] > global_min[1] + Adj[global_min[0]][j]){
+                    dist[j] = global_min[1] + Adj[global_min[0]][j];
+                }
+            }

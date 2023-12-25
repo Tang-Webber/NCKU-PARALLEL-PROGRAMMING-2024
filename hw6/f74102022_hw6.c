@@ -8,9 +8,6 @@
 #include <math.h>
 #include <time.h>
 
-//Hyper_parameter : 
-//α = , β = , ρ = , Q = 
-
 int main( int argc, char *argv[]){
     srand(time(NULL));
     char input[50];
@@ -24,21 +21,23 @@ int main( int argc, char *argv[]){
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
 
     if (myid == 0) {
-        scanf("%s", input);
-        FILE *input_file = fopen(input, "r");
-        if(input_file == NULL){
-            printf("could not open file %s\n", input);
-            fclose(input_file);
-            return 1;
-        }
+        //scanf("%s", input);
+        //FILE *input_file = fopen(input, "r");
+        //if(input_file == NULL){
+        //    printf("could not open file %s\n", input);
+        //    fclose(input_file);
+        //    return 1;
+        //}
 
-        fscanf(input_file, "%d %d %d", &n, &m, &t);
+        //fscanf(input_file, "%d %d %d", &n, &m, &t);
+        scanf("%d %d %d", &n, &m, &t);
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < n ; j++) {
-                fscanf(input_file, "%d", &weight[i][j]);
+                //fscanf(input_file, "%d", &weight[i][j]);
+                scanf("%d", &weight[i][j]);
             }
         }      
-        fclose(input_file);
+        //fclose(input_file);
     }
     //boardcast   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -77,7 +76,7 @@ int main( int argc, char *argv[]){
             int route[100];
             double pij[100];
             double pij_sum;
-            int start, next, pre;
+            int start, next;
             double sum = 0.0;
             //Initialize
             for(int i = 0; i < n; i++){
@@ -119,8 +118,7 @@ int main( int argc, char *argv[]){
                 picked[next] = true;
                 start = next;
             }
-            //critical
-
+            //critical section
             if(sum <= local_min){
                 #pragma omp critical 
                 {
@@ -135,14 +133,13 @@ int main( int argc, char *argv[]){
                 }
             }
         } 
-        //Update Phenomone Matrix Using MPI
+        //Update Phenomone Matrix Using MPI_Send/Recv
         if(myid != 0){
             MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
             //#pragma omp parallel for
             for(int j = 0; j < n; j++){
-                //#pragma omp parallel for
                 for(int k = 0; k < n; k++){
                     pheromone[j][k] *= 0.7;
                     pheromone[j][k] += temp_p[j][k];
@@ -152,7 +149,6 @@ int main( int argc, char *argv[]){
                 MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
                 //#pragma omp parallel for
                 for(int j = 0; j < n; j++){
-                    //#pragma omp parallel for
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
                     }

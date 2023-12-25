@@ -1,0 +1,38 @@
+https://github.com/Tang-Webber/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR.git
+
+ssh F74102022@140.116.154.66 -p 22
+mpicc F74102022_hw2_1.c -o ./F74102022_hw2_1
+mpiexec -f hosts -n 8 ./F74102022_hw2_1
+mpiexec -f hosts -n 8 ./F74102022_hw2_1 < /home/F74102022/hw2-1/input/filename/a.txt
+mpicc f74102022_mid5.c -o ./mid5.c
+直接Bcast完自己用subarray接
+
+//scatter
+    if(rest == 0){
+        local_A = (int**)malloc(size * sizeof(int*));
+        local_B = (int**)malloc(size * sizeof(int*));
+        for(int i = 0; i < size; i++) {
+            local_A[i] = (int*)malloc(m * sizeof(int));
+            local_B[i] = (int*)malloc(m * sizeof(int));
+        }
+    }
+    else{       //rest
+        int *recv_counts = (int*)malloc(numprocs * sizeof(int));
+        int *displacements = (int*)malloc(numprocs * sizeof(int));      
+        for(int i = 0; i < numprocs; i++) {
+            recv_counts[i] = size * m;
+            if (i == numprocs - 1) {
+                recv_counts[i] += rest * m;
+            }
+            displacements[i] = i * recv_counts[i];
+        }  
+        size = recv_counts[myid] / m; 
+
+        local_A = (int**)malloc(size * sizeof(int*));
+        local_B = (int**)malloc(size * sizeof(int*));
+        for(int i = 0; i < size; i++) {
+            local_A[i] = (int*)malloc(m * sizeof(int));
+            local_B[i] = (int*)malloc(m * sizeof(int));
+        }
+        MPI_Scatterv(A, recv_counts, displacements, MPI_INT, local_A, recv_counts[myid], MPI_INT, 0, MPI_COMM_WORLD);
+    }

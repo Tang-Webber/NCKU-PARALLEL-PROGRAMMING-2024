@@ -1,0 +1,13 @@
+su -
+
+useradd wei10 -m -s /bin/bash
+passwd wei10
+/usr/lib/yp/ypinit -m
+su wei10
+ssh-keygen
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+ssh node2
+
+
+
+mpirun -np 2 ./cpi

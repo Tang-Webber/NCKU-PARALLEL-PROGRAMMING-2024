@@ -1,0 +1,6 @@
+https://github.com/Tang-Webber/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR.git
+
+ssh F74102022@140.116.154.66 -p 22
+
+gcc f74102022_hw5_2.c -o ./f74102022_hw5_2 -fopenmp -lm
+./f74102022_hw5_2 4 < /home/F74102022/PARALLEL-PROGRAMMING-IN-C-FOR-MULTIPROCESSOR/hw5-2/input/filename/husky_ii_5name.txt
