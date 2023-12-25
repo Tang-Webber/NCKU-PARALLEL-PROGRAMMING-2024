@@ -21,25 +21,14 @@ int main( int argc, char *argv[]){
     MPI_Comm_rank(MPI_COMM_WORLD,&myid);
 
     if (myid == 0) {
-        //scanf("%s", input);
-        //FILE *input_file = fopen(input, "r");
-        //if(input_file == NULL){
-        //    printf("could not open file %s\n", input);
-        //    fclose(input_file);
-        //    return 1;
-        //}
-
-        //fscanf(input_file, "%d %d %d", &n, &m, &t);
         scanf("%d %d %d", &n, &m, &t);
         for (int i = 0; i < n ; i++) {
             for (int j = 0; j < n ; j++) {
-                //fscanf(input_file, "%d", &weight[i][j]);
                 scanf("%d", &weight[i][j]);
             }
         }      
-        //fclose(input_file);
     }
-    //boardcast   
+    //Boardcast   
     MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&m, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&t, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -51,7 +40,7 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 1;
+    double alpha = 1.3;
     double beta = 0.2;
     int local_min = 999999;
     int global_min = 999999;
@@ -138,7 +127,7 @@ int main( int argc, char *argv[]){
             MPI_Send(temp_p, 10000, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
         }
         else{
-            //#pragma omp parallel for
+            #pragma omp parallel for
             for(int j = 0; j < n; j++){
                 for(int k = 0; k < n; k++){
                     pheromone[j][k] *= 0.7;
@@ -147,7 +136,7 @@ int main( int argc, char *argv[]){
             }
             for(int i = 1; i < numprocs; i++){
                 MPI_Recv(temp_p, 10000, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); 
-                //#pragma omp parallel for
+                #pragma omp parallel for
                 for(int j = 0; j < n; j++){
                     for(int k = 0; k < n; k++){
                         pheromone[j][k] += temp_p[j][k];
