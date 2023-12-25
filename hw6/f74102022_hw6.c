@@ -145,6 +145,7 @@ int main( int argc, char *argv[]){
         }
         MPI_Bcast(pheromone, 10000, MPI_DOUBLE, 0, MPI_COMM_WORLD);      
     }
+    //Obtain the minimum value across all processes
     MPI_Reduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
     if(myid == 0){
         printf("%d", global_min);
