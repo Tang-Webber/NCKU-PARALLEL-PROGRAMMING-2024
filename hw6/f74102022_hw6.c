@@ -41,7 +41,7 @@ int main( int argc, char *argv[]){
         }
     }
     double alpha = 0.9;
-    double beta = 0.3;
+    double beta = 0.2;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -116,8 +116,8 @@ int main( int argc, char *argv[]){
             #pragma omp critical 
             {
                 for(int i = 1; i < n; i++){
-                    // Q = 9000
-                    temp_p[route[i-1]][route[i]] += 8000.0 / (double)sum;
+                    // Q = 5000
+                    temp_p[route[i-1]][route[i]] += 5000.0 / (double)sum;
                 }
             }
         } 
