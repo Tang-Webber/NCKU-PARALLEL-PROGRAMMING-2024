@@ -40,8 +40,8 @@ int main( int argc, char *argv[]){
             pheromone[i][j] = 0;
         }
     }
-    double alpha = 1.3;
-    double beta = 0.2;
+    double alpha = 0.9;
+    double beta = 0.3;
     int local_min = 999999;
     int global_min = 999999;
 
@@ -60,7 +60,6 @@ int main( int argc, char *argv[]){
         }
         #pragma omp parallel for
         for(int x = 0; x < ant_count + rest; x++){
-            //every ant has its own 
             bool picked[100];
             int route[100];
             double pij[100];
@@ -75,7 +74,7 @@ int main( int argc, char *argv[]){
             start = rand() % n;
             picked[start] = true;
             route[0] = start;
-            //Go throuth all city => y = 0 ~ (n-1)
+            //Go throuth all cities => y = 0 ~ (n-1)
             for(int y = 1; y < n; y++){
                 //calculate Pij
                 pij_sum = 0;
@@ -88,7 +87,7 @@ int main( int argc, char *argv[]){
                     }
                     pij_sum += pij[z];
                 }
-                //randomly choose next
+                //Roulette Wheel Selection
                 int random_integer = rand();
                 double random = (double)random_integer / RAND_MAX;
                 random *= pij_sum;
@@ -101,13 +100,13 @@ int main( int argc, char *argv[]){
                         break;
                     }
                 }
-                //go to next vertex
+                //Next city
                 sum += weight[start][next];
                 route[y] = next;
                 picked[next] = true;
                 start = next;
             }
-            //critical section
+            //Critical section
             if(sum <= local_min){
                 #pragma omp critical 
                 {
@@ -118,7 +117,7 @@ int main( int argc, char *argv[]){
             {
                 for(int i = 1; i < n; i++){
                     //Q = 9000
-                    temp_p[route[i-1]][route[i]] += 9000.0 / (double)sum;
+                    temp_p[route[i-1]][route[i]] += 8000.0 / (double)sum;
                 }
             }
         } 
