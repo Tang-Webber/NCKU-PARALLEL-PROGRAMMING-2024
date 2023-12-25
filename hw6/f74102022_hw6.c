@@ -116,7 +116,7 @@ int main( int argc, char *argv[]){
             #pragma omp critical 
             {
                 for(int i = 1; i < n; i++){
-                    //Q = 9000
+                    // Q = 9000
                     temp_p[route[i-1]][route[i]] += 8000.0 / (double)sum;
                 }
             }
