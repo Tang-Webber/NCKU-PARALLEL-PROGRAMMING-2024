@@ -4,12 +4,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
-
+//Pthread Function
 void *CNN(void* rank);
 
 int thread_count;
 pthread_barrier_t barrier;
-
+//Global Variable
 int t, n, m;
 int count = 0;
 char input[50];
